@@ -1,11 +1,116 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+<TabHost
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@android:id/tabhost"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/background_light"
+        android:id="@+id/linearLayout_main"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:background="@android:color/background_light">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch1"
+                android:checked="false"
+                android:layout_marginTop="24dp"
+                android:width="100dp"
+                android:height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="19dp"
+                android:clickable="false"
+                android:enabled="false"
+                android:thumb="@android:color/background_dark"
+                android:track="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Safe Radius"
+                android:id="@+id/text_title"
+                android:textSize="40dp"
+                android:textColor="@android:color/background_dark"
+                android:layout_alignBottom="@+id/switch1"
+                android:layout_centerHorizontal="true" />
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_message"
+                android:layout_marginTop="68dp"
+                android:minWidth="200dp"
+                android:minHeight="10dp"
+                android:spinnerMode="dropdown"
+                android:layout_below="@+id/switch1"
+                android:layout_toStartOf="@+id/button_send" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:id="@+id/button_send"
+                android:height="10dp"
+                android:layout_alignBottom="@id/spinner_message"
+                android:layout_alignStart="@id/switch1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Radius"
+                android:id="@+id/radius_text"
+                android:layout_marginTop="76dp"
+                android:textSize="30dp"
+                android:textColor="@android:color/background_dark"
+                android:layout_below="@+id/spinner_message"
+                android:layout_alignStart="@+id/spinner_message" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:layout_alignTop="@+id/radius_text"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/radius_text"
+                android:layout_alignBottom="@+id/radius_text"
+                android:minHeight="10dp"
+                android:minWidth="10dp" />
+        </RelativeLayout>
+
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="5dp" />
+
+    </LinearLayout>
+</TabHost>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

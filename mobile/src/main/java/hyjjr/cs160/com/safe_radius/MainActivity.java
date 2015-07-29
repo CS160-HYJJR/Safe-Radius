@@ -1,17 +1,29 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.TabActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TabHost;
 
-
-public class MainActivity extends Activity {
+public class MainActivity extends TabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TabHost tabHost = getTabHost();
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("First Tab");
+        tab1.setIndicator("Tab1");
+        tab1.setContent(new Intent(this, RadarActivity.class));
+        tabHost.addTab(tab1);
     }
 
     @Override
