@@ -8,4 +8,9 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+
+    <string name="tab1_name">send</string>
+
+    <string name="tab2_name">message</string>
+    <string name="title_activity_send">SendActivity</string>
 </resources>
