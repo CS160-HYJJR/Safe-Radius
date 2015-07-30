@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="android_wear_capabilities">
-        <item>CS160_SAFE_RADIUS_DEVICE</item>
+        <item>CS160_SAFE_RADIUS_WEAR_DEVICE</item>
     </string-array>
 </resources>
