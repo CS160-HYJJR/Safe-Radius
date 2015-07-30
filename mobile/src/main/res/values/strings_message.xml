@@ -3,5 +3,6 @@
     <string-array name="message_choices">
         <item>Come back</item>
         <item>Stop</item>
+        <item>Add New Message</item>
     </string-array>
 </resources>

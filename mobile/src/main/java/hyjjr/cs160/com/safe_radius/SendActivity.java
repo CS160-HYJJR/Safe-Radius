@@ -9,28 +9,36 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import hyjjr.cs160.com.safe_radius.sendActivity_events.MessageSpinnerListener;
 import hyjjr.cs160.com.safe_radius.sendActivity_events.SwitchListener;
 
 
 public class SendActivity extends Activity {
 
     private static final String TAG = SendActivity.class.getSimpleName();
-
+    private String[] messages;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
         Global.setSendActivity(this);
 
+        messages = getResources().getStringArray(R.array.message_choices);
         setSwitchListener();
         setRadiusSpinnerContent();
         setMessageSpinnerContent();
+        setMessageSpinnerListener();
+    }
+
+    private void setMessageSpinnerListener() {
+        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        spinner.setOnItemSelectedListener(new MessageSpinnerListener());
     }
 
     private void setRadiusSpinnerContent() {
         Spinner spinner = (Spinner) findViewById(R.id.radius_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.radius_choices));
+                android.R.layout.simple_spinner_item, messages);
         spinner.setAdapter(adapter);
     }
 
