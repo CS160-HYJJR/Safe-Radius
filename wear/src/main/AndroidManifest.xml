@@ -32,7 +32,11 @@
         </service>
         <service
             android:name=".VibrationService"
-            android:exported="false">
+            android:exported="false"></service>
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true">
         </service>
     </application>
 

@@ -1,19 +1,21 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 
 import java.util.ArrayList;
-
-import hyjjr.cs160.com.safe_radius.sendActivity_events.MessageSpinnerListener;
-import hyjjr.cs160.com.safe_radius.sendActivity_events.SwitchListener;
 
 
 public class SendActivity extends Activity {
@@ -27,29 +29,14 @@ public class SendActivity extends Activity {
         Global.setSendActivity(this);
 
         messages = getResources().getStringArray(R.array.message_choices);
-        setSwitchListener();
-        setMessageSpinnerContent();
-        setMessageSpinnerListener();
+
+        ((Switch) findViewById(R.id.switch1)).setOnCheckedChangeListener(new SwitchListener());
+
+        ((Spinner) findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.message_choices)));
+
+        ((Spinner) findViewById(R.id.message_spinner)).setOnItemSelectedListener(new MessageSpinnerListener());
     }
-
-    private void setMessageSpinnerListener() {
-        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
-        spinner.setOnItemSelectedListener(new MessageSpinnerListener());
-    }
-
-    private void setMessageSpinnerContent() {
-        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.message_choices));
-        spinner.setAdapter(adapter);
-    }
-
-
-    private void setSwitchListener() {
-        Switch switch1 = (Switch) findViewById(R.id.switch1);
-        switch1.setOnCheckedChangeListener(new SwitchListener());
-    }
-
 
     /*
         hide all except switch
@@ -97,4 +84,55 @@ public class SendActivity extends Activity {
     }
 
 
+    public class SwitchListener implements CompoundButton.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                Global.turnOn();
+                SendActivity.this.showAll();
+            } else {
+                Global.turnOff();
+                SendActivity.this.hideAll();
+            }
+        }
+    }
+
+
+    public class MessageSpinnerListener implements AdapterView.OnItemSelectedListener {
+        private final String TAG = MessageSpinnerListener.class.getSimpleName();
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (position == parent.getCount() - 1) { // last message selected
+                final EditText input = new EditText(Global.getMainActivity());
+
+                new AlertDialog.Builder(Global.getMainActivity())
+                        .setTitle("Please write the new message")
+                        .setView(input)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String newMessage = input.getText().toString();
+                                SendActivity.this.messageSpinnerAddItem(newMessage);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Do nothing.
+                            }
+                        }).show();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    }
+
+
+    public class SendButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
 }
