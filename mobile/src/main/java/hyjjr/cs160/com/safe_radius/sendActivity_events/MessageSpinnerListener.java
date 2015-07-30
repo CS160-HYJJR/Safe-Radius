@@ -26,6 +26,7 @@ public class MessageSpinnerListener implements AdapterView.OnItemSelectedListene
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String newMessage = input.getText().toString();
+                            Global.getSendActivity().messageSpinnerAddItem(newMessage);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Switch;
+
+import java.util.ArrayList;
 
 import hyjjr.cs160.com.safe_radius.sendActivity_events.MessageSpinnerListener;
 import hyjjr.cs160.com.safe_radius.sendActivity_events.SwitchListener;
@@ -77,6 +80,20 @@ public class SendActivity extends Activity {
                 view.setVisibility(visibility);
             }
         }
+    }
+
+    public void messageSpinnerAddItem(String item) {
+        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        SpinnerAdapter sa = spinner.getAdapter();
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < sa.getCount() - 1; i++) {
+            list.add((String) sa.getItem(i));
+        }
+        list.add(item);
+        list.add((String) sa.getItem(sa.getCount() - 1));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, list);
+        spinner.setAdapter(adapter);
     }
 
 

@@ -1,9 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.wearable.view.WatchViewStub
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/watch_view_stub"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_main" app:roundLayout="@layout/round_activity_main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical"
     tools:context=".MainActivity"
-    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>
+    tools:deviceIds="wear_round">
+
+    <ImageButton
+        android:id="@+id/ring_button"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"
+        android:background="@drawable/watch_ring"
+        android:clickable="true"
+        android:contentDescription="" />
+
+    <ImageButton
+        android:id="@+id/send_button"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/watch_send"
+        android:clickable="true"
+        android:contentDescription="" />
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/watch_back"
+        android:clickable="true"
+        android:contentDescription="" />
+</LinearLayout>
