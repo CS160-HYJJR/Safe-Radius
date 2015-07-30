@@ -25,7 +25,6 @@ public class SendActivity extends Activity {
 
         messages = getResources().getStringArray(R.array.message_choices);
         setSwitchListener();
-        setRadiusSpinnerContent();
         setMessageSpinnerContent();
         setMessageSpinnerListener();
     }
@@ -33,13 +32,6 @@ public class SendActivity extends Activity {
     private void setMessageSpinnerListener() {
         Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
         spinner.setOnItemSelectedListener(new MessageSpinnerListener());
-    }
-
-    private void setRadiusSpinnerContent() {
-        Spinner spinner = (Spinner) findViewById(R.id.radius_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, messages);
-        spinner.setAdapter(adapter);
     }
 
     private void setMessageSpinnerContent() {
