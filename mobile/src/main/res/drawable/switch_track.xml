@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="15dp"
+        android:right="15dp">
+        <selector xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:state_checked="true">
+                <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+                    <item>
+                        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:shape="rectangle">
+                            <corners android:radius="5dp" />
+                            <size
+                                android:width="0dp"
+                                android:height="40dp" />
+                            <solid android:color="@color/black" />
+                        </shape>
+                    </item>
+
+                    <item
+                        android:bottom="2dp"
+                        android:left="2dp"
+                        android:right="2dp"
+                        android:top="2dp">
+                        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:shape="rectangle">
+                            <corners android:radius="5dp" />
+                            <size
+                                android:width="0dp"
+                                android:height="36dp" />
+                            <solid android:color="@color/green" />
+                        </shape>
+                    </item>
+                </layer-list>
+            </item>
+
+
+            <item android:state_checked="false">
+                <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+                    <item>
+                        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:shape="rectangle">
+                            <corners android:radius="5dp" />
+                            <size
+                                android:width="0dp"
+                                android:height="40dp" />
+                            <solid android:color="@color/black" />
+                        </shape>
+                    </item>
+
+                    <item
+                        android:bottom="2dp"
+                        android:left="2dp"
+                        android:right="2dp"
+                        android:top="2dp">
+                        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:shape="rectangle">
+                            <corners android:radius="5dp" />
+                            <size
+                                android:width="0dp"
+                                android:height="36dp" />
+                            <solid android:color="@color/white" />
+                        </shape>
+                    </item>
+                </layer-list>
+            </item>
+        </selector>
+    </item>
+
+
+</layer-list>
