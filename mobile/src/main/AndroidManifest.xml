@@ -28,6 +28,16 @@
             android:label="@string/title_activity_send"
             android:theme="@style/FullscreenTheme" />
 
+        <service
+            android:name=".SendMessageService"
+            android:exported="false"></service>
+        <service
+            android:name=".ReceiveMessageService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
