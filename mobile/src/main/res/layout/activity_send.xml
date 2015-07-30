@@ -1,19 +1,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@android:color/background_light"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="hyjjr.cs160.com.safe_radius.SendActivity">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:id="@+id/textView"
+    <Switch
+        android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="125dp"
-        android:text="New Text" />
+        android:layout_marginEnd="19dp"
+        android:layout_marginTop="24dp"
+        android:width="100dp"
+        android:height="50dp"
+        android:checked="false"
+        android:clickable="false"
+        android:enabled="false"
+        android:thumb="@android:color/background_dark"
+        android:track="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/switch1"
+        android:layout_centerHorizontal="true"
+        android:text="Safe Radius"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/background_dark"
+        android:textSize="40dp" />
+
+    <Spinner
+        android:id="@+id/spinner_message"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/switch1"
+        android:layout_marginTop="68dp"
+        android:layout_toStartOf="@+id/button_send"
+        android:minHeight="10dp"
+        android:minWidth="200dp"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        android:id="@+id/button_send"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/spinner_message"
+        android:layout_alignStart="@id/switch1"
+        android:height="10dp"
+        android:text="Send" />
+
+    <TextView
+        android:id="@+id/radius_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/spinner_message"
+        android:layout_below="@+id/spinner_message"
+        android:layout_marginTop="76dp"
+        android:text="Radius"
+        android:textColor="@android:color/background_dark"
+        android:textSize="30dp" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/radius_text"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/radius_text"
+        android:layout_toEndOf="@+id/radius_text"
+        android:minHeight="10dp"
+        android:minWidth="10dp" />
 </RelativeLayout>
