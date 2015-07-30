@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import hyjjr.cs160.com.safe_radius.sendActivity_listeners.SwitchListener;
+import hyjjr.cs160.com.safe_radius.sendActivity_events.SwitchListener;
 
 
 public class SendActivity extends Activity {
@@ -23,6 +23,7 @@ public class SendActivity extends Activity {
 
         setSwitchListener();
         setRadiusSpinnerContent();
+        setMessageSpinnerContent();
     }
 
     private void setRadiusSpinnerContent() {
@@ -31,6 +32,14 @@ public class SendActivity extends Activity {
                 android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.radius_choices));
         spinner.setAdapter(adapter);
     }
+
+    private void setMessageSpinnerContent() {
+        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.message_choices));
+        spinner.setAdapter(adapter);
+    }
+
 
     private void setSwitchListener() {
         Switch switch1 = (Switch) findViewById(R.id.switch1);

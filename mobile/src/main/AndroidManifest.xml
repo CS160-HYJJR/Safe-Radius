@@ -25,7 +25,8 @@
         <activity
             android:name=".SendActivity"
             android:label="@string/title_activity_send"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+
     </application>
 
 </manifest>
