@@ -20,6 +20,7 @@ public class SendActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
+        Global.setSendActivity(this);
 
         setSwitchListener();
         setRadiusSpinnerContent();
@@ -43,7 +44,7 @@ public class SendActivity extends Activity {
 
     private void setSwitchListener() {
         Switch switch1 = (Switch) findViewById(R.id.switch1);
-        switch1.setOnCheckedChangeListener(new SwitchListener(this));
+        switch1.setOnCheckedChangeListener(new SwitchListener());
     }
 
 
@@ -52,6 +53,7 @@ public class SendActivity extends Activity {
      */
     public void hideAll() {
         setVisibilityAll(View.INVISIBLE);
+        Global.getMainActivity().disableTab();
         Log.d(TAG, "hide all");
     }
 
@@ -60,6 +62,7 @@ public class SendActivity extends Activity {
      */
     public void showAll() {
         setVisibilityAll(View.VISIBLE);
+        Global.getMainActivity().enableTab();
         Log.d(TAG, "show all");
     }
 

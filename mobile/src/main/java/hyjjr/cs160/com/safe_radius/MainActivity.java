@@ -7,8 +7,11 @@ import android.widget.TabHost;
 
 public class MainActivity extends TabActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Global.setMainActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TabHost tabHost = getTabHost();
@@ -22,5 +25,17 @@ public class MainActivity extends TabActivity {
 
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
+
+
     }
+
+    public void disableTab() {
+        getTabWidget().setEnabled(false);
+    }
+
+    public void enableTab() {
+        getTabWidget().setEnabled(true);
+    }
+
+
 }
