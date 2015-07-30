@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import hyjjr.cs160.com.safe_radius.sendActivity_listeners.SwitchListener;
@@ -19,9 +21,22 @@ public class SendActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
 
+        setSwitchListener();
+        setRadiusSpinnerContent();
+    }
+
+    private void setRadiusSpinnerContent() {
+        Spinner spinner = (Spinner) findViewById(R.id.radius_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.radius_choices));
+        spinner.setAdapter(adapter);
+    }
+
+    private void setSwitchListener() {
         Switch switch1 = (Switch) findViewById(R.id.switch1);
         switch1.setOnCheckedChangeListener(new SwitchListener(this));
     }
+
 
     /*
         hide all except switch

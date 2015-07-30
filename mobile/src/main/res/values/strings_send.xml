@@ -2,4 +2,5 @@
 <resources>
     <string name="tab1_name">send</string>
     <string name="title_activity_send">SendActivity</string>
+    <string name="radius_unit">ft</string>
 </resources>
