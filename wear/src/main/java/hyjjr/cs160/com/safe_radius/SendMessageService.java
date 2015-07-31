@@ -29,12 +29,12 @@ public class SendMessageService extends IntentService {
 
     void sendMessage(String messagePath, byte[] message) {
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
-                getConnectedNodes(Global.getGoogleApiClient()).await();
+                getConnectedNodes(((Global) getApplication()).getGoogleApiClient()).await();
 
         boolean isConnectionGood = false;
         for (Node node : nodes.getNodes()) {
             MessageApi.SendMessageResult result =
-                    Wearable.MessageApi.sendMessage(Global.getGoogleApiClient(), node.getId(), messagePath,
+                    Wearable.MessageApi.sendMessage(((Global) getApplication()).getGoogleApiClient(), node.getId(), messagePath,
                             message).await();
             if (result.getStatus().isSuccess()) {
                 isConnectionGood = true;

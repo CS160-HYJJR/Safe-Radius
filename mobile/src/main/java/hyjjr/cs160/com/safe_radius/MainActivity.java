@@ -11,9 +11,10 @@ public class MainActivity extends TabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Global.setMainActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ((Global) getApplication()).setMainActivity(this);
+
         TabHost tabHost = getTabHost();
 
         TabHost.TabSpec tab1 = tabHost.newTabSpec(getString(R.string.tab1_name))

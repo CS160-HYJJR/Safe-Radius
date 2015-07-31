@@ -3,8 +3,8 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +26,6 @@ public class SendActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
-        Global.setSendActivity(this);
 
         messages = getResources().getStringArray(R.array.message_choices);
 
@@ -36,6 +35,8 @@ public class SendActivity extends Activity {
                 android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.message_choices)));
 
         ((Spinner) findViewById(R.id.message_spinner)).setOnItemSelectedListener(new MessageSpinnerListener());
+
+        (findViewById(R.id.send_button)).setOnClickListener(new SendButtonListener());
     }
 
     /*
@@ -43,8 +44,7 @@ public class SendActivity extends Activity {
      */
     public void hideAll() {
         setVisibilityAll(View.INVISIBLE);
-        Global.getMainActivity().disableTab();
-        Log.d(TAG, "hide all");
+        ((Global) getApplication()).getMainActivity().disableTab();
     }
 
     /*
@@ -52,8 +52,7 @@ public class SendActivity extends Activity {
      */
     public void showAll() {
         setVisibilityAll(View.VISIBLE);
-        Global.getMainActivity().enableTab();
-        Log.d(TAG, "show all");
+        ((Global) getApplication()).getMainActivity().enableTab();
     }
 
     /*
@@ -83,15 +82,20 @@ public class SendActivity extends Activity {
         spinner.setAdapter(adapter);
     }
 
+    private String getCurrentMessage() {
+        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        return spinner.getSelectedItem().toString();
+    }
+
 
     public class SwitchListener implements CompoundButton.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                Global.turnOn();
+                ((Global) getApplication()).turnOn();
                 SendActivity.this.showAll();
             } else {
-                Global.turnOff();
+                ((Global) getApplication()).turnOff();
                 SendActivity.this.hideAll();
             }
         }
@@ -104,9 +108,9 @@ public class SendActivity extends Activity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (position == parent.getCount() - 1) { // last message selected
-                final EditText input = new EditText(Global.getMainActivity());
+                final EditText input = new EditText(SendActivity.this);
 
-                new AlertDialog.Builder(Global.getMainActivity())
+                new AlertDialog.Builder(SendActivity.this)
                         .setTitle("Please write the new message")
                         .setView(input)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -130,9 +134,13 @@ public class SendActivity extends Activity {
 
 
     public class SendButtonListener implements View.OnClickListener {
+        private static final String MESSAGE_PATH = "/message_mobile_to_wear";
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(SendActivity.this, SendMessageService.class);
+            intent.putExtra("message_path", MESSAGE_PATH);
+            intent.putExtra("message", getCurrentMessage());
+            startService(intent);
         }
     }
 }

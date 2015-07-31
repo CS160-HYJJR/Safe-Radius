@@ -13,18 +13,18 @@ import com.google.android.gms.wearable.Wearable;
  */
 public class Global extends Application {
     private static final String TAG = Global.class.getSimpleName();
-    private static MainActivity mainActivity;
-    private static GoogleApiClient googleApiClient;
+    private MainActivity mainActivity;
+    private GoogleApiClient googleApiClient;
 
-    public static MainActivity getMainActivity() {
+    public MainActivity getMainActivity() {
         return mainActivity;
     }
 
-    public static void setMainActivity(MainActivity mainActivity) {
-        Global.mainActivity = mainActivity;
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
-    public static GoogleApiClient getGoogleApiClient() {
+    public GoogleApiClient getGoogleApiClient() {
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(getMainActivity())
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {

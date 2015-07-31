@@ -1,5 +1,6 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -19,8 +20,12 @@ public class ReceiveMessageService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         if (messageEvent.getPath().equals(MESSAGE_PATH)) {
             final String message = new String(messageEvent.getData());
-            Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
-            Log.d(TAG, "Message received on mobile is: " + message);
+            Log.d(TAG, "receive message success messagePath: " + messageEvent.getPath()
+                    + " message: " + message);
+
+            Intent notificationIntent = new Intent(this, NotificationService.class);
+            notificationIntent.putExtra("EXTRA_PARAM1", message);
+            startService(notificationIntent);
         } else {
             super.onMessageReceived(messageEvent);
         }

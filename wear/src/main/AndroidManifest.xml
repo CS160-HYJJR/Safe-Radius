@@ -25,7 +25,7 @@
             android:exported="false" />
         <service
             android:name=".ReceiveMessageService"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
@@ -35,8 +35,7 @@
             android:exported="false"></service>
         <service
             android:name=".NotificationService"
-            android:enabled="true"
-            android:exported="true">
+            android:enabled="true">
         </service>
     </application>
 
