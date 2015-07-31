@@ -4,6 +4,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +18,29 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
 
-import java.util.concurrent.TimeUnit;
-
-
 public class RadarFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
     private static int UPDATE_INTERVAL_MS = 50;
     private static int FASTEST_INTERVAL_MS = 25;
+    private static View view;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_radar, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_radar, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+        }
+        return view;
     }
 
     @Override
@@ -43,13 +51,6 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
                 .addApi(Wearable.API)  // used for data layer API
                 .build();
         mGoogleApiClient.connect();
-        if (!mGoogleApiClient.isConnected()) {
-            ConnectionResult connectionResult = mGoogleApiClient
-                    .blockingConnect(10, TimeUnit.SECONDS);
-            if (!connectionResult.isSuccess()) {
-                Log.e(TAG, "Service failed to connect to GoogleApiClient.");
-            }
-        }
     }
 
     @Override
