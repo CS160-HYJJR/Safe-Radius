@@ -16,15 +16,23 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.wearable.Wearable;
 
 public class RadarFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
     private static int UPDATE_INTERVAL_MS = 50;
     private static int FASTEST_INTERVAL_MS = 25;
     private static View view;
+    SupportMapFragment mapFragment;
+    GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -40,6 +48,9 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         } catch (InflateException e) {
         /* map is already there, just return view as it is */
         }
+        mapFragment = ((SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map));
+        mapFragment.getMapAsync(this);
         return view;
     }
 
@@ -51,12 +62,29 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
                 .addApi(Wearable.API)  // used for data layer API
                 .build();
         mGoogleApiClient.connect();
+
+        mapFragment = ((SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map));
+        mapFragment.getMapAsync(this);
+
+        try {
+            if (map == null) {
+                map = mapFragment.getMap();
+            }
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(0, 0))
+                    .title("Marker"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mGoogleApiClient.connect();
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -106,4 +134,14 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(-33.86997, 151.2089), 19));
+        map.addMarker(new MarkerOptions()
+                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                .position(new LatLng(-33.86997, 151.2089)));
+    }
 }
