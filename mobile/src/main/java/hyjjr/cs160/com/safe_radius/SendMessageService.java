@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class SendMessageService extends IntentService {
 
     private static final String TAG = SendMessageService.class.getSimpleName();
-    private GoogleApiClient googleApiClient;
+    private GoogleApiClient mGoogleApiClient;
 
     public SendMessageService() {
         super(SendMessageService.class.getSimpleName());
@@ -28,41 +28,33 @@ public class SendMessageService extends IntentService {
         if (intent != null) {
             String messagePath = (String) intent.getExtras().get("message_path");
             String message = (String) intent.getExtras().get("message");
+            if (mGoogleApiClient == null) {
+                mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
+            }
+            mGoogleApiClient.connect();
+            if (!mGoogleApiClient.isConnected()) {
+                ConnectionResult connectionResult = mGoogleApiClient
+                        .blockingConnect(10, TimeUnit.SECONDS);
+                if (!connectionResult.isSuccess()) {
+                    Log.e(TAG, "Service failed to connect to GoogleApiClient.");
+                    return;
+                }
+            }
             sendMessage(messagePath, message.getBytes());
-        }
-    }
-
-    public void googleApiClientInit() {
-        if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
-        }
-        if (googleApiClient != null) {
-            googleApiClient.connect();
+            mGoogleApiClient.disconnect();
         }
     }
 
     void sendMessage(String messagePath, byte[] message) {
-        googleApiClientInit();
-        if (googleApiClient == null) {
-            Log.e(TAG, "Google API connection failed");
-            return;
-        }
-        if (!googleApiClient.isConnected()) {
-            ConnectionResult connectionResult = googleApiClient
-                    .blockingConnect(10, TimeUnit.SECONDS);
-            if (!connectionResult.isSuccess()) {
-                Log.e(TAG, "Service failed to connect to GoogleApiClient.");
-                return;
-            }
-        }
+
 
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
-                getConnectedNodes(googleApiClient).await();
+                getConnectedNodes(mGoogleApiClient).await();
 
         boolean isConnectionGood = false;
         for (Node node : nodes.getNodes()) {
             MessageApi.SendMessageResult result =
-                    Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), messagePath,
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
             if (result.getStatus().isSuccess()) {
                 isConnectionGood = true;
@@ -78,6 +70,5 @@ public class SendMessageService extends IntentService {
             //LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
             //bm.sendBroadcast(intent);
         }
-
     }
 }
