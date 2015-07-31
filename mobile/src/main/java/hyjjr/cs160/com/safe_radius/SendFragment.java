@@ -1,10 +1,11 @@
 package hyjjr.cs160.com.safe_radius;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,25 +19,36 @@ import android.widget.Switch;
 import java.util.ArrayList;
 
 
-public class SendActivity extends Activity {
+public class SendFragment extends Fragment {
 
-    private static final String TAG = SendActivity.class.getSimpleName();
+    private static final String TAG = SendFragment.class.getSimpleName();
     private String[] messages;
+    private View view;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_send, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         messages = getResources().getStringArray(R.array.message_choices);
+        view = getView();
+        if (view == null) {
+            assert false;
+        }
+        ((Switch) view.findViewById(R.id.switch1)).setOnCheckedChangeListener(new SwitchListener());
 
-        ((Switch) findViewById(R.id.switch1)).setOnCheckedChangeListener(new SwitchListener());
+        ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, messages));
 
-        ((Spinner) findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.message_choices)));
+        ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(new MessageSpinnerListener());
 
-        ((Spinner) findViewById(R.id.message_spinner)).setOnItemSelectedListener(new MessageSpinnerListener());
-
-        (findViewById(R.id.send_button)).setOnClickListener(new SendButtonListener());
+        (view.findViewById(R.id.send_button)).setOnClickListener(new SendButtonListener());
     }
 
     /*
@@ -44,7 +56,7 @@ public class SendActivity extends Activity {
      */
     public void hideAll() {
         setVisibilityAll(View.INVISIBLE);
-        ((Global) getApplication()).getMainActivity().disableTab();
+        //((Global) getApplication()).getMainActivity().disableTab();
     }
 
     /*
@@ -52,14 +64,14 @@ public class SendActivity extends Activity {
      */
     public void showAll() {
         setVisibilityAll(View.VISIBLE);
-        ((Global) getApplication()).getMainActivity().enableTab();
+        //((Global) getApplication()).getMainActivity().enableTab();
     }
 
     /*
         Set invisibility of All views except switch
      */
     private void setVisibilityAll(int visibility) {
-        ViewGroup viewGroup = (ViewGroup) findViewById(R.id.send_activity_layout);
+        ViewGroup viewGroup = (ViewGroup) view.findViewById(R.id.send_fragment_layout);
         for (int i = viewGroup.getChildCount() - 1; i >= 0; i--) {
             final View view = viewGroup.getChildAt(i);
             if (view != null && !(view instanceof Switch)) {
@@ -69,21 +81,21 @@ public class SendActivity extends Activity {
     }
 
     public void messageSpinnerAddItem(String item) {
-        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < sa.getCount() - 1; i++) {
             list.add((String) sa.getItem(i));
         }
         list.add(item);
         list.add((String) sa.getItem(sa.getCount() - 1));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, list);
         spinner.setAdapter(adapter);
     }
 
     private String getCurrentMessage() {
-        Spinner spinner = (Spinner) findViewById(R.id.message_spinner);
+        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
         return spinner.getSelectedItem().toString();
     }
 
@@ -92,31 +104,30 @@ public class SendActivity extends Activity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                ((Global) getApplication()).turnOn();
-                SendActivity.this.showAll();
+                //((Global) getApplication()).turnOn();
+                //getTabWidget().setEnabled(false);
+                SendFragment.this.showAll();
             } else {
-                ((Global) getApplication()).turnOff();
-                SendActivity.this.hideAll();
+                //((Global) getApplication()).turnOff();
+                SendFragment.this.hideAll();
             }
         }
     }
 
 
     public class MessageSpinnerListener implements AdapterView.OnItemSelectedListener {
-        private final String TAG = MessageSpinnerListener.class.getSimpleName();
-
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (position == parent.getCount() - 1) { // last message selected
-                final EditText input = new EditText(SendActivity.this);
+                final EditText input = new EditText(getActivity());
 
-                new AlertDialog.Builder(SendActivity.this)
+                new AlertDialog.Builder(getActivity())
                         .setTitle("Please write the new message")
                         .setView(input)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String newMessage = input.getText().toString();
-                                SendActivity.this.messageSpinnerAddItem(newMessage);
+                                SendFragment.this.messageSpinnerAddItem(newMessage);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -137,10 +148,10 @@ public class SendActivity extends Activity {
         private static final String MESSAGE_PATH = "/message_mobile_to_wear";
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(SendActivity.this, SendMessageService.class);
+            Intent intent = new Intent(getActivity(), SendMessageService.class);
             intent.putExtra("message_path", MESSAGE_PATH);
             intent.putExtra("message", getCurrentMessage());
-            startService(intent);
+            getActivity().startService(intent);
         }
     }
 }

@@ -20,16 +20,12 @@ public class NotificationService extends Service {
         CharSequence message = intent.getExtras().getCharSequence("EXTRA_PARAM1");
         Log.d(TAG, "notification " + message);
         Notification.Builder notificationBuilder =
-                new Notification.Builder(((Global) getApplication()).getMainActivity())
+                new Notification.Builder(getApplicationContext())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(message)
-                        .setContentText(message)
+                        .setContentText(message + "test")
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setAutoCancel(true)
-                        .setShowWhen(true)
-                        .setOngoing(true)
-                        .setWhen(System.currentTimeMillis())
-                        .setCategory(Notification.CATEGORY_ALARM);
+                        .setAutoCancel(true);
         Notification notification = notificationBuilder.build();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
         startForeground(NOTIFICATION_ID, notification);
