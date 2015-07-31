@@ -52,22 +52,6 @@ public class SendFragment extends Fragment {
     }
 
     /*
-        hide all except switch
-     */
-    public void hideAll() {
-        setVisibilityAll(View.INVISIBLE);
-        //((Global) getApplication()).getMainActivity().disableTab();
-    }
-
-    /*
-        show all except switch
-     */
-    public void showAll() {
-        setVisibilityAll(View.VISIBLE);
-        //((Global) getApplication()).getMainActivity().enableTab();
-    }
-
-    /*
         Set invisibility of All views except switch
      */
     private void setVisibilityAll(int visibility) {
@@ -104,12 +88,11 @@ public class SendFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                //((Global) getApplication()).turnOn();
-                //getTabWidget().setEnabled(false);
-                SendFragment.this.showAll();
+                setVisibilityAll(View.VISIBLE);
+                getActivity().findViewById(android.R.id.tabs).setEnabled(true);
             } else {
-                //((Global) getApplication()).turnOff();
-                SendFragment.this.hideAll();
+                setVisibilityAll(View.INVISIBLE);
+                getActivity().findViewById(android.R.id.tabs).setEnabled(false);
             }
         }
     }

@@ -28,12 +28,13 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
-    private static int UPDATE_INTERVAL_MS = 50;
-    private static int FASTEST_INTERVAL_MS = 25;
+    private static int UPDATE_INTERVAL_MS = 1000;
+    private static int FASTEST_INTERVAL_MS = 250;
     private static View view;
     SupportMapFragment mapFragment;
     GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
+    private LatLng currentlocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +61,8 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
 
@@ -95,7 +98,10 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onLocationChanged(Location location) {
-
+        currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                currentlocation, 20
+        ));
     }
 
     @Override
@@ -138,10 +144,12 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
     public void onMapReady(GoogleMap googleMap) {
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(-33.86997, 151.2089), 19));
-        map.addMarker(new MarkerOptions()
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(-33.86997, 151.2089)));
+        if (currentlocation != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    currentlocation, 19));
+            map.addMarker(new MarkerOptions()
+                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                    .position(currentlocation));
+        }
     }
 }

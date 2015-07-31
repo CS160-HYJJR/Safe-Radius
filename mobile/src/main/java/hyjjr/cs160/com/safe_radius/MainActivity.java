@@ -8,7 +8,7 @@ public class MainActivity extends FragmentActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private FragmentTabHost mTabHost;
-
+    private double safeRadius; //unit feet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,23 +21,15 @@ public class MainActivity extends FragmentActivity {
                 SendFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator(getString(R.string.tab2_name)),
                 RadarFragment.class, null);
-
-        /*
-        ((Global) getApplication()).setMainActivity(this);
-
-        TabHost tabHost = getTabHost();
-
-        TabHost.TabSpec tab1 = tabHost.newTabSpec(getString(R.string.tab1_name))
-                .setIndicator(getString(R.string.tab1_name))
-                .setContent(new Intent(this, SendFragment.class));
-        TabHost.TabSpec tab2 = tabHost.newTabSpec(getString(R.string.tab2_name))
-                .setIndicator(getString(R.string.tab2_name))
-                .setContent(new Intent(this, RadarFragment.class));
-
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
-
-        */
     }
+
+    public double getSafeRadius() {
+        return safeRadius;
+    }
+
+    public void setSafeRadius(double radius) {
+        safeRadius = radius;
+    }
+
 
 }
