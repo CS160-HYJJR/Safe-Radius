@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.wearable.Wearable;
@@ -28,8 +29,8 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
-    private static int UPDATE_INTERVAL_MS = 1000;
-    private static int FASTEST_INTERVAL_MS = 250;
+    private static int UPDATE_INTERVAL_MS = 2000;
+    private static int FASTEST_INTERVAL_MS = 1000;
     private static View view;
     SupportMapFragment mapFragment;
     GoogleMap map;
@@ -72,7 +73,7 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
         try {
             if (map == null) {
-                map = mapFragment.getMap();
+                mapFragment.getMapAsync(this);
             }
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             map.addMarker(new MarkerOptions()
@@ -92,16 +93,16 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onPause() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
         super.onPause();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "phone lat: " + location.getLatitude() + " lon: " + location.getLongitude());
         currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                currentlocation, 20
-        ));
+        setupMap();
     }
 
     @Override
@@ -142,14 +143,27 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        if (currentlocation != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    currentlocation, 19));
-            map.addMarker(new MarkerOptions()
-                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                    .position(currentlocation));
-        }
+        map = googleMap;
     }
+
+    public void setupMap() {
+        if (currentlocation != null) {
+            map.clear();
+            float[] distance = new float[1];
+            LatLng previousLocation = map.getCameraPosition().target;
+            Location.distanceBetween(previousLocation.latitude, previousLocation.longitude,
+                    currentlocation.latitude, currentlocation.longitude, distance);
+            if (distance[0] > 200) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        currentlocation, 19));
+            }
+            map.addCircle(new CircleOptions()
+                    .center(currentlocation)
+                    .radius(((MainActivity) getActivity()).getSafeRadiusInMeter()));
+            map.setMyLocationEnabled(true);
+            map.setIndoorEnabled(true);
+        }
+
+    }
+
 }

@@ -8,32 +8,14 @@
     tools:deviceIds="wear_round">
 
     <ImageButton
-        android:id="@+id/ring_button"
+        android:id="@+id/send_button"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_weight="1"
-        android:background="@drawable/watch_ring"
-        android:clickable="true"
-        android:contentDescription="" />
-
-    <ImageButton
-        android:id="@+id/send_button"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/watch_send"
-        android:clickable="true"
-        android:contentDescription="" />
-
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/watch_back"
+        android:background="@drawable/send_button"
         android:clickable="true"
         android:contentDescription="" />
 </LinearLayout>

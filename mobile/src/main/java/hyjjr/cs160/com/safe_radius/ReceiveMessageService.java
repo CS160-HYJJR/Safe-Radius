@@ -1,5 +1,6 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -12,8 +13,10 @@ import com.google.android.gms.wearable.WearableListenerService;
  */
 public class ReceiveMessageService extends WearableListenerService {
 
+    public static final String SEND_MESSAGE_TO_ACTIVITY_BROADCAST = "SEND_MESSAGE_TO_ACTIVITY_BROADCAST";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
+    private static final int NOTIFICATION_ID = 0;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -21,6 +24,25 @@ public class ReceiveMessageService extends WearableListenerService {
             final String message = new String(messageEvent.getData());
             Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
             Log.d(TAG, "Message received on mobile is: " + message);
+
+
+            Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alertIntent.putExtra("title", "Message From your child");
+            alertIntent.putExtra("text", message);
+            startActivity(alertIntent);
+
+            // start Vibration
+            Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
+            startService(vibrateIntent);
+            /*
+            Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
+            alertIntent.putExtra("title", "Message From your child");
+            alertIntent.putExtra("text", message);
+            startService(notificationIntent);*/
+
         } else {
             super.onMessageReceived(messageEvent);
         }

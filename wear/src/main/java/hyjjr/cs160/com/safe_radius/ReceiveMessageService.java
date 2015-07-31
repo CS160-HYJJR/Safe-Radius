@@ -20,12 +20,26 @@ public class ReceiveMessageService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         if (messageEvent.getPath().equals(MESSAGE_PATH)) {
             final String message = new String(messageEvent.getData());
-            Log.d(TAG, "receive message success messagePath: " + messageEvent.getPath()
-                    + " message: " + message);
+            Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
+            Log.d(TAG, "Message received on mobile is: " + message);
 
-            Intent notificationIntent = new Intent(this, NotificationService.class);
-            notificationIntent.putExtra("EXTRA_PARAM1", message);
-            startService(notificationIntent);
+
+            Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alertIntent.putExtra("title", "Message From your mom");
+            alertIntent.putExtra("text", message);
+            startActivity(alertIntent);
+
+            // start Vibration
+            Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
+            startService(vibrateIntent);
+            /*
+            Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
+            alertIntent.putExtra("title", "Message From your mom");
+            alertIntent.putExtra("text", message);
+            startService(notificationIntent);*/
         } else {
             super.onMessageReceived(messageEvent);
         }

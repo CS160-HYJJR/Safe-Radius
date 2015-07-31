@@ -12,6 +12,7 @@ public class NotificationService extends IntentService {
     public NotificationService() {
         super(NotificationService.class.getSimpleName());
     }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         CharSequence title = intent.getExtras().getCharSequence("title");

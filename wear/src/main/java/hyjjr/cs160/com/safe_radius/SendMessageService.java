@@ -47,7 +47,6 @@ public class SendMessageService extends IntentService {
 
     void sendMessage(String messagePath, byte[] message) {
 
-
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
                 getConnectedNodes(mGoogleApiClient).await();
 
@@ -66,9 +65,6 @@ public class SendMessageService extends IntentService {
 
         if (!isConnectionGood) {
             Log.e(TAG, "send message failed");
-            //Intent intent = new Intent(BROADCAST);
-            //LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-            //bm.sendBroadcast(intent);
         }
     }
 }

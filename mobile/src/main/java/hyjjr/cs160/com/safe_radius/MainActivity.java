@@ -31,5 +31,8 @@ public class MainActivity extends FragmentActivity {
         safeRadius = radius;
     }
 
+    public double getSafeRadiusInMeter() {
+        return safeRadius * 0.3048;
+    }
 
 }

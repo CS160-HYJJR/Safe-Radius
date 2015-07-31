@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">Safe_Radius</string>
-    <string name="hello_round">Hello Round World!</string>
-    <string name="hello_square">Hello Square World!</string>
     <string name="title_activity_alert">AlertActivity</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
 </resources>
