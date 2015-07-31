@@ -3,7 +3,6 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,13 +17,12 @@ import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class SendFragment extends Fragment {
@@ -157,24 +155,21 @@ public class SendFragment extends Fragment {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
         mGoogleApiClient.connect();
         Wearable.NodeApi.addListener(mGoogleApiClient, connectionListener);
+
+        // check connection
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(
+                new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                    @Override
+                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                        if (getConnectedNodesResult.getNodes().isEmpty()) { // connection failed
+                            turnOff();
+                            noConnectionAlert();
+                        }
+                    }
+                }
+        );
     }
 
-    private boolean isConnected() throws ExecutionException, InterruptedException {
-        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
-            private Boolean result;
-
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                GoogleApiClient mGoogleApiClient;
-                mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
-                mGoogleApiClient.connect();
-                List<Node> nodes = Wearable.NodeApi.
-                        getConnectedNodes(mGoogleApiClient).await().getNodes();
-                return !nodes.isEmpty();
-            }
-        };
-        return task.execute().get();
-    }
 
     /*
         Set invisibility of All views except switch
