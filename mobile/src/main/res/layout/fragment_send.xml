@@ -11,18 +11,9 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:showText="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
-        android:checked="false"
-        android:enabled="true"
-        android:switchMinWidth="70dp"
-        android:textOff=""
-        android:textOn=""
-        android:textSize="40sp"
-        android:thumb="@drawable/switch_thumb"
-        android:thumbTextPadding="25dp"
-        android:track="@drawable/switch_track" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/title1"
