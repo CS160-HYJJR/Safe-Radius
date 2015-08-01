@@ -6,6 +6,10 @@ import android.util.Log;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
+
 /**
  * Wearable listener service for data layer messages
  * https://github.com/LarkspurCA/WearableMessage/blob/master/wear/src/main/java/com/androidweardocs/wearablemessage/ListenerService.java
@@ -15,6 +19,7 @@ public class ReceiveMessageService extends WearableListenerService {
 
     public static final String SEND_MESSAGE_TO_ACTIVITY_BROADCAST = "SEND_MESSAGE_TO_ACTIVITY_BROADCAST";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
+    private static final String LOCATION_PATH = "/location_wera_to_mobile";
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 0;
 
@@ -42,6 +47,16 @@ public class ReceiveMessageService extends WearableListenerService {
             notificationIntent.putExtra("title", "Message From your child");
             notificationIntent.putExtra("text", message);
             startService(notificationIntent);
+
+        } else if (messageEvent.getPath().equals(LOCATION_PATH)) {
+            DoubleBuffer doubleBuf =
+                    ByteBuffer.wrap(messageEvent.getData())
+                            .order(ByteOrder.BIG_ENDIAN)
+                            .asDoubleBuffer();
+            double[] positions = new double[doubleBuf.remaining()];
+            Log.d(TAG, "Location path received on mobile is: " + messageEvent.getPath());
+            Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt" + positions[2]);
+
 
         } else {
             super.onMessageReceived(messageEvent);

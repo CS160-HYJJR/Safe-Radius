@@ -29,7 +29,6 @@ public class SendFragment extends Fragment {
 
     private static final String TAG = SendFragment.class.getSimpleName();
     GoogleApiClient mGoogleApiClient;
-    private String[] messages;
     private View view;
     private NodeApi.NodeListener connectionListener = new NodeApi.NodeListener() {
 
@@ -55,7 +54,9 @@ public class SendFragment extends Fragment {
     };
     private AdapterView.OnItemSelectedListener messageSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+            ((Global) getActivity().getApplication()).setMessageSelected(position);
+
             if (position == parent.getCount() - 1) { // last message selected
                 final EditText input = new EditText(getActivity());
 
@@ -66,6 +67,9 @@ public class SendFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String newMessage = input.getText().toString();
                                 SendFragment.this.messageSpinnerAddItem(newMessage);
+                                ((Global) getActivity().getApplication()).setMessageSelected(position);
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.message_spinner)).setSelection(
+                                        ((Global) getActivity().getApplication()).getMessageSelected());
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -81,16 +85,19 @@ public class SendFragment extends Fragment {
 
         }
     };
+
     private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            ((MainActivity) getActivity()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
+            ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
+            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
         }
     };
+
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
         private static final String MESSAGE_PATH = "/message_mobile_to_wear";
 
@@ -98,7 +105,7 @@ public class SendFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), SendMessageService.class);
             intent.putExtra("message_path", MESSAGE_PATH);
-            intent.putExtra("message", getCurrentMessage());
+            intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage());
             getActivity().startService(intent);
         }
     };
@@ -114,7 +121,6 @@ public class SendFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        messages = getResources().getStringArray(R.array.message_choices);
         view = getView();
         if (view == null) {
             assert false;
@@ -122,11 +128,12 @@ public class SendFragment extends Fragment {
         ((Switch) view.findViewById(R.id.switch1)).setOnCheckedChangeListener(switchListener);
 
         ((Spinner) view.findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
-        ((Spinner) view.findViewById(R.id.radius_spinner)).setSelection(2);
+        ((Spinner) view.findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, messages));
+                android.R.layout.simple_spinner_dropdown_item, ((Global) getActivity().getApplication()).getMessages()));
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
+        ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
 
         (view.findViewById(R.id.send_button)).setOnClickListener(sendButtonListener);
 
@@ -198,14 +205,10 @@ public class SendFragment extends Fragment {
         }
         list.add(item);
         list.add((String) sa.getItem(sa.getCount() - 1));
+        ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, list);
         spinner.setAdapter(adapter);
-    }
-
-    private String getCurrentMessage() {
-        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
-        return spinner.getSelectedItem().toString();
     }
 
     public void noConnectionAlert() {

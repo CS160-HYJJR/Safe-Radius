@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 public class SendMessageService extends IntentService {
 
+    public static final String LOCATION_PATH = "/location_wear_to_mobile";
+    public static final String MESSAGE_PATH = "/message_wear_to_mobile";
+
     private static final String TAG = SendMessageService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
 
@@ -27,7 +30,7 @@ public class SendMessageService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             String messagePath = (String) intent.getExtras().get("message_path");
-            String message = (String) intent.getExtras().get("message");
+            byte[] message = (byte[]) intent.getExtras().get("message");
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
             }
@@ -40,7 +43,7 @@ public class SendMessageService extends IntentService {
                     return;
                 }
             }
-            sendMessage(messagePath, message.getBytes());
+            sendMessage(messagePath, message);
             mGoogleApiClient.disconnect();
         }
     }

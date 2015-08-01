@@ -8,4 +8,5 @@
     <color name="yellow">#ffff00</color>
     <color name="purple">#ff00ff</color>
     <color name="cyan">#00ffff</color>
+    <color name="grey">#888888</color>
 </resources>

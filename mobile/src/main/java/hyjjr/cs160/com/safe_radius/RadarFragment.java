@@ -29,8 +29,8 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
-    private static int UPDATE_INTERVAL_MS = 2000;
-    private static int FASTEST_INTERVAL_MS = 1000;
+    private static int UPDATE_INTERVAL_MS = 5000;
+    private static int FASTEST_INTERVAL_MS = 2500;
     private static View view;
     SupportMapFragment mapFragment;
     GoogleMap map;
@@ -159,7 +159,7 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
             }
             map.addCircle(new CircleOptions()
                     .center(currentlocation)
-                    .radius(((MainActivity) getActivity()).getSafeRadiusInMeter()));
+                    .radius(((Global) getActivity().getApplication()).getSafeRadiusInMeter()));
             map.setMyLocationEnabled(true);
             map.setIndoorEnabled(true);
         }

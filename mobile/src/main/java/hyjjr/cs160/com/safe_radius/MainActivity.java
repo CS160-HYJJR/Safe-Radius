@@ -8,7 +8,7 @@ public class MainActivity extends FragmentActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private FragmentTabHost mTabHost;
-    private double safeRadius; //unit feet
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,16 +24,5 @@ public class MainActivity extends FragmentActivity {
                 RadarFragment.class, null);
     }
 
-    public double getSafeRadius() {
-        return safeRadius;
-    }
-
-    public void setSafeRadius(double radius) {
-        safeRadius = radius;
-    }
-
-    public double getSafeRadiusInMeter() {
-        return safeRadius * 0.3048;
-    }
 
 }

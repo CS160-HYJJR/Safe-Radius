@@ -15,19 +15,33 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
 
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName() + "001";
     private static int UPDATE_INTERVAL_MS = 1000;
     private static int FASTEST_INTERVAL_MS = 250;
     private GoogleApiClient mGoogleApiClient;
+    private View.OnClickListener sendButtonListener = new View.OnClickListener() {
+        private static final String MESSAGE = "I am coming back";
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+            intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+            intent.putExtra("message", MESSAGE.getBytes());
+            startService(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.send_button).setOnClickListener(new SendButtonListener());
+        findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -37,7 +51,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .build();
         mGoogleApiClient.connect();
     }
-
 
     @Override
     public void onResume() {
@@ -56,7 +69,30 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Build a request for continual location updates
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         // Send request for location updates
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        Log.d(TAG, "request success");
+
+        // Build a request for continual location updates
+        /*
+        LocationRequest locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL_MS)
+                .setFastestInterval(FASTEST_INTERVAL_MS);
+
+        // Send request for location updates
+        LocationServices.FusedLocationApi
+                .requestLocationUpdates(mGoogleApiClient,
+                        locationRequest, this)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        if (status.getStatus().isSuccess()) {
+                            Log.d(TAG, "Location Successfully requested");
+                        } else {
+                            Log.e(TAG, status.getStatusMessage());
+                        }
+                    }
+                });*/
     }
 
     @Override
@@ -72,6 +108,18 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+        double[] positions = new double[]{location.getLatitude(),
+                location.getLongitude(), location.getAltitude()};
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(positions.length * 8);
+        DoubleBuffer intBuffer = byteBuffer.asDoubleBuffer();
+        intBuffer.put(positions);
+
+        byte[] positionByte = byteBuffer.array();
+        Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+        intent.putExtra("message_path", SendMessageService.LOCATION_PATH);
+        intent.putExtra("message", positionByte);
+        startService(intent);
     }
 
     @Override
@@ -88,7 +136,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void onProviderDisabled(String provider) {
 
     }
-
 
     public void NoConnectionAlert() {
         String title = "Safe Radius";
@@ -122,20 +169,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         alertIntent.putExtra("title", title);
         alertIntent.putExtra("text", text);
         startService(notificationIntent);*/
-    }
-
-
-    public class SendButtonListener implements View.OnClickListener {
-        private static final String MESSAGE_PATH = "/message_wear_to_mobile";
-        private static final String MESSAGE = "I am coming back";
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, SendMessageService.class);
-            intent.putExtra("message_path", MESSAGE_PATH);
-            intent.putExtra("message", MESSAGE);
-            startService(intent);
-        }
     }
 
 
