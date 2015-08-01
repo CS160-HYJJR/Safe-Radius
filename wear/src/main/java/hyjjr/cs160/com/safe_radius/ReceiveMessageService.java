@@ -35,11 +35,11 @@ public class ReceiveMessageService extends WearableListenerService {
             // start Vibration
             Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
             startService(vibrateIntent);
-            /*
+
             Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
             alertIntent.putExtra("title", "Message From your mom");
             alertIntent.putExtra("text", message);
-            startService(notificationIntent);*/
+            startService(notificationIntent);
         } else {
             super.onMessageReceived(messageEvent);
         }
