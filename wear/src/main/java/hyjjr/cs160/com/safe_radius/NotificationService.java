@@ -14,16 +14,18 @@ public class NotificationService extends IntentService {
     }
     @Override
     protected void onHandleIntent(Intent intent) {
-        CharSequence title = intent.getExtras().getCharSequence("title");
-        CharSequence text = intent.getExtras().getCharSequence("text");
-        Notification.Builder notificationBuilder =
-                new Notification.Builder(getApplicationContext())
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(text)
-                        .setPriority(Notification.PRIORITY_MAX)
-                        .setAutoCancel(true);
-        Notification notification = notificationBuilder.build();
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
+        if (intent != null) {
+            CharSequence title = intent.getExtras().getCharSequence("title");
+            CharSequence text = intent.getExtras().getCharSequence("text");
+            Notification.Builder notificationBuilder =
+                    new Notification.Builder(getApplicationContext())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(title)
+                            .setContentText(text)
+                            .setPriority(Notification.PRIORITY_MAX)
+                            .setAutoCancel(true);
+            Notification notification = notificationBuilder.build();
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
+        }
     }
 }

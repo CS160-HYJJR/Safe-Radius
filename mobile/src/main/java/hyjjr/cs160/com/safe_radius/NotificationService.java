@@ -16,18 +16,21 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "phone notification");
-        CharSequence title = intent.getExtras().getCharSequence("title");
-        CharSequence text = intent.getExtras().getCharSequence("text");
-        Notification.Builder notificationBuilder =
-                new Notification.Builder(getApplicationContext())
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(text)
-                        .setPriority(Notification.PRIORITY_MAX);
-        Notification notification = notificationBuilder.build();
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
+        if (intent != null) {
+            Log.d(TAG, "phone notification");
+            CharSequence title = intent.getExtras().getCharSequence("title");
+            CharSequence text = intent.getExtras().getCharSequence("text");
+            Notification.Builder notificationBuilder =
+                    new Notification.Builder(getApplicationContext())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(title)
+                            .setContentText(text)
+                            .setPriority(Notification.PRIORITY_MAX);
+            Notification notification = notificationBuilder.build();
+            notification.flags |= Notification.FLAG_ONGOING_EVENT;
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
+            startForeground(NOTIFICATION_ID, notification);
+        }
     }
 }

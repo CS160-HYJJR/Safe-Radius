@@ -26,6 +26,7 @@ public class AlertActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        dialog.dismiss();
                         AlertActivity.this.finish();
                     }
                 });
@@ -33,6 +34,7 @@ public class AlertActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        dialog.dismiss();
                         AlertActivity.this.finish();
                         startActivity(new Intent(AlertActivity.this, MainActivity.class));
                     }
