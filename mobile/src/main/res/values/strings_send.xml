@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tab1_name">Send</string>
+    <string name="tab1_name">Main</string>
     <string name="title_activity_send">SendActivity</string>
     <string name="radius_unit">ft</string>
 </resources>

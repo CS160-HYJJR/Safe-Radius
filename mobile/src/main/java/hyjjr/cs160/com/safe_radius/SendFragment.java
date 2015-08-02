@@ -131,7 +131,7 @@ public class SendFragment extends Fragment {
         ((Spinner) view.findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, ((Global) getActivity().getApplication()).getMessages()));
+                android.R.layout.simple_spinner_dropdown_item, ((Global) getActivity().getApplication()).getMessages())); //ArrayAdapter<String>?
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
         ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
 
@@ -199,14 +199,14 @@ public class SendFragment extends Fragment {
     public void messageSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>(); //ArrayAdapter<String>?
         for (int i = 0; i < sa.getCount() - 1; i++) {
             list.add((String) sa.getItem(i));
         }
         list.add(item);
         list.add((String) sa.getItem(sa.getCount() - 1));
         ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), //ArrayAdapter<String>?
                 android.R.layout.simple_spinner_item, list);
         spinner.setAdapter(adapter);
     }
