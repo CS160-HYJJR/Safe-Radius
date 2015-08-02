@@ -147,6 +147,7 @@ public class SendFragment extends Fragment {
         ((Global) getActivity().getApplication()).turnOff();
         ((Switch) view.findViewById(R.id.switch1)).setChecked(false);
         setVisibilityAll(View.INVISIBLE);
+        getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(false);
         if (mGoogleApiClient != null) {
             Wearable.NodeApi.removeListener(mGoogleApiClient, connectionListener);
@@ -158,6 +159,7 @@ public class SendFragment extends Fragment {
         ((Global) getActivity().getApplication()).turnOn();
         ((Switch) view.findViewById(R.id.switch1)).setChecked(true);
         setVisibilityAll(View.VISIBLE);
+        getActivity().findViewById(android.R.id.tabs).setVisibility(view.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(true);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
         mGoogleApiClient.connect();
