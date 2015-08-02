@@ -22,7 +22,7 @@ public class AlertActivity extends Activity {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "DISMISS",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DISMISS",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -30,7 +30,7 @@ public class AlertActivity extends Activity {
                         AlertActivity.this.finish();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "GO TO APP",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
