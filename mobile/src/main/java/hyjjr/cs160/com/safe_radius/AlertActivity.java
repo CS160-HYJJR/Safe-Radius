@@ -1,10 +1,10 @@
 package hyjjr.cs160.com.safe_radius;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
+        import android.app.Activity;
+        import android.app.AlertDialog;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.os.Bundle;
 
 public class AlertActivity extends Activity {
 
@@ -22,7 +22,7 @@ public class AlertActivity extends Activity {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DISMISS",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -30,15 +30,16 @@ public class AlertActivity extends Activity {
                         AlertActivity.this.finish();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Go to App",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         dialog.dismiss();
-                        AlertActivity.this.finish();
                         startActivity(new Intent(AlertActivity.this, MainActivity.class));
+                        AlertActivity.this.finish();
                     }
                 });
         alertDialog.show();
     }
 }
+

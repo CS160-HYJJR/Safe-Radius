@@ -28,7 +28,7 @@ public class ReceiveMessageService extends WearableListenerService {
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            alertIntent.putExtra("title", "Message From your mom");
+            alertIntent.putExtra("title", "Message from your mom");
             alertIntent.putExtra("text", message);
             startActivity(alertIntent);
 
@@ -37,7 +37,7 @@ public class ReceiveMessageService extends WearableListenerService {
             startService(vibrateIntent);
 
             Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
-            notificationIntent.putExtra("title", "Message From your mom");
+            notificationIntent.putExtra("title", "Message from your mom");
             notificationIntent.putExtra("text", message);
             startService(notificationIntent);
         } else {

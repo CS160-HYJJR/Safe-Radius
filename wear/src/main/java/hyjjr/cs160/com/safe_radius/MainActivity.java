@@ -26,7 +26,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static int FASTEST_INTERVAL_MS = 250;
     private GoogleApiClient mGoogleApiClient;
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
-        private static final String MESSAGE = "I am coming back";
+        private static final String MESSAGE = "Come find me";
 
         @Override
         public void onClick(View v) {
@@ -67,13 +67,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onConnected(Bundle bundle) {
         // Build a request for continual location updates
+        /*
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         // Send request for location updates
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         Log.d(TAG, "request success");
 
         // Build a request for continual location updates
-        /*
         LocationRequest locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL_MS)

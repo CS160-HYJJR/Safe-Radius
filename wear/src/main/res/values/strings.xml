@@ -6,4 +6,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="msg_sent">Message Sent</string>
+    <string name="msg_failed">Message Failed</string>
 </resources>
