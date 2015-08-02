@@ -59,8 +59,6 @@
             android:label="@string/title_activity_alert"
             android:theme="@android:style/Theme.NoDisplay" />
 
-        <service android:name=".NotificationService" />
-
         <service android:name=".VibrationService" />
 
     </application>
