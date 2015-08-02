@@ -2,7 +2,10 @@ package hyjjr.cs160.com.safe_radius;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,10 +60,30 @@ public class SendMessageService extends IntentService {
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
             if (result.getStatus().isSuccess()) {
+                Handler handler = new Handler(Looper.getMainLooper());
+
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 isConnectionGood = true;
                 Log.d(TAG, "send message success messagePath: " + messagePath
                         + " message: " + new String(message, StandardCharsets.UTF_8)
                         + " node: " + node.getDisplayName());
+            } else {
+                Handler handler = new Handler(Looper.getMainLooper());
+
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Message Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
 

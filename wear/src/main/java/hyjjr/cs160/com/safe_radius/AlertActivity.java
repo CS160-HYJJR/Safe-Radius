@@ -30,7 +30,7 @@ public class AlertActivity extends Activity {
                         AlertActivity.this.finish();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Go to App",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

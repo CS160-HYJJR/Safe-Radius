@@ -30,24 +30,17 @@ public class ReceiveMessageService extends WearableListenerService {
             Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
             Log.d(TAG, "Message received on mobile is: " + message);
 
-
             Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            alertIntent.putExtra("title", "Message From your child");
+            alertIntent.putExtra("title", "Message from your child");
             alertIntent.putExtra("text", message);
             startActivity(alertIntent);
 
             // start Vibration
             Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
             startService(vibrateIntent);
-
-            Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
-            notificationIntent.putExtra("title", "Message From your child");
-            notificationIntent.putExtra("text", message);
-            startService(notificationIntent);
 
         } else if (messageEvent.getPath().equals(LOCATION_PATH)) {
             DoubleBuffer doubleBuf =
