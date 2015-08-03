@@ -1,5 +1,6 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -157,9 +158,17 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         currentlocation, 19));
             }
+            double safeRadius = ((Global) getActivity().getApplication()).getSafeRadiusInMeter();
             map.addCircle(new CircleOptions()
                     .center(currentlocation)
-                    .radius(((Global) getActivity().getApplication()).getSafeRadiusInMeter()));
+                    .radius(safeRadius));
+
+            // Fake child position
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(currentlocation.latitude - 0.0001, currentlocation.longitude - 0.0001))
+                    .fillColor(Color.RED)
+                    .strokeColor(Color.RED)
+                    .radius(23 / map.getCameraPosition().zoom));
             map.setMyLocationEnabled(true);
             map.setIndoorEnabled(true);
         }
