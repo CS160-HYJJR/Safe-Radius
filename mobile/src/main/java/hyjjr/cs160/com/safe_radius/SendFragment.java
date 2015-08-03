@@ -228,7 +228,7 @@ public class SendFragment extends Fragment {
 
     public void lossConnectionAlert() {
         String title = "Safe Radius";
-        String text = "Warning: Your child is out of the range! Please go to their last " +
+        String text = "Warning: Lose signal to your child's watch. Please go to their last " +
                 "known location by following the radar to try and restablish connection";
         Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

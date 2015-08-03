@@ -1,5 +1,6 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,11 +33,22 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
     private static final String TAG = RadarFragment.class.getSimpleName();
     private static int UPDATE_INTERVAL_MS = 5000;
     private static int FASTEST_INTERVAL_MS = 2500;
+    private static final int zoomLevel = 19;
+
     private static View view;
     SupportMapFragment mapFragment;
     GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
-    private LatLng currentlocation;
+    private LatLng currentLoc;
+    private LatLng childLoc;
+
+    private double lonChildVelocity = 0.000005; // in unit of degree per second
+    private double latChildVelocity = 0.000005; // in unit of degree per second
+    private RepeatAction childChangeLoc;
+    private boolean hasAlerted; // Once alert once every time open the map.
+    // Actually, we should detect the movement once the app is opened, not only in the map fragment only.
+    // change later.
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,9 +113,62 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "phone lat: " + location.getLatitude() + " lon: " + location.getLongitude());
-        currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
+        // Init child position
+        if (currentLoc == null || currentLoc.equals(new LatLng(0, 0))) {
+            Log.d(TAG, "child");
+            childLoc = new LatLng(location.getLatitude(), location.getLongitude());
+            if (childChangeLoc != null) {
+                childChangeLoc.stopUpdates();
+            }
+            childChangeLoc = new RepeatAction(new Runnable() {
+                @Override
+                public void run() {
+                    childLoc = new LatLng(childLoc.latitude- latChildVelocity, childLoc.longitude-lonChildVelocity);
+                }
+            });
+            childChangeLoc.startUpdates();
+        }
+
+        // Alert if child is too far
+        boolean isDialogOpened;
+        float[] distance = new float[1];
+        if (currentLoc != null && childLoc != null) {
+            Location.distanceBetween(childLoc.latitude, childLoc.longitude,
+                    currentLoc.latitude, currentLoc.longitude, distance);
+            if (distance[0] > ((Global) getActivity().getApplication()).getSafeRadiusInMeter()) {
+                if (!hasAlerted) {
+                    hasAlerted = true;
+                    String title = "Safe Radius";
+                    String text = "Warning: Your child has been out of safe radius. Please go and find your child.";
+                    Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    alertIntent.putExtra("title", title);
+                    alertIntent.putExtra("text", text);
+                    startActivity(alertIntent);
+
+                    // start Vibration
+                    Intent vibrateIntent = new Intent(getActivity(), VibrationService.class);
+                    getActivity().startService(vibrateIntent);
+                }
+            }
+        }
+
+        Log.d(TAG, "parent lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+        currentLoc = new LatLng(location.getLatitude(), location.getLongitude());
+        if (childLoc != null) {
+            Log.d(TAG, "child lat: " + childLoc.latitude + " lon: " + childLoc.longitude);
+        }
         setupMap();
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hasAlerted = false;
     }
 
     @Override
@@ -148,27 +213,30 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
     }
 
     public void setupMap() {
-        if (currentlocation != null) {
+        if (currentLoc != null) {
             map.clear();
             float[] distance = new float[1];
             LatLng previousLocation = map.getCameraPosition().target;
             Location.distanceBetween(previousLocation.latitude, previousLocation.longitude,
-                    currentlocation.latitude, currentlocation.longitude, distance);
+                    currentLoc.latitude, currentLoc.longitude, distance);
             if (distance[0] > 200) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        currentlocation, 19));
+                        currentLoc, zoomLevel));
             }
             double safeRadius = ((Global) getActivity().getApplication()).getSafeRadiusInMeter();
             map.addCircle(new CircleOptions()
-                    .center(currentlocation)
+                    .center(currentLoc)
                     .radius(safeRadius));
 
             // Fake child position
-            map.addCircle(new CircleOptions()
-                    .center(new LatLng(currentlocation.latitude - 0.0001, currentlocation.longitude - 0.0001))
-                    .fillColor(Color.RED)
-                    .strokeColor(Color.RED)
-                    .radius(23 / map.getCameraPosition().zoom));
+            if (childLoc != null) {
+                Log.d(TAG, "child red dot");
+                map.addCircle(new CircleOptions()
+                        .center(childLoc)
+                        .fillColor(Color.RED)
+                        .strokeColor(Color.RED)
+                        .radius(23 / map.getCameraPosition().zoom));
+            }
             map.setMyLocationEnabled(true);
             map.setIndoorEnabled(true);
         }
