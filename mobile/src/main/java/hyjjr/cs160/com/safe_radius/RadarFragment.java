@@ -138,8 +138,8 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
             if (distance[0] > ((Global) getActivity().getApplication()).getSafeRadiusInMeter()) {
                 if (!hasAlerted) {
                     hasAlerted = true;
-                    String title = "Safe Radius";
-                    String text = "Warning: Your child has been out of safe radius. Please go and find your child.";
+                    String title = "Warning";
+                    String text = "Your child went out of the safe radius.";
                     Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
                     alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);

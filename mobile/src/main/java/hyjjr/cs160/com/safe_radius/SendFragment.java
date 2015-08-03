@@ -215,8 +215,8 @@ public class SendFragment extends Fragment {
     }
 
     public void noConnectionAlert() {
-        String title = "Safe Radius";
-        String text = "Error: Phone and watch are not connected.";
+        String title = "Warning";
+        String text = "Your Phone are not connected to the watch.";
         Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -227,9 +227,9 @@ public class SendFragment extends Fragment {
     }
 
     public void lossConnectionAlert() {
-        String title = "Safe Radius";
-        String text = "Warning: Lose signal to your child's watch. Please go to their last " +
-                "known location by following the radar to try and restablish connection";
+        String title = "Warning";
+        String text = "Lose signal to your child's watch. Please go to their last " +
+                "known location to restablish connection.";
         Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
