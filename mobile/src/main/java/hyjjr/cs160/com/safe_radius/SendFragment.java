@@ -55,9 +55,9 @@ public class SendFragment extends Fragment {
     private AdapterView.OnItemSelectedListener messageSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-            ((Global) getActivity().getApplication()).setMessageSelected(position);
-
-            if (position == parent.getCount() - 1) { // last message selected
+            if (position != parent.getCount() - 1)
+                ((Global) getActivity().getApplication()).setMessageSelected(position);
+            else { // last message selected
                 final EditText input = new EditText(getActivity());
 
                 new AlertDialog.Builder(getActivity())
@@ -74,7 +74,8 @@ public class SendFragment extends Fragment {
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                // Do nothing.
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.message_spinner)).setSelection(
+                                        ((Global) getActivity().getApplication()).getMessageSelected());
                             }
                         }).show();
             }
