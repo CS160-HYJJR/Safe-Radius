@@ -1,6 +1,7 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
     private static final String MESSAGE2 = "I saw your message";
+    private static final int NOTIFICATION_ID = 1;
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
 
@@ -62,6 +64,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         if (getIntent() != null) {
             if (getIntent().getExtras() != null) {
+                ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_ID);
                 Log.d(TAG, "message reply");
                 Intent intent = new Intent(MainActivity.this, SendMessageService.class);
                 intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);

@@ -14,6 +14,7 @@ public class Global extends Application {
     private int messageSelected;
     private double safeRadius;
     private Bitmap parentPicture;
+    private boolean lostConnection;
 
     @Override
     public void onCreate() {
@@ -24,6 +25,7 @@ public class Global extends Application {
         messageSelected = 0;
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
         safeRadius = 60; // TODO
+        lostConnection = false;
     }
 
 
@@ -86,4 +88,10 @@ public class Global extends Application {
     public void setParentPicture(Bitmap parentPicture) {
         this.parentPicture = parentPicture;
     }
+
+    public void lostConnection() { lostConnection = true; }
+
+    public void gotConnection() { lostConnection = false; }
+
+    public boolean getConnection() { return lostConnection; }
 }

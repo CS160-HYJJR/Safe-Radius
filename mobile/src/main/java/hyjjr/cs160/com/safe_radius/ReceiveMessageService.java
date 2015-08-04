@@ -34,6 +34,7 @@ public class ReceiveMessageService extends WearableListenerService {
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            alertIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             alertIntent.putExtra("title", "Message from your child");
             alertIntent.putExtra("text", message);
             startActivity(alertIntent);

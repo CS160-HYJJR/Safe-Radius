@@ -25,7 +25,6 @@ public class AlertActivity extends Activity {
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DISMISS",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
                         dialog.dismiss();
                         AlertActivity.this.finish();
                     }
@@ -33,7 +32,6 @@ public class AlertActivity extends Activity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
                         dialog.dismiss();
                         startActivity(new Intent(AlertActivity.this, MainActivity.class));
                         AlertActivity.this.finish();

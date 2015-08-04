@@ -34,12 +34,13 @@ public class SendFragment extends Fragment {
 
         @Override
         public void onPeerConnected(Node node) {
-
+            ((Global) getActivity().getApplication()).gotConnection();
         }
 
         @Override
         public void onPeerDisconnected(Node node) {
             lossConnectionAlert();
+            ((Global) getActivity().getApplication()).lostConnection();
         }
     };
     private CompoundButton.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
@@ -161,8 +162,9 @@ public class SendFragment extends Fragment {
                     @Override
                     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
                         if (getConnectedNodesResult.getNodes().isEmpty()) { // connection failed
-                            turnOff();
-                            noConnectionAlert();
+                            if (!(((Global) getActivity().getApplication()).getConnection())) {
+                                noConnectionAlert();
+                            }
                         }
                     }
                 }
@@ -205,20 +207,24 @@ public class SendFragment extends Fragment {
 
     public void noConnectionAlert() {
         String title = "Warning";
-        String text = "Your Phone are not connected to the watch.";
-        Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text);
-        startActivity(alertIntent);
+        String text = "Please connect your phone and watch to use Safe Radius.";
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(text);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "DISMISS",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                });
+        alertDialog.show();
     }
 
     public void lossConnectionAlert() {
         String title = "Warning";
-        String text = "Lose signal to your child's watch. Please go to their last " +
-                "known location to restablish connection.";
+        String text = "You lost signal with your child's watch. Please go to their last " +
+                "known location to reestablish connection.";
         Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
