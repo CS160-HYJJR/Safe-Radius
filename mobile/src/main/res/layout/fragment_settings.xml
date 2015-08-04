@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/background_light"
+    android:background="@drawable/bg_xhdpi"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
@@ -46,6 +46,14 @@
             android:textColor="@android:color/background_dark"
             android:textSize="30dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ft"
+            android:id="@+id/radius_unit1"
+            android:layout_alignParentRight="true"
+            android:textSize="30dp"
+            android:textColor="#000000"/>
         <Spinner
             android:id="@+id/radius_spinner"
             android:layout_width="wrap_content"
@@ -53,10 +61,11 @@
             android:layout_alignBottom="@id/radius_text"
             android:layout_alignTop="@id/radius_text"
             android:minWidth="100dp"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/radius_unit1"
             android:background="#666666"
             android:entries="@array/radius_choices"
             android:spinnerMode="dropdown" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -66,7 +75,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:text="Set Parent\nImage"
+            android:text="Set Your\nImage"
             android:id="@+id/parent_id"
             android:textSize="30dp"
             android:textColor="#000000"
