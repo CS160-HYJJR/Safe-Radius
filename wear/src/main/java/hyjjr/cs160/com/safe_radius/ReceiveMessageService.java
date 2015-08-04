@@ -64,7 +64,7 @@ public class ReceiveMessageService extends WearableListenerService {
                             .setContentText("")
                             .setPriority(Notification.PRIORITY_MAX)
                             .setLargeIcon(((Global)getApplication()).getParentPicture())
-                            .addAction(R.mipmap.ic_launcher, "Reply", viewPendingIntent);
+                            .addAction(R.drawable.send_button, "Reply", viewPendingIntent);
             Notification notification = notificationBuilder.build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
 
