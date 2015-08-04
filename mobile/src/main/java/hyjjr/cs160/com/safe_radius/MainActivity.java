@@ -24,7 +24,7 @@ public class MainActivity extends FragmentActivity {
                 RadarFragment.class, null);
 
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab3_name)).setIndicator(getString(R.string.tab3_name)),
-                UploadPicFragment.class, null);    }
+                SettingsFragment.class, null);    }
 
 
 }

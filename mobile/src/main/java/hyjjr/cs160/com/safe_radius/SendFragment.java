@@ -87,17 +87,7 @@ public class SendFragment extends Fragment {
         }
     };
 
-    private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
-            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
-        }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    };
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
         private static final String MESSAGE_PATH = "/message_mobile_to_wear";
@@ -106,7 +96,7 @@ public class SendFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), SendMessageService.class);
             intent.putExtra("message_path", MESSAGE_PATH);
-            intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage());
+            intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
             getActivity().startService(intent);
         }
     };
@@ -126,10 +116,9 @@ public class SendFragment extends Fragment {
         if (view == null) {
             assert false;
         }
-        ((Switch) view.findViewById(R.id.switch1)).setOnCheckedChangeListener(switchListener);
+        //((Switch) view.findViewById(R.id.switch1)).setOnCheckedChangeListener(switchListener);
 
-        ((Spinner) view.findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
-        ((Spinner) view.findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
+
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_dropdown_item, ((Global) getActivity().getApplication()).getMessages())); //ArrayAdapter<String>?
@@ -146,7 +135,7 @@ public class SendFragment extends Fragment {
 
     private void turnOff() {
         ((Global) getActivity().getApplication()).turnOff();
-        ((Switch) view.findViewById(R.id.switch1)).setChecked(false);
+        //((Switch) view.findViewById(R.id.switch1)).setChecked(false);
         setVisibilityAll(View.INVISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(false);
@@ -158,7 +147,7 @@ public class SendFragment extends Fragment {
 
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
-        ((Switch) view.findViewById(R.id.switch1)).setChecked(true);
+        //((Switch) view.findViewById(R.id.switch1)).setChecked(true);
         setVisibilityAll(View.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(true);

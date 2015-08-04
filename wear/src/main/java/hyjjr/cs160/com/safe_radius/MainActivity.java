@@ -1,12 +1,15 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 
@@ -25,8 +28,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static int UPDATE_INTERVAL_MS = 1000;
     private static int FASTEST_INTERVAL_MS = 250;
     private GoogleApiClient mGoogleApiClient;
+    public static final String FINISH_BROADCAST = "FINISH";
+    private static final String MESSAGE = "Come find me";
+
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
-        private static final String MESSAGE = "Come find me";
+
 
         @Override
         public void onClick(View v) {
@@ -50,6 +56,25 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.registerReceiver(mBroadcastReceiver, new IntentFilter(FINISH_BROADCAST));
+
+        if (getIntent() != null) {
+            if (getIntent().getExtras() != null) {
+                Log.d(TAG, "message reply");
+                Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+                intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+                intent.putExtra("message", MESSAGE.getBytes());
+                startService(intent);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -171,5 +196,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         startService(notificationIntent);*/
     }
 
-
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "finish received");
+            MainActivity.this.finish();
+        }
+    };
 }

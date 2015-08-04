@@ -1,6 +1,8 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * Created by main on 7/31/15.
@@ -11,13 +13,16 @@ public class Global extends Application {
     private int safeRadiusSelected;
     private int messageSelected;
     private double safeRadius;
+    private Bitmap parentPicture;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        power = true;
         messages = getResources().getStringArray(R.array.message_choices);
         safeRadiusSelected = 1;
         messageSelected = 0;
+        parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
     }
 
 
@@ -71,5 +76,13 @@ public class Global extends Application {
 
     public String getMessage() {
         return messages[getMessageSelected()];
+    }
+
+    public Bitmap getParentPicture() {
+        return parentPicture;
+    }
+
+    public void setParentPicture(Bitmap parentPicture) {
+        this.parentPicture = parentPicture;
     }
 }
