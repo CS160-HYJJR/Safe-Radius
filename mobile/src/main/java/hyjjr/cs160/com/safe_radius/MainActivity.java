@@ -17,19 +17,19 @@ public class MainActivity extends FragmentActivity {
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab1_name)).setIndicator(getString(R.string.tab1_name), getResources().getDrawable(R.drawable.ic_send, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab1_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
                 SendFragment.class, null);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator(getString(R.string.tab2_name), getResources().getDrawable(R.drawable.ic_map, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map, getTheme())),
                 RadarFragment.class, null);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab3_name)).setIndicator(getString(R.string.tab3_name, getResources().getDrawable(R.drawable.ic_settings, getTheme()))),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab3_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_setting, getTheme())),
                 SettingsFragment.class, null);
 
-        /*
+
         for (int i = 0; i < mTabHost.getTabWidget().getTabCount(); i++) {
-            mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 300;
-        }*/
+            mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 200;
+        }
 
     }
 
