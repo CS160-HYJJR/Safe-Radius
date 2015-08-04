@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private GoogleApiClient mGoogleApiClient;
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
+    private static final String MESSAGE2 = "I saw your message";
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
 
@@ -64,7 +65,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 Log.d(TAG, "message reply");
                 Intent intent = new Intent(MainActivity.this, SendMessageService.class);
                 intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
-                intent.putExtra("message", MESSAGE.getBytes());
+                intent.putExtra("message", MESSAGE2.getBytes());
                 startService(intent);
             }
         }
