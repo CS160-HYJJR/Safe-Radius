@@ -10,6 +10,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -113,6 +114,7 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onLocationChanged(Location location) {
+
         // Init child position
         if (currentLoc == null || currentLoc.equals(new LatLng(0, 0))) {
             Log.d(TAG, "child");
@@ -135,6 +137,9 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
         if (currentLoc != null && childLoc != null) {
             Location.distanceBetween(childLoc.latitude, childLoc.longitude,
                     currentLoc.latitude, currentLoc.longitude, distance);
+            Double dist = distance[0]/0.308;
+            if (getView()!= null)
+                ((TextView)(getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: 0ft");
             if (distance[0] > ((Global) getActivity().getApplication()).getSafeRadiusInMeter()) {
                 if (!hasAlerted) {
                     hasAlerted = true;
@@ -147,6 +152,7 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
                     alertIntent.putExtra("title", title);
                     alertIntent.putExtra("text", text);
                     startActivity(alertIntent);
+
 
                     // start Vibration
                     Intent vibrateIntent = new Intent(getActivity(), VibrationService.class);
