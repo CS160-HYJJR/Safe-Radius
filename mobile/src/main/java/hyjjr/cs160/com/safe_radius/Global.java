@@ -23,6 +23,7 @@ public class Global extends Application {
         safeRadiusSelected = 1;
         messageSelected = 0;
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
+        safeRadius = 60; // TODO
     }
 
 
