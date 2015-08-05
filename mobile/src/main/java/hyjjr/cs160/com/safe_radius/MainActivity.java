@@ -58,10 +58,6 @@ public class MainActivity extends FragmentActivity {
 
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
-
-        Intent intent2 = new Intent(this, GcmSendMessage.class);
-        intent2.putExtra("message", "HelloWorld");
-        startService(intent2);
     }
 
     @Override
