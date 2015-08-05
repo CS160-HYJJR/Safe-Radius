@@ -1,13 +1,23 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.ProgressBar;
 
 public class MainActivity extends FragmentActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private FragmentTabHost mTabHost;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +41,40 @@ public class MainActivity extends FragmentActivity {
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 200;
         }
 
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    Log.d(TAG, "gcm ok");
+                } else {
+                    Log.d(TAG, "gcm failed");
+                }
+            }
+        };
+
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
+
+        Intent intent2 = new Intent(this, GcmSendMessage.class);
+        intent2.putExtra("message", "HelloWorld");
+        startService(intent2);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
     }
 
 
+    @Override
+    public void onPause() {
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
 }

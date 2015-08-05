@@ -60,7 +60,8 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
-            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
+            int length = parent.getSelectedItem().toString().length();
+            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString().substring(0, length-3)));
         }
 
         @Override

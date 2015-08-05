@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 22
@@ -24,4 +25,6 @@ dependencies {
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.android.support:support-v4:22.2.0'
+    compile 'org.json:json:20140107'
+    compile 'org.apache.commons:commons-io:1.3.2'
 }

@@ -43,8 +43,8 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
     private LatLng currentLoc;
     private LatLng childLoc;
 
-    private double lonChildVelocity = 0.000005; // in unit of degree per second
-    private double latChildVelocity = 0.000005; // in unit of degree per second
+    private double lonChildVelocity = 0.000015; // in unit of degree per second
+    private double latChildVelocity = 0.000015; // in unit of degree per second
     private RepeatAction childChangeLoc;
     private boolean hasAlerted; // Once alert once every time open the map.
     // Actually, we should detect the movement once the app is opened, not only in the map fragment only.
@@ -174,7 +174,7 @@ public class RadarFragment extends Fragment implements GoogleApiClient.Connectio
     @Override
     public void onStop() {
         super.onStop();
-        hasAlerted = false;
+        //hasAlerted = false;
     }
 
     @Override
