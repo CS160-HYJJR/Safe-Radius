@@ -46,6 +46,11 @@ public class SendMessageService extends IntentService {
             }
             sendMessage(messagePath, message);
             mGoogleApiClient.disconnect();
+
+            Intent intent2 = new Intent(this, GcmSendMessage.class);
+            intent2.putExtra("message_path", messagePath);
+            intent2.putExtra("message", ((Global) getApplication()).getMessage().getBytes());
+            startService(intent2);
         }
     }
 

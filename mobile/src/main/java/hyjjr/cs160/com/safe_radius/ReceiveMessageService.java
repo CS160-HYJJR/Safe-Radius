@@ -25,6 +25,10 @@ public class ReceiveMessageService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
+        if (!((Global)getApplication()).isTurnedOn()) {
+            return;
+        }
+
         if (messageEvent.getPath().equals(MESSAGE_PATH)) {
             final String message = new String(messageEvent.getData());
             Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());

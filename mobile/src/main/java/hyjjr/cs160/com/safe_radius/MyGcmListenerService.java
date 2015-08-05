@@ -42,6 +42,7 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        String messagePath = data.getString("message_path");
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
@@ -57,7 +58,11 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+        //sendNotification(message);
+        Intent intent = new Intent(this, ReceiveMessageService.class);
+        intent.putExtra("message_path", messagePath);
+        intent.putExtra("message", message);
+        startService(intent);
     }
     // [END receive_message]
 

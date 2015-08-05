@@ -29,7 +29,8 @@ public class GcmSendMessage extends IntentService {
                 // Prepare JSON containing the GCM message content. What to send and where to send.
                 JSONObject jGcmData = new JSONObject();
                 JSONObject jData = new JSONObject();
-                String message = (String)intent.getExtras().get("message");
+                String messagePath = (String) intent.getExtras().get("message_path");
+                byte[] message = (byte[]) intent.getExtras().get("message");
                 jData.put("message", message);
                 // Where to send GCM message.
                 jGcmData.put("to", "/topics/global");
