@@ -208,7 +208,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (currentLatLng != null && childLatLng != null && childAltitude != null) {
             Location.distanceBetween(childLatLng.latitude, childLatLng.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
-            Double dist = distance[0]/0.308; // meter to feet
+            Double dist = (double)distance[0]; // meter
             Double altitudeDiff = childAltitude - currentAltitude;
             if (distance[0] > ((Global) getApplication()).getSafeRadiusInMeter()) {
                 if (!hasAlerted) { // avoid duplicate alert
