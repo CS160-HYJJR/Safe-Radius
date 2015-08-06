@@ -18,6 +18,7 @@ import java.net.URL;
 public class GcmSendMessage extends IntentService {
 
     private static final String API_KEY = "AIzaSyDKG3SmtawUFzy4ZezCqLqIL0CwVLHNvKs";
+    private static final String TAG = GcmSendMessage.class.getSimpleName();
     public static final String SEND_PARENT_PICTURE = "mobile_to_wear_parent_picture";
     public GcmSendMessage() {
         super("GcmSendMessage");
@@ -63,7 +64,7 @@ public class GcmSendMessage extends IntentService {
                 // Send GCM message content.
                 OutputStream outputStream = conn.getOutputStream();
                 outputStream.write(jGcmData.toString().getBytes());
-
+                Log.d(TAG, "ok");
                 // Read GCM response.
                 InputStream inputStream = conn.getInputStream();
                 String resp = IOUtils.toString(inputStream);
