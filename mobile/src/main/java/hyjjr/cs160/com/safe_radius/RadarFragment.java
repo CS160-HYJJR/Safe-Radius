@@ -121,11 +121,12 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             map.setMyLocationEnabled(false);
             drawMarker(currentLoc);
             map.setIndoorEnabled(true);
+            addArrowToChildren(childLatLng);
         }
 
     }
 
-    private void CheckVisibility(LatLng position)
+    private void addArrowToChildren(LatLng childPos)
     {
         if(map != null)
         {
@@ -134,10 +135,16 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             LatLng center = bounds.getCenter();
             LatLng northeast = bounds.northeast;
             LatLng southwest = bounds.southwest;
+            double distanceToEdge = SphericalUtil.computeDistanceBetween(center, new LatLng(center.latitude, northeast.longitude))*0.9;
             LatLng pos;
             // TODO
-            if(!bounds.contains(position)) {
+            if(!bounds.contains(childPos)) {
                 // out of screen
+                double heading = SphericalUtil.computeHeading(center, childPos);
+                LatLng show = SphericalUtil.computeOffset(center, distanceToEdge, heading);
+                map.addMarker(new MarkerOptions()
+                        .position(show))
+                        .setRotation((float)heading);
             }
         }
     }
@@ -200,7 +207,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
                 .snippet(
                         "Lat:" + location.getLatitude() + "Lng:"
                                 + location.getLongitude())
-                // TODO change picture
+                        // TODO change picture
                 .icon(BitmapDescriptorFactory.defaultMarker())
                 .rotation(location.getBearing())
                 .title("position"));
