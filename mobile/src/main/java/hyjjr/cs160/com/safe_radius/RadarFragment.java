@@ -28,7 +28,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = RadarFragment.class.getSimpleName();
     private static int UPDATE_INTERVAL_MS = 5000;
     private static int FASTEST_INTERVAL_MS = 2500;
-    private static final int zoomLevel = 19;
+    private static final int ZOOM_LEVEL = 19;
 
     private static View view;
     SupportMapFragment mapFragment;
@@ -94,15 +94,18 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
 
     public void setupMap() {
         if (currentLatLng != null && map != null) {
+            if (map.getCameraPosition().zoom < 5) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        currentLatLng, ZOOM_LEVEL));
+            }
             map.clear();
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMapToolbarEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
             float[] distance = new float[1];
             LatLng previousLocation = map.getCameraPosition().target;
             Location.distanceBetween(previousLocation.latitude, previousLocation.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
-            if (distance[0] > 200) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        currentLatLng, zoomLevel));
-            }
             double safeRadius = ((Global) getActivity().getApplication()).getSafeRadiusInMeter();
             map.addCircle(new CircleOptions()
                     .center(currentLatLng)
@@ -117,9 +120,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
                         .strokeColor(Color.RED)
                         .radius(23 / map.getCameraPosition().zoom));
             }
-            //map.addPolyline(new PolylineOptions().add(currentLatLng).add(childLatLng).geodesic(true));
-            map.setMyLocationEnabled(false);
-            drawMarker(currentLoc);
             map.setIndoorEnabled(true);
             addArrowToChildren(childLatLng);
         }
@@ -135,16 +135,25 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             LatLng center = bounds.getCenter();
             LatLng northeast = bounds.northeast;
             LatLng southwest = bounds.southwest;
-            double distanceToEdge = SphericalUtil.computeDistanceBetween(center, new LatLng(center.latitude, northeast.longitude))*0.9;
-            LatLng pos;
+            double distanceCenterToEdgeLong = SphericalUtil.computeDistanceBetween(center, new LatLng(northeast.latitude, center.longitude))*1.05;
             // TODO
             if(!bounds.contains(childPos)) {
                 // out of screen
+                final int TIMES = 20;
+                LatLng arrowPosEstimate = null;
+                for (int i = TIMES; i >=0; i--) {
+                    arrowPosEstimate = SphericalUtil.interpolate(center, childPos, i/(float)TIMES);
+                    if (bounds.contains(arrowPosEstimate)) {
+                        break;
+                    }
+                }
+
+
                 double heading = SphericalUtil.computeHeading(center, childPos);
-                LatLng show = SphericalUtil.computeOffset(center, distanceToEdge, heading);
+                LatLng arrowPos = SphericalUtil.interpolate(center, arrowPosEstimate, 0.8);
                 map.addMarker(new MarkerOptions()
-                        .position(show))
-                        .setRotation((float)heading);
+                        .position(arrowPos))
+                        .setRotation((float) heading);
             }
         }
     }
@@ -154,22 +163,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
         currentLoc = location;
         currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         currentAltitude = location.getAltitude();
-        // Init child position
-        /*
-        if (currentLatLng == null || currentLatLng.equals(new LatLng(0, 0))) {
-            Log.d(TAG, "child");
-            childLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            if (childChangeLoc != null) {
-                childChangeLoc.stopUpdates();
-            }
-            childChangeLoc = new RepeatAction(new Runnable() {
-                @Override
-                public void run() {
-                    childLatLng = new LatLng(childLatLng.latitude- latChildVelocity, childLatLng.longitude-lonChildVelocity);
-                }
-            });
-            childChangeLoc.startUpdates();
-        }*/
         childLatLng = ((Global)getActivity().getApplication()).getChildLatLng();
         childAltitude = ((Global)getActivity().getApplication()).getChildAltitude();
         float[] distance = new float[1];
@@ -183,6 +176,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
                         altitudeDiff.intValue() + "ft");
 
             setupMap();
+            mapFragment.getMapAsync(this);
         }
     }
 
