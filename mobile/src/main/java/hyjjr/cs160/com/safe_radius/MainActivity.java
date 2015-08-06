@@ -33,8 +33,8 @@ public class MainActivity extends FragmentActivity {
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map, getTheme())),
                 RadarFragment.class, null);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab3_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_setting, getTheme())),
-                SettingsFragment.class, null);
+//        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab3_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_setting, getTheme())),
+//                SettingsFragment.class, null);
 
 
         for (int i = 0; i < mTabHost.getTabWidget().getTabCount(); i++) {

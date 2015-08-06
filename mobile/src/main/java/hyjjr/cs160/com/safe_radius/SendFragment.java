@@ -3,15 +3,22 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Switch;
@@ -22,6 +29,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -30,6 +38,9 @@ public class SendFragment extends Fragment {
     private static final String TAG = SendFragment.class.getSimpleName();
     GoogleApiClient mGoogleApiClient;
     private View view;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 12345;
+
     private NodeApi.NodeListener connectionListener = new NodeApi.NodeListener() {
 
         @Override
@@ -43,16 +54,27 @@ public class SendFragment extends Fragment {
             ((Global) getActivity().getApplication()).lostConnection();
         }
     };
-    private CompoundButton.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
+
+    private View.OnClickListener powerButtonListener = new View.OnClickListener() {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                turnOn();
-            } else {
+        public void onClick(View v) {
+            if (((Global) getActivity().getApplication()).isTurnedOn()) {
                 turnOff();
+            } else {
+                turnOn();
             }
         }
     };
+
+    private View.OnClickListener parentImageListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "image clicked");
+            final Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent2, REQUEST_IMAGE_CAPTURE);
+        }
+    };
+
     private AdapterView.OnItemSelectedListener messageSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
@@ -88,7 +110,18 @@ public class SendFragment extends Fragment {
         }
     };
 
+    private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
+            int length = parent.getSelectedItem().toString().length();
+            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString().substring(0, length-3)));
+        }
 
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    };
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
         private static final String MESSAGE_PATH = "/message_mobile_to_wear";
@@ -114,11 +147,9 @@ public class SendFragment extends Fragment {
         super.onStart();
 
         view = getView();
-        if (view == null) {
-            assert false;
+        if (BuildConfig.DEBUG && view == null) {
+            throw new AssertionError();
         }
-        //((Switch) view.findViewById(R.id.switch1)).setOnCheckedChangeListener(switchListener);
-
 
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
@@ -126,7 +157,15 @@ public class SendFragment extends Fragment {
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
         ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
 
+        ((Spinner) getView().findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
+        ((Spinner) getView().findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
+
         (view.findViewById(R.id.send_button)).setOnClickListener(sendButtonListener);
+        (view.findViewById(R.id.on_off_button)).setOnClickListener(powerButtonListener);
+
+        ((ImageButton)getView().findViewById(R.id.add_parent_button)).setOnClickListener(parentImageListener);
+        ((ImageButton) getView().findViewById(R.id.add_parent_button)).
+                setBackground(new BitmapDrawable(getResources(), ((Global) getActivity().getApplication()).getParentPicture()));
 
         if (((Global) getActivity().getApplication()).isTurnedOn())
             turnOn();
@@ -136,7 +175,7 @@ public class SendFragment extends Fragment {
 
     private void turnOff() {
         ((Global) getActivity().getApplication()).turnOff();
-        //((Switch) view.findViewById(R.id.switch1)).setChecked(false);
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_setting));
         setVisibilityAll(View.INVISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(false);
@@ -148,7 +187,7 @@ public class SendFragment extends Fragment {
 
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
-        //((Switch) view.findViewById(R.id.switch1)).setChecked(true);
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_map));
         setVisibilityAll(View.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(true);
@@ -171,6 +210,23 @@ public class SendFragment extends Fragment {
         );
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Log.d(TAG, "Camera");
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ((Global)getActivity().getApplication()).setParentPicture(imageBitmap);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] bitmapByte = stream.toByteArray();
+            Intent intent = new Intent(getActivity(), SendMessageService.class);
+            intent.putExtra("message_path", SendMessageService.SEND_PARENT_PICTURE);
+            intent.putExtra("message", bitmapByte);
+            getActivity().startService(intent);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     /*
         Set invisibility of All views except switch
