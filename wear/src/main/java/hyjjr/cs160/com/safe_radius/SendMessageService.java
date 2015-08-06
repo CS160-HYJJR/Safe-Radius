@@ -59,29 +59,29 @@ public class SendMessageService extends IntentService {
             MessageApi.SendMessageResult result =
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
-            if (result.getStatus().isSuccess()) {
+            if (messagePath.equals(MESSAGE_PATH)) {
+                if (result.getStatus().isSuccess()) {
 
-                Intent intent = new Intent(this, ConfirmationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                        ConfirmationActivity.SUCCESS_ANIMATION);
-                startActivity(intent);
+                    Intent intent = new Intent(this, ConfirmationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                            ConfirmationActivity.SUCCESS_ANIMATION);
+                    startActivity(intent);
 
-                isConnectionGood = true;
-                Log.d(TAG, "send message success messagePath: " + messagePath
-                        + " message: " + new String(message, StandardCharsets.UTF_8)
-                        + " node: " + node.getDisplayName());
-            } else {
-                Intent intent = new Intent(this, ConfirmationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                        ConfirmationActivity.FAILURE_ANIMATION);
-                startActivity(intent);
+                    isConnectionGood = true;
+                    Log.d(TAG, "send message success messagePath: " + messagePath
+                            + " message: " + new String(message, StandardCharsets.UTF_8)
+                            + " node: " + node.getDisplayName());
+                } else {
+                    Intent intent = new Intent(this, ConfirmationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                            ConfirmationActivity.FAILURE_ANIMATION);
+                    startActivity(intent);
+                }
             }
         }
 
-        if (!isConnectionGood) {
-            Log.e(TAG, "send message failed");
-        }
+
     }
 }

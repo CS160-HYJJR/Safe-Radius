@@ -18,7 +18,7 @@ public class AlertActivity extends Activity {
     protected void onStart() {
         super.onStart();
         CharSequence title = getIntent().getExtras().getCharSequence("title");
-        CharSequence text = getIntent().getExtras().getCharSequence("text");
+        CharSequence text = new String((byte[])getIntent().getExtras().get("text"));
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
@@ -29,7 +29,7 @@ public class AlertActivity extends Activity {
                         AlertActivity.this.finish();
                     }
                 });
-        if (MainActivity.isForeground) {
+        if (!((Global)getApplication()).isForeground()) {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

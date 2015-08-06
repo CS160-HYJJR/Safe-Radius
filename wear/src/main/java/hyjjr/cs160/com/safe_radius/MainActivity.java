@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,8 +15,12 @@ import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.location.LocationListener;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -26,8 +29,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName() + "001";
-    private static int UPDATE_INTERVAL_MS = 1000;
-    private static int FASTEST_INTERVAL_MS = 250;
+    private static int UPDATE_INTERVAL_MS = 5000;
+    private static int FASTEST_INTERVAL_MS = 2500;
     private GoogleApiClient mGoogleApiClient;
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
@@ -77,7 +80,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onDestroy() {
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-        bm.unregisterReceiver(mBroadcastReceiver);
+        //bm.unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
     }
 
@@ -89,39 +92,35 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onPause() {
-        mGoogleApiClient.disconnect();
+        //mGoogleApiClient.disconnect();
         super.onPause();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        // Build a request for continual location updates
-        /*
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        // Send request for location updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        Log.d(TAG, "request success");
+        Log.d(TAG, "onConnected");
+        if (((Global)getApplication()).isTurnedOn()) {
+            // Build a request for continual location updates
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(UPDATE_INTERVAL_MS)
+                    .setFastestInterval(FASTEST_INTERVAL_MS);
 
-        // Build a request for continual location updates
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL_MS)
-                .setFastestInterval(FASTEST_INTERVAL_MS);
-
-        // Send request for location updates
-        LocationServices.FusedLocationApi
-                .requestLocationUpdates(mGoogleApiClient,
-                        locationRequest, this)
-                .setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        if (status.getStatus().isSuccess()) {
-                            Log.d(TAG, "Location Successfully requested");
-                        } else {
-                            Log.e(TAG, status.getStatusMessage());
+            // Send request for location updates
+            LocationServices.FusedLocationApi
+                    .requestLocationUpdates(mGoogleApiClient,
+                            locationRequest, this)
+                    .setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            if (status.getStatus().isSuccess()) {
+                                Log.d(TAG, "Location Successfully requested");
+                            } else {
+                                Log.e(TAG, status.getStatusMessage());
+                            }
                         }
-                    }
-                });*/
+                    });
+        }
     }
 
     @Override
@@ -136,68 +135,30 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+        Log.d(TAG, "lat: " + location.getLatitude() + " lon: " + location.getLongitude() + " alt: " + location.getAltitude());
         double[] positions = new double[]{location.getLatitude(),
                 location.getLongitude(), location.getAltitude()};
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(positions.length * 8);
         DoubleBuffer intBuffer = byteBuffer.asDoubleBuffer();
-        intBuffer.put(positions);
-
+        intBuffer.put(positions).order();
         byte[] positionByte = byteBuffer.array();
+        positions[0]= ByteBuffer.wrap(positionByte).getDouble(0);
+        positions[1]= ByteBuffer.wrap(positionByte).getDouble(8);
+        positions[2]= ByteBuffer.wrap(positionByte).getDouble(16);
+        Log.d(TAG, "lat: " + positions[0] + " lon: " + positions[1] + " alt: " + positions[2]);
+        String bin="";
+        for (int i = 0; i < 24*8; i++) {
+            if (i%64==0)
+                bin+="@";
+            bin += String.valueOf(positionByte[i/8]>>>(i%8)&1);
+        }
+        Log.d(TAG, "binary of message: " + bin);
         Intent intent = new Intent(MainActivity.this, SendMessageService.class);
         intent.putExtra("message_path", SendMessageService.LOCATION_PATH);
         intent.putExtra("message", positionByte);
         startService(intent);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    public void NoConnectionAlert() {
-        String title = "Safe Radius";
-        String text = "Error: Phone and watch are not connected.";
-        Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text);
-        startActivity(alertIntent);
-    }
-
-    public void lossConnectionAlert() {
-        String title = "Safe Radius";
-        String text = "Warning: Your child is out of the range! Please go to their last " +
-                "known location by following the radar to try and restablish connection";
-        Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text);
-        startActivity(alertIntent);
-
-        // start Vibration
-        Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
-        startService(vibrateIntent);
-        /*
-        Intent notificationIntent = new Intent(getApplicationContext(), NotificationService.class);
-        alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text);
-        startService(notificationIntent);*/
+        Log.d(TAG, "location sent");
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

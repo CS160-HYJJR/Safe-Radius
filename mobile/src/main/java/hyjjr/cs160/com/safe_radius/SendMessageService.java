@@ -64,15 +64,7 @@ public class SendMessageService extends IntentService {
             // not show "message sent" when sending parent picture to child.
             if (!messagePath.equals(SEND_PARENT_PICTURE)) {
                 if (result.getStatus().isSuccess()) {
-                    Handler handler = new Handler(Looper.getMainLooper());
 
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
                     isConnectionGood = true;
                     Log.d(TAG, "send message success messagePath: " + messagePath

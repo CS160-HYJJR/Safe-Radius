@@ -27,7 +27,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
@@ -36,7 +38,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
-    private static final String LOCATION_PATH = "/location_wera_to_mobile";
+    private static final String LOCATION_PATH = "/location_wear_to_mobile";
     /**
      * Called when message is received.
      *
@@ -54,9 +56,14 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.putExtra("message", data.getString("message").getBytes());
             startService(intent);
         }
-        else {
+        else if (ReceiveMessageService.receiveFromWatch == false){
             String messagePath = data.getString("message_path");
-            byte[] message = (byte[])data.get("message");
+            byte[] message = new byte[0];
+            try {
+                message = data.getString("message").getBytes("ISO-8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             Log.d(TAG, "From: " + from);
             Log.d(TAG, "Message: " + data.getString("message"));
 
@@ -78,13 +85,25 @@ public class MyGcmListenerService extends GcmListenerService {
                 startService(vibrateIntent);
 
             } else if (messagePath.equals(LOCATION_PATH)) {
-                DoubleBuffer doubleBuf =
-                        ByteBuffer.wrap(message)
-                                .order(ByteOrder.BIG_ENDIAN)
-                                .asDoubleBuffer();
-                double[] positions = new double[doubleBuf.remaining()];
+                Log.d(TAG, "location reveiced " + new String(message));
+
+                double[] positions = new double[3];
+                ByteBuffer bytes = ByteBuffer.wrap(message).order(ByteOrder.LITTLE_ENDIAN);
+                String bin="";
+                for (int i = 0; i < 24*8; i++) {
+                    if (i%64==0)
+                        bin+="@";
+                    bin += String.valueOf(message[i/8]>>>(i%8)&1);
+                }
+                Log.d(TAG, "binary of message: " + bin);
+                positions[0]= ByteBuffer.wrap(message).getDouble(0);
+                positions[1]= ByteBuffer.wrap(message).getDouble(8);
+                positions[2]= ByteBuffer.wrap(message).getDouble(16);
+                //double[] positions = new double[doubleBuf.remaining()];
                 Log.d(TAG, "Location path received on mobile is: " + messagePath);
-                Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt" + positions[2]);
+                Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt " + positions[2]);
+                ((Global)getApplication()).setChildLatLng(new LatLng(positions[0], positions[1]));
+                ((Global)getApplication()).setChildAltitude(positions[2]);
             }
 
         }

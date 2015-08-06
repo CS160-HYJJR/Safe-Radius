@@ -3,18 +3,13 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.os.Bundle;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by main on 7/31/15.
  */
-public class Global extends Application implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener,{
+public class Global extends Application {
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;
@@ -22,6 +17,9 @@ public class Global extends Application implements GoogleApiClient.ConnectionCal
     private double safeRadius;
     private Bitmap parentPicture;
     private boolean lostConnection;
+    private boolean isForeground;
+    private LatLng childLatLng;
+    private Double childAltitude;
 
     @Override
     public void onCreate() {
@@ -102,23 +100,27 @@ public class Global extends Application implements GoogleApiClient.ConnectionCal
 
     public boolean getConnection() { return lostConnection; }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-
+    public boolean isForeground() {
+        return isForeground;
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    public void setForeground(boolean foreground) {
+        this.isForeground = foreground;
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
+    public LatLng getChildLatLng() {
+        return childLatLng;
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void setChildLatLng(LatLng childLatLng) {
+        this.childLatLng = childLatLng;
+    }
 
+    public double getChildAltitude() {
+        return childAltitude;
+    }
+
+    public void setChildAltitude(double childAltitude) {
+        this.childAltitude = childAltitude;
     }
 }

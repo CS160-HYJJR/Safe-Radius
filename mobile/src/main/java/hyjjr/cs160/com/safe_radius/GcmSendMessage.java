@@ -43,7 +43,7 @@ public class GcmSendMessage extends IntentService {
                     Log.d("GCM", "messagePath null");
                 if (from == null)
                     Log.d("GCM", "from null");
-                jData.put("message", new String(message));
+                jData.put("message", new String(message, "ISO-8859-1"));
                 jData.put("message_path", messagePath);
                 jData.put("source", from);
                 // Where to send GCM message.

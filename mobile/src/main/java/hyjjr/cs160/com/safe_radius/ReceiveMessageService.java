@@ -19,21 +19,33 @@ public class ReceiveMessageService extends WearableListenerService {
 
     public static final String SEND_MESSAGE_TO_ACTIVITY_BROADCAST = "SEND_MESSAGE_TO_ACTIVITY_BROADCAST";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
-    private static final String LOCATION_PATH = "/location_wera_to_mobile";
+    private static final String LOCATION_PATH = "/location_wear_to_mobile";
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 0;
+    public static boolean receiveFromWatch;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
-
+        Log.d(TAG, "message received: " + new String(messageEvent.getData()));
+        receiveFromWatch = true;
         Intent intent = new Intent(this, GcmSendMessage.class);
         intent.putExtra("message_path", messageEvent.getPath());
-        intent.putExtra("message", new String(messageEvent.getData()));
+        intent.putExtra("message", messageEvent.getData());
         intent.putExtra("source", "watch");
         startService(intent);
+
+        if (messageEvent.getPath().equals(LOCATION_PATH)) {
+            String bin = "";
+            for (int i = 0; i < 24*8; i++) {
+                if (i%64==0)
+                    bin+="@";
+                bin += String.valueOf(messageEvent.getData()[i/8]>>>(i%8)&1);
+            }
+            Log.d(TAG, bin);
+        }
         super.onMessageReceived(messageEvent);
 
     }

@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -100,6 +103,15 @@ public class SendFragment extends Fragment {
             intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
             intent.putExtra("source", "phone");
             getActivity().startService(intent);
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 
@@ -233,7 +245,7 @@ public class SendFragment extends Fragment {
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text);
+        alertIntent.putExtra("text", text.getBytes());
         startActivity(alertIntent);
 
         // start Vibration
