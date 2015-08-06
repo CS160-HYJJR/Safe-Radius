@@ -79,9 +79,10 @@ public class SettingsFragment extends Fragment {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] bitmapByte = stream.toByteArray();
-            Intent intent = new Intent(getActivity(), SendMessageService.class);
-            intent.putExtra("message_path", SendMessageService.SEND_PARENT_PICTURE);
+            Intent intent = new Intent(getActivity(), GcmSendMessage.class);
+            intent.putExtra("message_path", GcmSendMessage.SEND_PARENT_PICTURE);
             intent.putExtra("message", bitmapByte);
+            intent.putExtra("source", "phone");
             getActivity().startService(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);

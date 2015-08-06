@@ -32,6 +32,7 @@ public class SendMessageService extends IntentService {
         if (intent != null) {
             String messagePath = (String) intent.getExtras().get("message_path");
             byte[] message = (byte[]) intent.getExtras().get("message");
+            Log.d(TAG, "sending " + new String(message));
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
             }
@@ -46,11 +47,6 @@ public class SendMessageService extends IntentService {
             }
             sendMessage(messagePath, message);
             mGoogleApiClient.disconnect();
-
-            Intent intent2 = new Intent(this, GcmSendMessage.class);
-            intent2.putExtra("message_path", messagePath);
-            intent2.putExtra("message", ((Global) getApplication()).getMessage().getBytes());
-            startService(intent2);
         }
     }
 

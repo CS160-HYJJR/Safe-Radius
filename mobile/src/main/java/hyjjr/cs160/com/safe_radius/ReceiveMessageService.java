@@ -29,36 +29,12 @@ public class ReceiveMessageService extends WearableListenerService {
             return;
         }
 
-        if (messageEvent.getPath().equals(MESSAGE_PATH)) {
-            final String message = new String(messageEvent.getData());
-            Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
-            Log.d(TAG, "Message received on mobile is: " + message);
+        Intent intent = new Intent(this, GcmSendMessage.class);
+        intent.putExtra("message_path", messageEvent.getPath());
+        intent.putExtra("message", new String(messageEvent.getData()));
+        intent.putExtra("source", "watch");
+        startService(intent);
+        super.onMessageReceived(messageEvent);
 
-            Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            alertIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            alertIntent.putExtra("title", "Message from your child");
-            alertIntent.putExtra("text", message);
-            startActivity(alertIntent);
-
-            // start Vibration
-            Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
-            startService(vibrateIntent);
-
-        } else if (messageEvent.getPath().equals(LOCATION_PATH)) {
-            DoubleBuffer doubleBuf =
-                    ByteBuffer.wrap(messageEvent.getData())
-                            .order(ByteOrder.BIG_ENDIAN)
-                            .asDoubleBuffer();
-            double[] positions = new double[doubleBuf.remaining()];
-            Log.d(TAG, "Location path received on mobile is: " + messageEvent.getPath());
-            Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt" + positions[2]);
-
-
-        } else {
-            super.onMessageReceived(messageEvent);
-        }
     }
 }

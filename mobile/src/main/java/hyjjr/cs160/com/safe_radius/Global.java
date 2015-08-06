@@ -3,11 +3,18 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 
 /**
  * Created by main on 7/31/15.
  */
-public class Global extends Application {
+public class Global extends Application implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener,{
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;
@@ -94,4 +101,24 @@ public class Global extends Application {
     public void gotConnection() { lostConnection = false; }
 
     public boolean getConnection() { return lostConnection; }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }

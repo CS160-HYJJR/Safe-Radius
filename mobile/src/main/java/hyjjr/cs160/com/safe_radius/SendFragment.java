@@ -95,9 +95,10 @@ public class SendFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), SendMessageService.class);
+            Intent intent = new Intent(getActivity(), GcmSendMessage.class);
             intent.putExtra("message_path", MESSAGE_PATH);
             intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
+            intent.putExtra("source", "phone");
             getActivity().startService(intent);
         }
     };
@@ -157,6 +158,7 @@ public class SendFragment extends Fragment {
         Wearable.NodeApi.addListener(mGoogleApiClient, connectionListener);
 
         // check connection
+        /*
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(
                 new ResultCallback<NodeApi.GetConnectedNodesResult>() {
                     @Override
@@ -168,7 +170,7 @@ public class SendFragment extends Fragment {
                         }
                     }
                 }
-        );
+        );*/
     }
 
 
@@ -206,6 +208,7 @@ public class SendFragment extends Fragment {
     }
 
     public void noConnectionAlert() {
+        /*
         String title = "Warning";
         String text = "Please connect your phone and watch to use Safe Radius.";
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
@@ -218,7 +221,7 @@ public class SendFragment extends Fragment {
                         getActivity().finish();
                     }
                 });
-        alertDialog.show();
+        alertDialog.show();*/
     }
 
     public void lossConnectionAlert() {

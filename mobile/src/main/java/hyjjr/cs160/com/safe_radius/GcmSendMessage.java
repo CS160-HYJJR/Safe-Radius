@@ -3,6 +3,7 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -17,13 +18,17 @@ import java.net.URL;
 public class GcmSendMessage extends IntentService {
 
     private static final String API_KEY = "AIzaSyDKG3SmtawUFzy4ZezCqLqIL0CwVLHNvKs";
-
+    public static final String SEND_PARENT_PICTURE = "mobile_to_wear_parent_picture";
     public GcmSendMessage() {
         super("GcmSendMessage");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (!((Global)getApplication()).isTurnedOn()) {
+            return;
+        }
+
         if (intent != null) {
             try {
                 // Prepare JSON containing the GCM message content. What to send and where to send.
@@ -31,10 +36,20 @@ public class GcmSendMessage extends IntentService {
                 JSONObject jData = new JSONObject();
                 String messagePath = (String) intent.getExtras().get("message_path");
                 byte[] message = (byte[]) intent.getExtras().get("message");
-                jData.put("message", message);
+                String from = (String) intent.getExtras().get("source");
+                if (message == null)
+                    Log.d("GCM", "message null");
+                if (messagePath == null)
+                    Log.d("GCM", "messagePath null");
+                if (from == null)
+                    Log.d("GCM", "from null");
+                jData.put("message", new String(message));
+                jData.put("message_path", messagePath);
+                jData.put("source", from);
                 // Where to send GCM message.
                 jGcmData.put("to", "/topics/global");
                 // What to send in GCM message.
+
                 jGcmData.put("data", jData);
 
                 // Create connection to send GCM Message request.

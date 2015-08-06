@@ -11,11 +11,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 public class MainActivity extends FragmentActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static boolean isForeground;
     private FragmentTabHost mTabHost;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -58,6 +58,12 @@ public class MainActivity extends FragmentActivity {
 
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
+
+        Intent intent2 = new Intent(this, GcmSendMessage.class);
+        intent2.putExtra("message_path", "123");
+        intent2.putExtra("message", "456".getBytes());
+        intent2.putExtra("source", "phone");
+        startService(intent2);
     }
 
     @Override
@@ -67,6 +73,19 @@ public class MainActivity extends FragmentActivity {
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
     }
 
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        isForeground = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        isForeground = false;
+        super.onDestroy();
+    }
 
     @Override
     public void onPause() {

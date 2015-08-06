@@ -28,10 +28,15 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
+
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
-
+    private static final String MESSAGE_PATH = "/message_wear_to_mobile";
+    private static final String LOCATION_PATH = "/location_wera_to_mobile";
     /**
      * Called when message is received.
      *
@@ -42,11 +47,47 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String messagePath = data.getString("message_path");
-        String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        String source = data.getString("source");
+        if (source.equals("phone")) {
+            Intent intent = new Intent(this, SendMessageService.class);
+            intent.putExtra("message_path", data.getString("message_path"));
+            intent.putExtra("message", data.getString("message").getBytes());
+            startService(intent);
+        }
+        else {
+            String messagePath = data.getString("message_path");
+            byte[] message = (byte[])data.get("message");
+            Log.d(TAG, "From: " + from);
+            Log.d(TAG, "Message: " + data.getString("message"));
 
+            if (messagePath.equals(MESSAGE_PATH)) {
+                Log.d(TAG, "Message path received on mobile is: " + messagePath);
+                Log.d(TAG, "Message received on mobile is: " + message);
+
+                Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    //            alertIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                alertIntent.putExtra("title", "Message from your child");
+                alertIntent.putExtra("text", message);
+                startActivity(alertIntent);
+
+                // start Vibration
+                Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
+                startService(vibrateIntent);
+
+            } else if (messagePath.equals(LOCATION_PATH)) {
+                DoubleBuffer doubleBuf =
+                        ByteBuffer.wrap(message)
+                                .order(ByteOrder.BIG_ENDIAN)
+                                .asDoubleBuffer();
+                double[] positions = new double[doubleBuf.remaining()];
+                Log.d(TAG, "Location path received on mobile is: " + messagePath);
+                Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt" + positions[2]);
+            }
+
+        }
         /**
          * Production applications would usually process the message here.
          * Eg: - Syncing with server.
@@ -59,10 +100,6 @@ public class MyGcmListenerService extends GcmListenerService {
          * that a message was received.
          */
         //sendNotification(message);
-        Intent intent = new Intent(this, ReceiveMessageService.class);
-        intent.putExtra("message_path", messagePath);
-        intent.putExtra("message", message);
-        startService(intent);
     }
     // [END receive_message]
 
@@ -71,6 +108,7 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
+    /* Unused */
     private void sendNotification(String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
