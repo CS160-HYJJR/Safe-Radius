@@ -5,27 +5,26 @@
     android:baselineAligned="false"
     android:orientation="horizontal" >
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/spnText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="9"
-        android:orientation="horizontal" >
+        android:text="Item Name"
+        android:textSize="20dp"
+        android:background="#88888888"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/spnText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="9"
-            android:text="Item Name"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/spnDel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/ic_clear_black"/>
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/spnDel"
+        android:background="#88888888"
+        android:layout_width="0dp"
+        android:textSize="20dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="X"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>

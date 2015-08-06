@@ -175,9 +175,12 @@ public class SendFragment extends Fragment {
             throw new AssertionError();
         }
 
-
-        ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, ((Global) getActivity().getApplication()).getMessages()));
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String s: ((Global) getActivity().getApplication()).getMessages()) {
+            arrayList.add(s);
+        }
+        ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, arrayList));
 
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.message_choices, R.layout.custom_spinner);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -265,8 +268,8 @@ public class SendFragment extends Fragment {
         list.add(item);
         list.add((String) sa.getItem(sa.getCount() - 1));
         ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), //ArrayAdapter<String>?
-                android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, list);
         spinner.setAdapter(adapter);
     }
 
