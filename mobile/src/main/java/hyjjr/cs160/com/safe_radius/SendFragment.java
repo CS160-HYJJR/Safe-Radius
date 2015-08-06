@@ -52,6 +52,7 @@ public class SendFragment extends Fragment {
 
     private static final int REQUEST_IMAGE_CAPTURE = 12345;
 
+    /*
     private NodeApi.NodeListener connectionListener = new NodeApi.NodeListener() {
 
         @Override
@@ -64,7 +65,7 @@ public class SendFragment extends Fragment {
             lossConnectionAlert();
             ((Global) getActivity().getApplication()).lostConnection();
         }
-    };
+    };*/
 
     private View.OnClickListener powerButtonListener = new View.OnClickListener() {
         @Override
@@ -208,7 +209,7 @@ public class SendFragment extends Fragment {
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(false);
         if (mGoogleApiClient != null) {
-            Wearable.NodeApi.removeListener(mGoogleApiClient, connectionListener);
+            //Wearable.NodeApi.removeListener(mGoogleApiClient, connectionListener);
             mGoogleApiClient.disconnect();
         }
     }
@@ -221,7 +222,7 @@ public class SendFragment extends Fragment {
         getActivity().findViewById(android.R.id.tabs).setEnabled(true);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
         mGoogleApiClient.connect();
-        Wearable.NodeApi.addListener(mGoogleApiClient, connectionListener);
+        //Wearable.NodeApi.addListener(mGoogleApiClient, connectionListener);
 
         // check connection
         /*
