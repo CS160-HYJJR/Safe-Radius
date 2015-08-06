@@ -49,6 +49,9 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        if (!from.equals("/topics/"+((Global)getApplication()).TOPIC))
+            return;
+
         String source = data.getString("source");
         if (source.equals("phone")) {
             Intent intent = new Intent(this, SendMessageService.class);

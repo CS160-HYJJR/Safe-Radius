@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "global1";
+    public static final String TOPIC = "mapHarry";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;

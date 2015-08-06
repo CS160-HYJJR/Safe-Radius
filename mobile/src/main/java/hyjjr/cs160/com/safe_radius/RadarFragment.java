@@ -34,8 +34,8 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
     SupportMapFragment mapFragment;
     GoogleMap map;
     private LatLng currentLatLng;
-    private double childAltitude;
-    private double currentAltitude;
+    private Double childAltitude;
+    private Double currentAltitude;
     private LatLng childLatLng;
     private Location currentLoc;
 
@@ -173,16 +173,17 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
         childLatLng = ((Global)getActivity().getApplication()).getChildLatLng();
         childAltitude = ((Global)getActivity().getApplication()).getChildAltitude();
         float[] distance = new float[1];
-        if (currentLatLng != null && childLatLng != null) {
+        if (currentLatLng != null && childLatLng != null && childAltitude != null) {
             Location.distanceBetween(childLatLng.latitude, childLatLng.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
-            Double dist = distance[0]/0.308; // meter to feet
-            Double altitudeDiff = (childAltitude - currentAltitude)/0.308; // meter to feet
-            if (getView()!= null)
-                ((TextView)(getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
+            Double dist = distance[0] / 0.308; // meter to feet
+            Double altitudeDiff = (childAltitude - currentAltitude) / 0.308; // meter to feet
+            if (getView() != null)
+                ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
                         altitudeDiff.intValue() + "ft");
+
+            setupMap();
         }
-        setupMap();
     }
 
 
