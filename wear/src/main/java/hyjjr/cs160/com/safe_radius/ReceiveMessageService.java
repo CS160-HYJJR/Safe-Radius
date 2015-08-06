@@ -22,7 +22,8 @@ public class ReceiveMessageService extends WearableListenerService {
     private static final String MESSAGE_PATH = "/message_mobile_to_wear";
     public static final String RECEIVE_PARENT_PICTURE_PATH = "mobile_to_wear_parent_picture";
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
-    private static final int NOTIFICATION_ID = 1;
+    public static final int NOTIFICATION_ID = 1;
+    private static final String MESSAGE = "I saw your message";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -53,18 +54,21 @@ public class ReceiveMessageService extends WearableListenerService {
             Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
             startService(vibrateIntent);
 
-            Intent viewIntent = new Intent(this, MainActivity.class);
-            viewIntent.putExtra("Message", "");
-            PendingIntent viewPendingIntent =
-                    PendingIntent.getActivity(this, 0, viewIntent, 0);
+            Intent confirmIntent = new Intent(this, SendMessageService.class);
+            confirmIntent.putExtra("message", MESSAGE.getBytes());
+            confirmIntent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+            confirmIntent.putExtra("confirmationEnabled", "true");
+            PendingIntent confirmPendingIntent =
+                    PendingIntent.getService(this, 0, confirmIntent, 0);
             Notification.Builder notificationBuilder =
                     new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(message)
                             .setContentText("")
+                            .setContentIntent(confirmPendingIntent)
                             .setPriority(Notification.PRIORITY_MAX)
                             .setLargeIcon(((Global)getApplication()).getParentPicture())
-                            .addAction(R.drawable.ic_done, "Reply", viewPendingIntent);
+                            .addAction(R.drawable.ic_done, "Reply", confirmPendingIntent);
             Notification notification = notificationBuilder.build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
 

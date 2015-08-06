@@ -22,6 +22,7 @@ public class SendMessageService extends IntentService {
 
     private static final String TAG = SendMessageService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
+    private boolean confirmationEnabled;
 
     public SendMessageService() {
         super(SendMessageService.class.getSimpleName());
@@ -30,6 +31,9 @@ public class SendMessageService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
+            if (intent.getExtras().get("confirmationEnabled") != null) {
+                confirmationEnabled = true;
+            }
             String messagePath = (String) intent.getExtras().get("message_path");
             byte[] message = (byte[]) intent.getExtras().get("message");
             if (mGoogleApiClient == null) {
@@ -61,12 +65,16 @@ public class SendMessageService extends IntentService {
                             message).await();
             if (messagePath.equals(MESSAGE_PATH)) {
                 if (result.getStatus().isSuccess()) {
-
-                    Intent intent = new Intent(this, ConfirmationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.SUCCESS_ANIMATION);
-                    startActivity(intent);
+                    if (confirmationEnabled) {
+                        Intent intent = new Intent(this, ConfirmationActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                                ConfirmationActivity.SUCCESS_ANIMATION);
+                        startActivity(intent);
+                    }
+                    Intent intent2 = new Intent(this, MainActivity.class);
+                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent2);
 
                     isConnectionGood = true;
                     Log.d(TAG, "send message success messagePath: " + messagePath

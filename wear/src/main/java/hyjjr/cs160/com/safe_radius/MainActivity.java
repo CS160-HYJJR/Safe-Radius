@@ -34,7 +34,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private GoogleApiClient mGoogleApiClient;
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
-    private static final String MESSAGE2 = "I saw your message";
     private static final int NOTIFICATION_ID = 1;
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
@@ -45,6 +44,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(MainActivity.this, SendMessageService.class);
             intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
             intent.putExtra("message", MESSAGE.getBytes());
+            intent.putExtra("confirmationEnabled", "true");
             startService(intent);
         }
     };
@@ -65,6 +65,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.registerReceiver(mBroadcastReceiver, new IntentFilter(FINISH_BROADCAST));
 
+        /*
         if (getIntent() != null) {
             if (getIntent().getExtras() != null) {
                 ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_ID);
@@ -74,7 +75,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 intent.putExtra("message", MESSAGE2.getBytes());
                 startService(intent);
             }
-        }
+        } */
     }
 
     @Override
@@ -121,6 +122,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                         }
                     });
         }
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
     }
 
     @Override

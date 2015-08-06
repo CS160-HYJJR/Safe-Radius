@@ -1,6 +1,5 @@
 package hyjjr.cs160.com.safe_radius;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 public class RadarFragment extends Fragment implements OnMapReadyCallback {
 
