@@ -116,7 +116,7 @@ public class Global extends Application {
         this.childLatLng = childLatLng;
     }
 
-    public double getChildAltitude() {
+    public Double getChildAltitude() {
         return childAltitude;
     }
 

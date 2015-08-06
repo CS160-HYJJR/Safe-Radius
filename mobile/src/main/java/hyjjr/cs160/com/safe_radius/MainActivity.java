@@ -201,11 +201,11 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             childChangeLoc.startUpdates();
         }*/
         LatLng childLatLng = ((Global)getApplication()).getChildLatLng();
-        double childAltitude = ((Global)getApplication()).getChildAltitude();
+        Double childAltitude = ((Global)getApplication()).getChildAltitude();
         // Alert if child is too far
         boolean isDialogOpened;
         float[] distance = new float[1];
-        if (currentLatLng != null && childLatLng != null) {
+        if (currentLatLng != null && childLatLng != null && childAltitude != null) {
             Location.distanceBetween(childLatLng.latitude, childLatLng.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
             Double dist = distance[0]/0.308; // meter to feet
