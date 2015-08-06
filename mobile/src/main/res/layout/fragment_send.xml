@@ -2,45 +2,120 @@
     android:id="@+id/send_fragment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    android:background="@android:color/background_light"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
-
-    <TextView
-        android:id="@+id/title1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:text="Safe Radius"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/background_dark"
-        android:textSize="40dp" />
 
 
     <Spinner
         android:id="@+id/message_spinner"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
         android:background="#666666"
         android:minHeight="50dp"
         android:minWidth="200dp"
         android:spinnerMode="dropdown"
-        android:visibility="invisible" />
+        android:layout_marginTop="106dp"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        style="@style/Widget.AppCompat.Spinner.Underlined"/>
 
     <Button
         android:id="@+id/send_button"
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:minHeight="120dp"
+        android:layout_height="50dp"
         android:layout_alignBottom="@id/message_spinner"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignTop="@id/message_spinner"
-        android:text="Send"
-        android:visibility="invisible" />
+        android:text="Send" />
+
+
+    <TextView
+        android:id="@+id/radius_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="58dp"
+        android:text="Radius"
+        android:textColor="@android:color/background_dark"
+        android:textSize="20sp"
+        android:visibility="visible"
+        android:layout_below="@+id/message_spinner"
+        android:layout_toEndOf="@+id/change_background" />
+
+    <Spinner
+        android:id="@+id/radius_spinner"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/radius_text"
+        android:layout_alignTop="@id/radius_text"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/radius_text"
+        android:entries="@array/radius_choices"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/radius_text"
+        android:layout_alignTop="@id/radius_text"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/radius_spinner"
+        android:gravity="center"
+        android:text="@string/radius_unit"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:id="@+id/imageView"
+        android:layout_below="@+id/background_pic"
+        android:layout_alignParentEnd="true"
+        android:background="#ff000000" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/background_pic"
+        android:src="@drawable/title_safe_radius"
+        android:background="#ff73a86a"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/change_background"
+        android:src="@drawable/ic_create_white"
+        android:clickable="true"
+        android:scaleType="fitCenter"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/transparent" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/on_off_button"
+        android:src="@drawable/ic_setting_dark"
+        android:layout_alignTop="@+id/change_background"
+        android:layout_alignEnd="@+id/send_button"
+        android:clickable="true"
+        android:background="@android:color/transparent" />
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/add_parent_button"
+        android:clickable="true"
+        android:src="@drawable/icon_add_new_ppl"
+        android:cropToPadding="false"
+        android:adjustViewBounds="false"
+        android:background="@drawable/round_button"
+        android:layout_below="@+id/on_off_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:scaleType="fitXY" />
 
 </RelativeLayout>
