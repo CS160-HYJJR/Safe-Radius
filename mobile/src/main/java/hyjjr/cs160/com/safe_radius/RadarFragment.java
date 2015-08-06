@@ -170,7 +170,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             Location.distanceBetween(childLatLng.latitude, childLatLng.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
             Double dist = distance[0]/0.308; // meter to feet
-            Double altitudeDiff = childAltitude - currentAltitude;
+            Double altitudeDiff = (childAltitude - currentAltitude)/0.308; // meter to feet
             if (getView()!= null)
                 ((TextView)(getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
                         altitudeDiff.intValue() + "ft");

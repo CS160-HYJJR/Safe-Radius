@@ -10,6 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by main on 7/31/15.
  */
 public class Global extends Application {
+
+    public static final String TOPIC = "global1";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;

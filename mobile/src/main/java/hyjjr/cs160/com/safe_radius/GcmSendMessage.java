@@ -47,7 +47,7 @@ public class GcmSendMessage extends IntentService {
                 jData.put("message_path", messagePath);
                 jData.put("source", from);
                 // Where to send GCM message.
-                jGcmData.put("to", "/topics/global");
+                jGcmData.put("to", "/topics/" + ((Global)getApplication()).TOPIC);
                 // What to send in GCM message.
 
                 jGcmData.put("data", jData);
