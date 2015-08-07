@@ -29,6 +29,10 @@ public class SendMessageService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (!((Global)getApplication()).isTurnedOn()) {
+            return;
+        }
+
         if (intent != null) {
             String messagePath = (String) intent.getExtras().get("message_path");
             byte[] message = (byte[]) intent.getExtras().get("message");

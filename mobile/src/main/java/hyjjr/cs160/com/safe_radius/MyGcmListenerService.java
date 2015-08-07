@@ -49,6 +49,10 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        if (!((Global)getApplication()).isTurnedOn()) {
+            return;
+        }
+
         if (!from.equals("/topics/"+((Global)getApplication()).TOPIC))
             return;
 

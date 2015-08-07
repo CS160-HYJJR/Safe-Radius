@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -27,17 +26,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TabWidget;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.ByteArrayOutputStream;
@@ -50,22 +47,9 @@ public class SendFragment extends Fragment {
     GoogleApiClient mGoogleApiClient;
     private View view;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 12345;
-
-    /*
-    private NodeApi.NodeListener connectionListener = new NodeApi.NodeListener() {
-
-        @Override
-        public void onPeerConnected(Node node) {
-            ((Global) getActivity().getApplication()).gotConnection();
-        }
-
-        @Override
-        public void onPeerDisconnected(Node node) {
-            lossConnectionAlert();
-            ((Global) getActivity().getApplication()).lostConnection();
-        }
-    };*/
+    private static final int REQUEST_PARENT_PICTURE = 12;
+    private static final int REQUEST_BACKGROUND = 24;
+    private static final int TRANSPARENCY_WHEN_OFF = 30;
 
     private View.OnClickListener powerButtonListener = new View.OnClickListener() {
         @Override
@@ -78,12 +62,19 @@ public class SendFragment extends Fragment {
         }
     };
 
+    private View.OnClickListener backgroundImageListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent2, REQUEST_BACKGROUND);
+        }
+    };
+
     private View.OnClickListener parentImageListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "image clicked");
             final Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent2, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(intent2, REQUEST_PARENT_PICTURE);
         }
     };
 
@@ -224,6 +215,7 @@ public class SendFragment extends Fragment {
         (getView().findViewById(R.id.add_parent_button)).setOnClickListener(parentImageListener);
         ((ImageButton) getView().findViewById(R.id.add_parent_button)).setImageBitmap(((Global) getActivity().getApplication()).getParentPicture());
 
+        (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
         if (((Global) getActivity().getApplication()).isTurnedOn())
             turnOn();
         else
@@ -233,9 +225,8 @@ public class SendFragment extends Fragment {
     private void turnOff() {
         ((Global) getActivity().getApplication()).turnOff();
         (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_off));
-        setVisibilityAll(View.INVISIBLE);
-        getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
-        getActivity().findViewById(android.R.id.tabs).setEnabled(false);
+        setTransparencyAll(TRANSPARENCY_WHEN_OFF);
+        setEnabledAll(false);
         if (mGoogleApiClient != null) {
             //Wearable.NodeApi.removeListener(mGoogleApiClient, connectionListener);
             mGoogleApiClient.disconnect();
@@ -245,48 +236,51 @@ public class SendFragment extends Fragment {
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
         (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on));
-        setVisibilityAll(View.VISIBLE);
-        getActivity().findViewById(android.R.id.tabs).setVisibility(view.VISIBLE);
-        getActivity().findViewById(android.R.id.tabs).setEnabled(true);
+        setTransparencyAll(255);
+        setEnabledAll(true);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
         mGoogleApiClient.connect();
-        //Wearable.NodeApi.addListener(mGoogleApiClient, connectionListener);
-
-        // check connection
-        /*
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(
-                new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                    @Override
-                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                        if (getConnectedNodesResult.getNodes().isEmpty()) { // connection failed
-                            if (!(((Global) getActivity().getApplication()).getConnection())) {
-                                noConnectionAlert();
-                            }
-                        }
-                    }
-                }
-        );*/
     }
 
 
     /*
-        Set invisibility of All views except switch
+        Set transparency of All views except switch
      */
-    private void setVisibilityAll(int visibility) {
+    private void setTransparencyAll(int transparency) {
         ViewGroup viewGroup = (ViewGroup) view.findViewById(R.id.send_fragment_layout);
         for (int i = viewGroup.getChildCount() - 1; i >= 0; i--) {
             final View view = viewGroup.getChildAt(i);
             if (view == null)
                 continue;
-            else
-                view.setVisibility(visibility);
+            if (view.getId() == R.id.on_off_button) {
+                continue;
+            }
+            view.setAlpha(transparency/255.0f);
         }
+        (getActivity().findViewById(android.R.id.tabs)).setAlpha(transparency / 255.0f);
+    }
+
+    /*
+    Set Enabled of All views except switch
+ */
+    private void setEnabledAll(boolean enabled) {
+        ViewGroup viewGroup = (ViewGroup) view.findViewById(R.id.send_fragment_layout);
+        for (int i = viewGroup.getChildCount() - 1; i >= 0; i--) {
+            final View view = viewGroup.getChildAt(i);
+            if (view == null)
+                continue;
+            if (view.getId() == R.id.on_off_button) {
+                continue;
+            }
+            view.setEnabled(enabled);
+        }
+        (getActivity().findViewById(android.R.id.tabs)).setEnabled(enabled);
     }
 
     public void messageSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.radius_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<>(); //ArrayAdapter<String>?
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < sa.getCount() - 1; i++) {
             list.add((String) sa.getItem(i));
         }
@@ -301,7 +295,7 @@ public class SendFragment extends Fragment {
     public void radiusSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<>(); //ArrayAdapter<String>?
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < sa.getCount() - 1; i++) {
             list.add((String) sa.getItem(i));
         }
@@ -313,28 +307,10 @@ public class SendFragment extends Fragment {
         spinner.setAdapter(adapter);
     }
 
-    public void noConnectionAlert() {
-        /*
-        String title = "Warning";
-        String text = "Please connect your phone and watch to use Safe Radius.";
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(text);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "DISMISS",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        getActivity().finish();
-                    }
-                });
-        alertDialog.show();*/
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+        if (requestCode == REQUEST_PARENT_PICTURE && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
-            Log.d(TAG, "Camera");
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageBitmap = getRoundedCornerBitmap(imageBitmap);
             ((Global)getActivity().getApplication()).setParentPicture(imageBitmap);
@@ -347,6 +323,10 @@ public class SendFragment extends Fragment {
             intent.putExtra("message_path", SendMessageService.SEND_PARENT_PICTURE);
             intent.putExtra("message", bitmapByte);
             getActivity().startService(intent);
+        } else if (requestCode == REQUEST_BACKGROUND && resultCode == getActivity().RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            (getView().findViewById(R.id.background_pic)).setBackground(new BitmapDrawable(getResources(), imageBitmap));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -381,22 +361,5 @@ public class SendFragment extends Fragment {
         canvas.drawBitmap(bitmap, rect, rect, paint2);
 
         return output;
-    }
-
-    public void lossConnectionAlert() {
-        String title = "Warning";
-        String text = "You lost signal with your child's watch. Please go to their last " +
-                "known location to reestablish connection.";
-        Intent alertIntent = new Intent(getActivity(), AlertActivity.class);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        alertIntent.putExtra("title", title);
-        alertIntent.putExtra("text", text.getBytes());
-        startActivity(alertIntent);
-
-        // start Vibration
-        Intent vibrateIntent = new Intent(getActivity(), VibrationService.class);
-        getActivity().startService(vibrateIntent);
     }
 }
