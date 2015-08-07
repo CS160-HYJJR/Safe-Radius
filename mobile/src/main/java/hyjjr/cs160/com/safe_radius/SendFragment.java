@@ -127,7 +127,7 @@ public class SendFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
             int length = parent.getSelectedItem().toString().length();
-            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString().substring(0, length-3)));
+            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
         }
 
         @Override
@@ -182,14 +182,17 @@ public class SendFragment extends Fragment {
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
                 R.layout.custom_spinner, arrayList));
 
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.message_choices, R.layout.custom_spinner);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(adapter);
-
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
         ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
 
-//        ((Spinner) view.findViewById(R.id.radius_spinner)).setAdapter(adapter);
+        ArrayList<String> arrayList2 = new ArrayList<>();
+        for (String s: ((Global) getActivity().getApplication()).getRadii()) {
+            arrayList2.add(s);
+        }
+
+        ((Spinner) view.findViewById(R.id.radius_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, arrayList2));
+
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
 
@@ -207,7 +210,7 @@ public class SendFragment extends Fragment {
 
     private void turnOff() {
         ((Global) getActivity().getApplication()).turnOff();
-        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_setting));
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_off));
         setVisibilityAll(View.INVISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.GONE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(false);
@@ -219,7 +222,7 @@ public class SendFragment extends Fragment {
 
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
-        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_map));
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on));
         setVisibilityAll(View.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setVisibility(view.VISIBLE);
         getActivity().findViewById(android.R.id.tabs).setEnabled(true);

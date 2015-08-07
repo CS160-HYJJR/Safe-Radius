@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "mapHarry";
+    public static final String TOPIC = "mapRiva";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;
@@ -22,6 +22,7 @@ public class Global extends Application {
     private boolean isForeground;
     private LatLng childLatLng;
     private Double childAltitude;
+    private String[] radii;
 
     @Override
     public void onCreate() {
@@ -33,6 +34,7 @@ public class Global extends Application {
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
         safeRadius = 60; // TODO
         lostConnection = false;
+        radii = getResources().getStringArray(R.array.radius_choices);
     }
 
 
@@ -124,5 +126,9 @@ public class Global extends Application {
 
     public void setChildAltitude(double childAltitude) {
         this.childAltitude = childAltitude;
+    }
+
+    public String[] getRadii() {
+        return radii;
     }
 }
