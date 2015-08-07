@@ -53,41 +53,65 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     };
 
     private View.OnTouchListener micButtonListener = new View.OnTouchListener() {
+        private Audio audio = new Audio();
         private boolean started;
         private static final int DELAY = 500;
-        private Handler myHandler;
-        private ToastHelper recording = ToastHelper.makeText(getApplication(), "Recording", Integer.MAX_VALUE);
-        private Toast voiceSent = Toast.makeText(getApplication(), "Voice Sent", Toast.LENGTH_SHORT);
-        Runnable startRecording = new Runnable() {
-            public void run() {
-                started = true;
-                recording.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
-                recording.show();
-            }
-        };
+        private Handler myHandler = new Handler();
+        private Toast recording; // for indefinite long Toast
+        private Toast voiceSent;
+        private static final int MAX_TIME = 5000;
+
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-
+            if (recording == null) {
+                recording = Toast.makeText(MainActivity.this, "Recording", Toast.LENGTH_SHORT);
+                recording.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
+            }
+            if (voiceSent == null) {
+                voiceSent = Toast.makeText(getApplication(), "Voice Sent", Toast.LENGTH_SHORT);
+                voiceSent.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
+            }
+            Runnable startRecording = new Runnable() {
+                public void run() {
+                    started = true;
+                    fireRecodingToastIndefinite();
+                    recording.show();
+                    audio.startRecording();
+                }
+            };
             switch(event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     if (!started) {
                         voiceSent.cancel();
-                        Handler myHandler = new Handler();
                         myHandler.postDelayed(startRecording, DELAY);//Message will be delivered in 1 second.
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (myHandler != null) {
-                        myHandler.removeCallbacks(startRecording);
-                    }
+                    started = false;
                     recording.cancel();
                     voiceSent.show();
-                    started = false;
+                    byte[] bytes = audio.stopRecording();
+                    Log.d(TAG, "voice size: " + bytes);
                     break;
-
             }
-            return true;
+            return false;
+        }
+
+        private void fireRecodingToastIndefinite() {
+            Thread t = new Thread() {
+                public void run() {
+                    try {
+                        while (started) {
+                            recording.show();
+                            if (started) sleep(250);
+                        }
+                    } catch (Exception e) {
+                        Log.e("LongToast", "", e);
+                    }
+                }
+            };
+            t.start();
         }
     };
 
