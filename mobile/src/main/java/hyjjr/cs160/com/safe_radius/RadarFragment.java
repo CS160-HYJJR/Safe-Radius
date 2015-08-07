@@ -159,9 +159,12 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             Double dist = distance[0] / 0.308; // meter to feet
             Double altitudeDiff = (childAltitude - currentAltitude) / 0.308; // meter to feet
             if (getView() != null)
-                ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
-                        altitudeDiff.intValue() + "ft");
-
+                if (altitudeDiff < 0)
+                    ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
+                        -altitudeDiff.intValue() + "ft above child");
+                else
+                    ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
+                            altitudeDiff.intValue() + "ft below child");
             setupMap();
             mapFragment.getMapAsync(this);
         }
