@@ -124,14 +124,36 @@ public class SendFragment extends Fragment {
 
     private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
-            int length = parent.getSelectedItem().toString().length();
-            ((Global) getActivity().getApplication()).setSafeRadius(Double.valueOf(parent.getSelectedItem().toString()));
+        public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+            if (position != parent.getCount() - 1)
+                ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
+            else { // last message selected
+                final EditText input = new EditText(getActivity());
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Please write the new radius")
+                        .setView(input)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String newRadius = input.getText().toString();
+                                SendFragment.this.radiusSpinnerAddItem(newRadius);
+                                ((Global) getActivity().getApplication()).setMessageSelected(position);
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.radius_spinner)).setSelection(
+                                        ((Global) getActivity().getApplication()).getSafeRadiusSelected());
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.message_spinner)).setSelection(
+                                        ((Global) getActivity().getApplication()).getSafeRadiusSelected());
+                            }
+                        }).show();
+            }
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
+
         }
     };
 
@@ -262,6 +284,21 @@ public class SendFragment extends Fragment {
     }
 
     public void messageSpinnerAddItem(String item) {
+        Spinner spinner = (Spinner) view.findViewById(R.id.radius_spinner);
+        SpinnerAdapter sa = spinner.getAdapter();
+        ArrayList<String> list = new ArrayList<>(); //ArrayAdapter<String>?
+        for (int i = 0; i < sa.getCount() - 1; i++) {
+            list.add((String) sa.getItem(i));
+        }
+        list.add(item);
+        list.add((String) sa.getItem(sa.getCount() - 1));
+        ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
+        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, list);
+        spinner.setAdapter(adapter);
+    }
+
+    public void radiusSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
         ArrayList<String> list = new ArrayList<>(); //ArrayAdapter<String>?

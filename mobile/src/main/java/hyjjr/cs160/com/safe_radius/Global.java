@@ -131,4 +131,8 @@ public class Global extends Application {
     public String[] getRadii() {
         return radii;
     }
+
+    public void setRadii(String[] radii) {
+        this.radii = radii;
+    }
 }

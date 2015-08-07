@@ -31,41 +31,28 @@
         android:layout_alignTop="@+id/message_spinner"
         android:layout_toEndOf="@+id/message_spinner" />
 
-
-    <TextView
-        android:id="@+id/radius_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Radius:"
-        android:textColor="@android:color/background_dark"
-        android:textSize="20sp"
-        android:visibility="visible"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/message_spinner"
-        android:layout_toStartOf="@+id/radius_spinner" />
-
     <Spinner
         android:id="@+id/radius_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:gravity="center"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:minHeight="50dp"
         android:entries="@array/radius_choices"
         android:spinnerMode="dropdown"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:backgroundTint="#329b32"
-        android:layout_alignTop="@+id/textView"
-        android:layout_toStartOf="@+id/send_button"
-        android:layout_alignBottom="@+id/textView"
-        android:dropDownVerticalOffset="40dp"/>
+        android:dropDownVerticalOffset="20dp"
+        android:minWidth="120dp"
+        android:layout_below="@id/message_spinner"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/radius_text"
-        android:layout_alignTop="@id/radius_text"
+        android:layout_alignBottom="@id/radius_spinner"
+        android:layout_alignTop="@id/radius_spinner"
         android:layout_toRightOf="@id/radius_spinner"
+        android:layout_below="@id/message_spinner"
         android:gravity="center"
         android:text="@string/radius_unit"
         android:textColor="@color/black"
@@ -122,5 +109,18 @@
         android:background="@drawable/circle_button"
         android:layout_below="@+id/change_background"
         android:layout_centerHorizontal="true" />
+
+   <TextView
+        android:id="@+id/radius_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Radius:"
+        android:textColor="@android:color/background_dark"
+        android:textSize="20sp"
+        android:visibility="visible"
+        android:layout_alignTop="@id/radius_spinner"
+        android:layout_alignBottom="@id/radius_spinner"
+        android:layout_toLeftOf="@+id/radius_spinner"
+        android:gravity="center"/>
 
 </RelativeLayout>
