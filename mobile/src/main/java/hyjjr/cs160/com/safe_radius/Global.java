@@ -13,7 +13,7 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "mapRiva";
+    public static final String TOPIC = "app12345";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;
@@ -80,7 +80,8 @@ public class Global extends Application {
     }
 
     public double getSafeRadiusInMeter() {
-        return safeRadius * 0.3048;
+        return Double.valueOf(radii[getSafeRadiusSelected()].
+                replaceAll("[^\\d.]", "")) * 0.3048;
     }
 
     public String getMessage() {
@@ -102,12 +103,6 @@ public class Global extends Application {
     public Bitmap getBckgrdPicture() {
         return bckgrdPicture;
     }
-
-    public void lostConnection() { lostConnection = true; }
-
-    public void gotConnection() { lostConnection = false; }
-
-    public boolean getConnection() { return lostConnection; }
 
     public boolean isForeground() {
         return isForeground;
@@ -141,10 +136,8 @@ public class Global extends Application {
         this.radii = radii;
     }
 
-    public String getRadius() { return radii[safeRadiusSelected]; }
-
-    public void setPendingResults(TreeMap<String, MyGcmListenerService.ByteArray> pendingResults) {
-        this.pendingResults = pendingResults;
+    public String getRadius() {
+        return radii[safeRadiusSelected];
     }
 
     public TreeMap<String, MyGcmListenerService.ByteArray> getPendingResults() {

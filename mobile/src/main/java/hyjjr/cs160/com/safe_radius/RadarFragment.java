@@ -35,16 +35,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
     private Double childAltitude;
     private Double currentAltitude;
     private LatLng childLatLng;
-    private Location currentLoc;
-
-
-    private double lonChildVelocity = 0.000015; // in unit of degree per second
-    private double latChildVelocity = 0.000015; // in unit of degree per second
-    private RepeatAction childChangeLoc;
-    private boolean hasAlerted; // Once alert once every time open the map.
-    // Actually, we should detect the movement once the app is opened, not only in the map fragment only.
-    // change later.
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -158,7 +148,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
 
     public void onLocationChanged(Location location) {
         Log.d(TAG, "on location changed");
-        currentLoc = location;
         currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         currentAltitude = location.getAltitude();
         childLatLng = ((Global)getActivity().getApplication()).getChildLatLng();
