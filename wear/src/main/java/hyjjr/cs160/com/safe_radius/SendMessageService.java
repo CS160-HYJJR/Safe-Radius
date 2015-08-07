@@ -19,6 +19,7 @@ public class SendMessageService extends IntentService {
 
     public static final String LOCATION_PATH = "/location_wear_to_mobile";
     public static final String MESSAGE_PATH = "/message_wear_to_mobile";
+    public static final String VOICE_PATH = "/voice_wear_to_mobile";
 
     private static final String TAG = SendMessageService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;

@@ -31,9 +31,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class MyGcmListenerService extends GcmListenerService {
@@ -41,6 +38,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
     private static final String LOCATION_PATH = "/location_wear_to_mobile";
+    private static final String VOICE_PATH = "/voice_wear_to_mobile";
     public class ByteArray {
         private byte[] bytes;
         private int receivedBytes;
@@ -111,7 +109,7 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.putExtra("message", messageBytes);
             startService(intent);
         }
-        else if (ReceiveMessageService.receiveFromWatch == false){
+        else if (ReceiveMessageService.receivedSthFromWatch == false){
             if (messagePath.equals(MESSAGE_PATH)) {
                 Log.d(TAG, "Message path received on mobile is: " + messagePath);
                 Log.d(TAG, "Message received on mobile is: " + messageBytes);
@@ -130,8 +128,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 startService(vibrateIntent);
 
             } else if (messagePath.equals(LOCATION_PATH)) {
-                Log.d(TAG, "location reveiced " + new String(messageBytes));
-
+                Log.d(TAG, "location reveiced ");
                 double[] positions = new double[3];
                 positions[0]= ByteBuffer.wrap(messageBytes).getDouble(0);
                 positions[1]= ByteBuffer.wrap(messageBytes).getDouble(8);
@@ -141,6 +138,16 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt " + positions[2]);
                 ((Global)getApplication()).setChildLatLng(new LatLng(positions[0], positions[1]));
                 ((Global)getApplication()).setChildAltitude(positions[2]);
+            } else if (messagePath.equals(VOICE_PATH)) {
+                Log.d(TAG, "voice received");
+                Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                alertIntent.putExtra("voice", messageBytes);
+                alertIntent.putExtra("title", "Voice from your child");
+                alertIntent.putExtra("text", messageBytes);
+                startActivity(alertIntent);
             }
 
         }

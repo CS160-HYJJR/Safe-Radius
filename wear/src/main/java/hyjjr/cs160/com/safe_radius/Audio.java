@@ -19,7 +19,6 @@ public class Audio {
     private boolean isRecording = false;
     int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
     int BytesPerElement = 2; // 2 bytes in 16bit format
-    short sData[] = new short[BufferElements2Rec];
     ByteArrayOutputStream os = new ByteArrayOutputStream();
 
     public void startRecording() {

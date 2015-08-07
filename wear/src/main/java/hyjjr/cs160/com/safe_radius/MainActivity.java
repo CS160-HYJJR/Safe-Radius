@@ -92,7 +92,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                     recording.cancel();
                     voiceSent.show();
                     byte[] bytes = audio.stopRecording();
-                    Log.d(TAG, "voice size: " + bytes);
+                    Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+                    intent.putExtra("message_path", SendMessageService.VOICE_PATH);
+                    intent.putExtra("message", bytes);
+                    intent.putExtra("confirmationEnabled", "true");
+                    startService(intent);
                     break;
             }
             return false;
@@ -119,7 +123,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
+        findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
         findViewById((R.id.mic_button)).setOnTouchListener(micButtonListener);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)

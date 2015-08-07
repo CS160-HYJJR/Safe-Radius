@@ -7,18 +7,19 @@
     tools:deviceIds="wear_round">
     <!--android:background="@android:color/background_light"-->
 
-   <!-- <ImageButton
+    <ImageButton
         android:id="@+id/send_button"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_weight="1"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/send_button"
         android:clickable="true"
-        android:visibility="gone"
-        android:contentDescription="" />-->
+        android:contentDescription="" />
+    <!--
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentStart="true"-->
 
     <ImageButton
         android:layout_width="wrap_content"
