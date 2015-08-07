@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec("Main").setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_name1)).setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
                 SendFragment.class, null);
 
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map, getTheme())),
