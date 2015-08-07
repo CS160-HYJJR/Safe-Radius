@@ -1,6 +1,7 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -40,6 +42,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class SendFragment extends Fragment {
@@ -50,7 +53,9 @@ public class SendFragment extends Fragment {
 
     private static final int REQUEST_PARENT_PICTURE = 12;
     private static final int REQUEST_BACKGROUND = 24;
+    private static final int REQUEST_SPEECH_TO_TEXT = 36;
     private static final int TRANSPARENCY_WHEN_OFF = 30;
+    private static final String MESSAGE_PATH = "/message_mobile_to_wear";
 
     private View.OnClickListener powerButtonListener = new View.OnClickListener() {
         @Override
@@ -76,6 +81,27 @@ public class SendFragment extends Fragment {
         public void onClick(View v) {
             final Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent2, REQUEST_PARENT_PICTURE);
+        }
+    };
+
+    private View.OnClickListener speakButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                    "Talk to your child");
+            try {
+                startActivityForResult(intent, REQUEST_SPEECH_TO_TEXT);
+            } catch (ActivityNotFoundException a) {
+                Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                        "not supported",
+                        Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                toast.show();
+            }
         }
     };
 
@@ -150,7 +176,7 @@ public class SendFragment extends Fragment {
     };
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
-        private static final String MESSAGE_PATH = "/message_mobile_to_wear";
+
 
         @Override
         public void onClick(View v) {
@@ -217,6 +243,8 @@ public class SendFragment extends Fragment {
         ((ImageButton) getView().findViewById(R.id.add_parent_button)).setImageBitmap(getRoundedCornerBitmapWithBorder(((Global) getActivity().getApplication()).getParentPicture()));
 
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
+
+        (getView().findViewById(R.id.speak_button)).setOnClickListener(speakButtonListener);
         if (((Global) getActivity().getApplication()).isTurnedOn())
             turnOn();
         else
@@ -256,7 +284,7 @@ public class SendFragment extends Fragment {
             if (view.getId() == R.id.on_off_button) {
                 continue;
             }
-            view.setAlpha(transparency/255.0f);
+            view.setAlpha(transparency / 255.0f);
         }
         (getActivity().findViewById(android.R.id.tabs)).setAlpha(transparency / 255.0f);
     }
@@ -329,6 +357,22 @@ public class SendFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ImageButton button = ((ImageButton)(getView().findViewById(R.id.add_parent_button)));
             button.setBackground(new BitmapDrawable(getResources(), imageBitmap));
+        } else if (requestCode == REQUEST_SPEECH_TO_TEXT && resultCode == getActivity().RESULT_OK) {
+            Log.d(TAG, "speech2");
+            ArrayList<String> result = data
+                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String message = result.get(0);
+            Log.d(TAG, "speech to text result: " + message);
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                    message,
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+            toast.show();
+            Intent intent = new Intent(getActivity(), GcmSendMessage.class);
+            intent.putExtra("message_path", MESSAGE_PATH);
+            intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
+            intent.putExtra("source", "phone");
+            getActivity().startService(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

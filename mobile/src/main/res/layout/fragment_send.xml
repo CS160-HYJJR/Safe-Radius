@@ -123,4 +123,14 @@
         android:layout_toLeftOf="@+id/radius_spinner"
         android:gravity="center"/>
 
+    <ImageButton
+        android:id="@+id/speak_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:src="@drawable/mr_ic_audio_vol"
+        android:layout_below="@id/radius_spinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"/>
+
 </RelativeLayout>
