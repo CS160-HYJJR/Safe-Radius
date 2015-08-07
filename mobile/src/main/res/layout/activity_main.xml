@@ -7,15 +7,13 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:orientation="vertical">
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp" />
+            android:layout_weight="1" />
 
         <TabWidget
             android:id="@android:id/tabs"
