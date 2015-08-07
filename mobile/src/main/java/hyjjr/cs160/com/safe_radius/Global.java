@@ -34,7 +34,6 @@ public class Global extends Application {
         messageSelected = 0;
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.ic_thumbnail_addyourpic);
         bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
-        safeRadius = 60; // TODO
         lostConnection = false;
         radii = getResources().getStringArray(R.array.radius_choices);
     }
@@ -74,14 +73,6 @@ public class Global extends Application {
 
     public void setMessageSelected(int messageSelected) {
         this.messageSelected = messageSelected;
-    }
-
-    public double getSafeRadius() {
-        return safeRadius;
-    }
-
-    public void setSafeRadius(double safeRadius) {
-        this.safeRadius = safeRadius;
     }
 
     public double getSafeRadiusInMeter() {
@@ -145,4 +136,6 @@ public class Global extends Application {
     public void setRadii(String[] radii) {
         this.radii = radii;
     }
+
+    public String getRadius() { return radii[safeRadiusSelected]; }
 }

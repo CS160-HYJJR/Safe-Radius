@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -119,26 +120,26 @@ public class SendFragment extends Fragment {
     private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-            if (position != parent.getCount() - 1)
+            if (position != parent.getCount() - 1) {
                 ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
-            else { // last message selected
+            } else { // last message selected
                 final EditText input = new EditText(getActivity());
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Please write the new radius")
+                        .setTitle("Please write a new radius")
                         .setView(input)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String newRadius = input.getText().toString();
                                 SendFragment.this.radiusSpinnerAddItem(newRadius);
-                                ((Global) getActivity().getApplication()).setMessageSelected(position);
+                                ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
                                 ((Spinner) SendFragment.this.view.findViewById(R.id.radius_spinner)).setSelection(
                                         ((Global) getActivity().getApplication()).getSafeRadiusSelected());
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                ((Spinner) SendFragment.this.view.findViewById(R.id.message_spinner)).setSelection(
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.radius_spinner)).setSelection(
                                         ((Global) getActivity().getApplication()).getSafeRadiusSelected());
                             }
                         }).show();
@@ -196,7 +197,7 @@ public class SendFragment extends Fragment {
             arrayList.add(s);
         }
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, arrayList));
+                R.layout.custom_spinner, arrayList, true));
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
         ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
@@ -207,7 +208,7 @@ public class SendFragment extends Fragment {
         }
 
         ((Spinner) view.findViewById(R.id.radius_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, arrayList2));
+                R.layout.custom_spinner, arrayList2, false));
 
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
@@ -221,6 +222,11 @@ public class SendFragment extends Fragment {
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
 
         ((ImageView) getView().findViewById(R.id.background_pic)).setImageBitmap(((Global) getActivity().getApplication()).getBckgrdPicture());
+        if (((Global) getActivity().getApplication()).getBckgrdPicture().sameAs((BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius)))) {
+
+        } else {
+            ((ImageView) getView().findViewById(R.id.background_pic)).setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
 
         if (((Global) getActivity().getApplication()).isTurnedOn())
             turnOn();
@@ -284,6 +290,21 @@ public class SendFragment extends Fragment {
     }
 
     public void messageSpinnerAddItem(String item) {
+        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
+        SpinnerAdapter sa = spinner.getAdapter();
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i < sa.getCount() - 1; i++) {
+            list.add((String) sa.getItem(i));
+        }
+        list.add(item);
+        list.add((String) sa.getItem(sa.getCount() - 1));
+        ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
+        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, list, true);
+        spinner.setAdapter(adapter);
+    }
+
+    public void radiusSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.radius_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
         ArrayList<String> list = new ArrayList<>();
@@ -294,22 +315,7 @@ public class SendFragment extends Fragment {
         list.add((String) sa.getItem(sa.getCount() - 1));
         ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
         ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, list);
-        spinner.setAdapter(adapter);
-    }
-
-    public void radiusSpinnerAddItem(String item) {
-        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
-        SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < sa.getCount() - 1; i++) {
-            list.add((String) sa.getItem(i));
-        }
-        list.add(item);
-        list.add((String) sa.getItem(sa.getCount() - 1));
-        ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
-        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, list);
+                R.layout.custom_spinner, list, false);
         spinner.setAdapter(adapter);
     }
 
