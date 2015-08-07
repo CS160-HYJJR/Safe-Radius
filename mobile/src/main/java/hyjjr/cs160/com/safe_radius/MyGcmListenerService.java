@@ -54,6 +54,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         String source = data.getString("source");
         if (source.equals("phone")) {
+            Log.d(TAG, "Gcm received message from phone. Message_path " + data.getString("message_path")+ " message " + data.getString("message"));
             Intent intent = new Intent(this, SendMessageService.class);
             intent.putExtra("message_path", data.getString("message_path"));
             intent.putExtra("message", data.getString("message").getBytes());

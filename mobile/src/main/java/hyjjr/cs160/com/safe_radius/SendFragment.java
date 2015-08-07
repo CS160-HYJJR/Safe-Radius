@@ -301,14 +301,15 @@ public class SendFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageBitmap = getRoundedCornerBitmap(imageBitmap);
             ((Global)getActivity().getApplication()).setParentPicture(imageBitmap);
-            /*
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, 32, 32, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] bitmapByte = stream.toByteArray();
-            Intent intent = new Intent(getActivity(), SendMessageService.class);
+            Log.d(TAG, "image size: " + bitmapByte.length);
+            Intent intent = new Intent(getActivity(), GcmSendMessage.class);
             intent.putExtra("message_path", SendMessageService.SEND_PARENT_PICTURE);
             intent.putExtra("message", bitmapByte);
-            getActivity().startService(intent);*/
+            getActivity().startService(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
