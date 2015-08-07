@@ -7,12 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,9 +27,6 @@ import com.google.android.gms.location.LocationListener;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -55,21 +54,36 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     private View.OnTouchListener micButtonListener = new View.OnTouchListener() {
         private boolean started;
-        private static final int DELAY = 1;
-        private static final ScheduledExecutorService worker =
-                Executors.newSingleThreadScheduledExecutor();
+        private static final int DELAY = 500;
+        private Handler myHandler;
+        private ToastHelper recording = ToastHelper.makeText(getApplication(), "Recording", Integer.MAX_VALUE);
+        private Toast voiceSent = Toast.makeText(getApplication(), "Voice Sent", Toast.LENGTH_SHORT);
+        Runnable startRecording = new Runnable() {
+            public void run() {
+                started = true;
+                recording.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
+                recording.show();
+            }
+        };
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            switch(event.getActionMasked()) {
-                case MotionEvent.ACTION_UP:
-                    if (started) {
-                        Runnable task = new Runnable() {
-                            public void run() {
 
-                            }
-                        };
-                        worker.schedule(task, DELAY, TimeUnit.SECONDS);
+            switch(event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (!started) {
+                        voiceSent.cancel();
+                        Handler myHandler = new Handler();
+                        myHandler.postDelayed(startRecording, DELAY);//Message will be delivered in 1 second.
                     }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (myHandler != null) {
+                        myHandler.removeCallbacks(startRecording);
+                    }
+                    recording.cancel();
+                    voiceSent.show();
+                    started = false;
                     break;
 
             }

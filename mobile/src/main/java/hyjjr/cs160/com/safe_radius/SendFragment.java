@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -213,7 +214,7 @@ public class SendFragment extends Fragment {
         (view.findViewById(R.id.on_off_button)).setOnClickListener(powerButtonListener);
 
         (getView().findViewById(R.id.add_parent_button)).setOnClickListener(parentImageListener);
-        ((ImageButton) getView().findViewById(R.id.add_parent_button)).setImageBitmap(((Global) getActivity().getApplication()).getParentPicture());
+        ((ImageButton) getView().findViewById(R.id.add_parent_button)).setImageBitmap(getRoundedCornerBitmapWithBorder(((Global) getActivity().getApplication()).getParentPicture()));
 
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
         if (((Global) getActivity().getApplication()).isTurnedOn())
@@ -312,7 +313,6 @@ public class SendFragment extends Fragment {
         if (requestCode == REQUEST_PARENT_PICTURE && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageBitmap = getRoundedCornerBitmap(imageBitmap);
             ((Global)getActivity().getApplication()).setParentPicture(imageBitmap);
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, 32, 32, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -322,16 +322,18 @@ public class SendFragment extends Fragment {
             Intent intent = new Intent(getActivity(), GcmSendMessage.class);
             intent.putExtra("message_path", SendMessageService.SEND_PARENT_PICTURE);
             intent.putExtra("message", bitmapByte);
+            intent.putExtra("source", "phone");
             getActivity().startService(intent);
         } else if (requestCode == REQUEST_BACKGROUND && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            (getView().findViewById(R.id.background_pic)).setBackground(new BitmapDrawable(getResources(), imageBitmap));
+            ImageButton button = ((ImageButton)(getView().findViewById(R.id.add_parent_button)));
+            button.setBackground(new BitmapDrawable(getResources(), imageBitmap));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+    public static Bitmap getRoundedCornerBitmapWithBorder(Bitmap bitmap) {
 
         Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -360,6 +362,42 @@ public class SendFragment extends Fragment {
         paint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint2);
 
-        return output;
+
+        // add border begins
+        final int borderSize = 10; // set border size here
+        Bitmap bitmapWithBorder= Bitmap.createBitmap(output.getWidth() + borderSize * 2, output.getHeight() + borderSize * 2, output.getConfig());
+        Canvas canvas3 = new Canvas(bitmapWithBorder);
+        canvas3.drawColor(Color.BLACK);
+        canvas3.drawBitmap(output, borderSize, borderSize, null);
+        bitmap = bitmapWithBorder;
+
+        // add border finishes
+        Bitmap circleBitmap2 = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        BitmapShader shader2 = new BitmapShader(bitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        Paint paint3 = new Paint();
+        paint3.setShader(shader2);
+        paint3.setAntiAlias(true);
+        Canvas c2 = new Canvas(circleBitmap2);
+        c2.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, 100, paint3);
+
+        Bitmap output2 = Bitmap.createBitmap(circleBitmap2.getWidth(), circleBitmap2
+                .getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas2 = new Canvas(output2);
+
+        final int color2 = 0xff4242DB;
+        final Paint paint4 = new Paint();
+        final Rect rect2 = new Rect(0, 0, circleBitmap2.getWidth(), circleBitmap2.getHeight());
+        final RectF rectF2 = new RectF(rect2);
+        final float roundPx2 = circleBitmap2.getWidth()/2;
+
+        paint4.setAntiAlias(true);
+        canvas2.drawARGB(0, 0, 0, 0);
+        paint4.setColor(color2);
+        canvas2.drawRoundRect(rectF2, roundPx2, roundPx2, paint4);
+
+        paint4.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas2.drawBitmap(bitmap, rect2, rect2, paint4);
+        return output2;
     }
 }
