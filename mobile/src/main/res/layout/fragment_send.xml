@@ -2,70 +2,75 @@
     android:id="@+id/send_fragment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:background="@android:color/background_light">
 
 
     <Spinner
         android:id="@+id/message_spinner"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:background="#666666"
         android:minHeight="50dp"
         android:minWidth="200dp"
         android:spinnerMode="dropdown"
-        android:layout_marginTop="106dp"
-        android:layout_below="@+id/imageView"
+        android:layout_marginTop="50dp"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:backgroundTint="#329b32"
+        android:layout_below="@+id/add_parent_button"
         android:layout_alignParentStart="true"
-        style="@style/Widget.AppCompat.Spinner.Underlined"/>
+        android:layout_marginLeft="20dp"
+        android:dropDownVerticalOffset="45dp"/>
 
-    <Button
-        android:id="@+id/send_button"
+    <ImageButton
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_alignBottom="@id/message_spinner"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/message_spinner"
-        android:text="Send" />
+        android:id="@+id/send_button"
+        android:src="@drawable/button_send_green_set"
+        android:clickable="true"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_alignTop="@+id/message_spinner"
+        android:layout_toEndOf="@+id/message_spinner" />
 
 
     <TextView
         android:id="@+id/radius_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
-        android:text="Radius"
+        android:layout_marginTop="50dp"
+        android:text="Radius:"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
         android:visibility="visible"
+        android:layout_marginRight="10dp"
         android:layout_below="@+id/message_spinner"
-        android:layout_toEndOf="@+id/change_background" />
+        android:layout_toStartOf="@+id/radius_spinner" />
 
     <Spinner
         android:id="@+id/radius_spinner"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/radius_text"
-        android:layout_alignTop="@id/radius_text"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="0dp"
         android:gravity="center"
-        android:layout_toRightOf="@id/radius_text"
         android:entries="@array/radius_choices"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:backgroundTint="#329b32"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toStartOf="@+id/send_button"
+        android:layout_alignBottom="@+id/textView"
+        android:dropDownVerticalOffset="40dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/radius_text"
         android:layout_alignTop="@id/radius_text"
-        android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/radius_spinner"
         android:gravity="center"
         android:text="@string/radius_unit"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:id="@+id/textView" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -77,7 +82,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="175dp"
         android:id="@+id/background_pic"
         android:src="@drawable/title_safe_radius"
         android:background="#ff73a86a"
@@ -88,7 +93,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/change_background"
-        android:src="@drawable/ic_create_white"
+        android:src="@drawable/ic_camera"
         android:clickable="true"
         android:scaleType="fitCenter"
         android:layout_alignParentTop="true"
@@ -99,11 +104,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/on_off_button"
-        android:src="@drawable/ic_setting_dark"
-        android:layout_alignTop="@+id/change_background"
-        android:layout_alignEnd="@+id/send_button"
         android:clickable="true"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageButton
         android:layout_width="100dp"
@@ -112,11 +116,11 @@
         android:clickable="true"
         android:src="@drawable/icon_add_new_ppl"
         android:cropToPadding="false"
-        android:adjustViewBounds="false"
-        android:background="@drawable/round_button"
-        android:layout_below="@+id/on_off_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:scaleType="fitXY" />
+        android:adjustViewBounds="true"
+        android:layout_marginTop="91dp"
+        android:scaleType="fitXY"
+        android:background="@drawable/circle_button"
+        android:layout_below="@+id/change_background"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

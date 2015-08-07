@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +46,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                toast.show();
+
                 //iName[position] = null;
                 if (iName.size() > 2) {
                     if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position)))
@@ -70,26 +74,30 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         spnItemDel = (TextView) rowView.findViewById(R.id.spnDel);
 
         spnItemName.setText(iName.get(position));
+        spnItemName.setBackgroundColor(context.getResources().getColor(R.color.white));
+        spnItemName.setTextColor(context.getResources().getColor(R.color.black));
         spnItemDel.setText("X");
         spnItemDel.setVisibility(View.GONE);
         spnItemDel.setEnabled(false);
-        spnItemDel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-                //iName[position] = null;
-                if (iName.size() > 2) {
-                    if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position)))
-                    {
-                        ((Global) getContext().getApplicationContext()).setMessageSelected(0);
-                    }
-                    iName.remove(position);
-                    ((Global) getContext().getApplicationContext()).setMessages(iName.toArray(new String[1]));
-                    notifyDataSetChanged();
-                }
-            }
-        });
+//        spnItemDel.setOnClickListener(new OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                Toast toast = Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT);
+//                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+//                toast.show();
+//                //iName[position] = null;
+//                if (iName.size() > 2) {
+//                    if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position)))
+//                    {
+//                        ((Global) getContext().getApplicationContext()).setMessageSelected(0);
+//                    }
+//                    iName.remove(position);
+//                    ((Global) getContext().getApplicationContext()).setMessages(iName.toArray(new String[1]));
+//                    notifyDataSetChanged();
+//                }
+//            }
+//        });
         return rowView;
     }
 
