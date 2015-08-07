@@ -33,12 +33,23 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
     private static final String LOCATION_PATH = "/location_wear_to_mobile";
+    public class ByteArray {
+        private byte[] bytes;
+        private int receivedBytes;
+        public ByteArray(byte[] bytes, int receivedBytes) {
+            this.bytes = bytes;
+            this.receivedBytes = receivedBytes;
+        }
+    }
+
     /**
      * Called when message is received.
      *
@@ -52,32 +63,58 @@ public class MyGcmListenerService extends GcmListenerService {
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
-
         if (!from.equals("/topics/"+((Global)getApplication()).TOPIC))
             return;
 
         String source = data.getString("source");
+        String messagePath = data.getString("message_path");
+        String message = data.getString("message");
+        String id = data.getString("id");
+        byte[] messageBytes = null;
+        try {
+            messageBytes = message.getBytes("ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        int messageStartPos = Integer.valueOf(data.getString("message_start_pos"));
+        int totalBytes = Integer.valueOf(data.getString("total_bytes"));
+        if (messageBytes.length < totalBytes) {
+            TreeMap<String, ByteArray> pendingResults = ((Global)getApplication()).getPendingResults();
+            if (!pendingResults.containsKey(id)) {
+                byte[] bytes = new byte[totalBytes];
+                for (int i = messageStartPos; i < messageStartPos + messageBytes.length; i++) {
+                    bytes[i] = messageBytes[i-messageStartPos];
+                }
+                pendingResults.put(id, new ByteArray(bytes, messageBytes.length));
+
+                return; // RETURN
+            } else {
+                ByteArray byteArray = pendingResults.get(id);
+                for (int i = messageStartPos; i < messageStartPos + messageBytes.length; i++) {
+                    byteArray.bytes[i] = messageBytes[i-messageStartPos];
+                }
+                byteArray.receivedBytes += messageBytes.length;
+                if (byteArray.receivedBytes < totalBytes)
+                    return;
+                else {
+                    messageBytes = byteArray.bytes;
+                    pendingResults.remove(id);
+                }
+            }
+        }
+
+        Log.d(TAG, "gcm message size: " + messageBytes.length);
         if (source.equals("phone")) {
             Log.d(TAG, "Gcm received message from phone. Message_path " + data.getString("message_path")+ " message " + data.getString("message"));
             Intent intent = new Intent(this, SendMessageService.class);
-            intent.putExtra("message_path", data.getString("message_path"));
-            intent.putExtra("message", data.getString("message").getBytes());
+            intent.putExtra("message_path", messagePath);
+            intent.putExtra("message", messageBytes);
             startService(intent);
         }
         else if (ReceiveMessageService.receiveFromWatch == false){
-            String messagePath = data.getString("message_path");
-            byte[] message = new byte[0];
-            try {
-                message = data.getString("message").getBytes("ISO-8859-1");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            Log.d(TAG, "From: " + from);
-            Log.d(TAG, "Message: " + data.getString("message"));
-
             if (messagePath.equals(MESSAGE_PATH)) {
                 Log.d(TAG, "Message path received on mobile is: " + messagePath);
-                Log.d(TAG, "Message received on mobile is: " + message);
+                Log.d(TAG, "Message received on mobile is: " + messageBytes);
 
                 Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -85,7 +122,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     //            alertIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 alertIntent.putExtra("title", "Message from your child");
-                alertIntent.putExtra("text", message);
+                alertIntent.putExtra("text", messageBytes);
                 startActivity(alertIntent);
 
                 // start Vibration
@@ -93,20 +130,12 @@ public class MyGcmListenerService extends GcmListenerService {
                 startService(vibrateIntent);
 
             } else if (messagePath.equals(LOCATION_PATH)) {
-                Log.d(TAG, "location reveiced " + new String(message));
+                Log.d(TAG, "location reveiced " + new String(messageBytes));
 
                 double[] positions = new double[3];
-                ByteBuffer bytes = ByteBuffer.wrap(message).order(ByteOrder.LITTLE_ENDIAN);
-                String bin="";
-                for (int i = 0; i < 24*8; i++) {
-                    if (i%64==0)
-                        bin+="@";
-                    bin += String.valueOf(message[i/8]>>>(i%8)&1);
-                }
-                Log.d(TAG, "binary of message: " + bin);
-                positions[0]= ByteBuffer.wrap(message).getDouble(0);
-                positions[1]= ByteBuffer.wrap(message).getDouble(8);
-                positions[2]= ByteBuffer.wrap(message).getDouble(16);
+                positions[0]= ByteBuffer.wrap(messageBytes).getDouble(0);
+                positions[1]= ByteBuffer.wrap(messageBytes).getDouble(8);
+                positions[2]= ByteBuffer.wrap(messageBytes).getDouble(16);
                 //double[] positions = new double[doubleBuf.remaining()];
                 Log.d(TAG, "Location path received on mobile is: " + messagePath);
                 Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt " + positions[2]);

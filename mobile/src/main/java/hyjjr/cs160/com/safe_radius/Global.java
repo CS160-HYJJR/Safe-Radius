@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.TreeMap;
+
 /**
  * Created by main on 7/31/15.
  */
@@ -24,6 +26,7 @@ public class Global extends Application {
     private LatLng childLatLng;
     private Double childAltitude;
     private String[] radii;
+    private TreeMap<String, MyGcmListenerService.ByteArray> pendingResults; // <id, message>
 
     @Override
     public void onCreate() {
@@ -36,6 +39,7 @@ public class Global extends Application {
         bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
         lostConnection = false;
         radii = getResources().getStringArray(R.array.radius_choices);
+        pendingResults = new TreeMap<>();
     }
 
 
@@ -138,4 +142,12 @@ public class Global extends Application {
     }
 
     public String getRadius() { return radii[safeRadiusSelected]; }
+
+    public void setPendingResults(TreeMap<String, MyGcmListenerService.ByteArray> pendingResults) {
+        this.pendingResults = pendingResults;
+    }
+
+    public TreeMap<String, MyGcmListenerService.ByteArray> getPendingResults() {
+        return pendingResults;
+    }
 }

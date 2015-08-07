@@ -144,7 +144,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected");
         if (((Global)getApplication()).isTurnedOn()) {
             // Build a request for continual location updates
             LocationRequest locationRequest = LocationRequest.create()
@@ -176,7 +175,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "on location changed");
         if (radar != null)
             radar.onLocationChanged(location);
 
