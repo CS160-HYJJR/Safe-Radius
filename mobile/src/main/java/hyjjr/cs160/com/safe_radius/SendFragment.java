@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TabWidget;
@@ -143,26 +146,26 @@ public class SendFragment extends Fragment {
     private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-            if (position != parent.getCount() - 1)
+            if (position != parent.getCount() - 1) {
                 ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
-            else { // last message selected
+            } else { // last message selected
                 final EditText input = new EditText(getActivity());
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Please write the new radius")
+                        .setTitle("Please write a new radius")
                         .setView(input)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String newRadius = input.getText().toString();
                                 SendFragment.this.radiusSpinnerAddItem(newRadius);
-                                ((Global) getActivity().getApplication()).setMessageSelected(position);
+                                ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
                                 ((Spinner) SendFragment.this.view.findViewById(R.id.radius_spinner)).setSelection(
                                         ((Global) getActivity().getApplication()).getSafeRadiusSelected());
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                ((Spinner) SendFragment.this.view.findViewById(R.id.message_spinner)).setSelection(
+                                ((Spinner) SendFragment.this.view.findViewById(R.id.radius_spinner)).setSelection(
                                         ((Global) getActivity().getApplication()).getSafeRadiusSelected());
                             }
                         }).show();
@@ -220,7 +223,7 @@ public class SendFragment extends Fragment {
             arrayList.add(s);
         }
         ((Spinner) view.findViewById(R.id.message_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, arrayList));
+                R.layout.custom_spinner, arrayList, true));
 
         ((Spinner) view.findViewById(R.id.message_spinner)).setOnItemSelectedListener(messageSpinnerListener);
         ((Spinner) view.findViewById(R.id.message_spinner)).setSelection(((Global) getActivity().getApplication()).getMessageSelected());
@@ -231,7 +234,7 @@ public class SendFragment extends Fragment {
         }
 
         ((Spinner) view.findViewById(R.id.radius_spinner)).setAdapter(new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, arrayList2));
+                R.layout.custom_spinner, arrayList2, false));
 
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setOnItemSelectedListener(radiusSpinnerListener);
         ((Spinner) getView().findViewById(R.id.radius_spinner)).setSelection(((Global) getActivity().getApplication()).getSafeRadiusSelected());
@@ -240,11 +243,18 @@ public class SendFragment extends Fragment {
         (view.findViewById(R.id.on_off_button)).setOnClickListener(powerButtonListener);
 
         (getView().findViewById(R.id.add_parent_button)).setOnClickListener(parentImageListener);
-        ((ImageButton) getView().findViewById(R.id.add_parent_button)).setImageBitmap(getRoundedCornerBitmapWithBorder(((Global) getActivity().getApplication()).getParentPicture()));
+        ((ImageView) getView().findViewById(R.id.add_parent_button)).setImageBitmap(((Global) getActivity().getApplication()).getParentPicture());
 
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
 
         (getView().findViewById(R.id.speak_button)).setOnClickListener(speakButtonListener);
+        ((ImageView) getView().findViewById(R.id.background_pic)).setImageBitmap(((Global) getActivity().getApplication()).getBckgrdPicture());
+        if (((Global) getActivity().getApplication()).getBckgrdPicture().sameAs((BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius)))) {
+
+        } else {
+            ((ImageView) getView().findViewById(R.id.background_pic)).setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+
         if (((Global) getActivity().getApplication()).isTurnedOn())
             turnOn();
         else
@@ -307,6 +317,21 @@ public class SendFragment extends Fragment {
     }
 
     public void messageSpinnerAddItem(String item) {
+        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
+        SpinnerAdapter sa = spinner.getAdapter();
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i < sa.getCount() - 1; i++) {
+            list.add((String) sa.getItem(i));
+        }
+        list.add(item);
+        list.add((String) sa.getItem(sa.getCount() - 1));
+        ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
+        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
+                R.layout.custom_spinner, list, true);
+        spinner.setAdapter(adapter);
+    }
+
+    public void radiusSpinnerAddItem(String item) {
         Spinner spinner = (Spinner) view.findViewById(R.id.radius_spinner);
         SpinnerAdapter sa = spinner.getAdapter();
         ArrayList<String> list = new ArrayList<>();
@@ -317,22 +342,7 @@ public class SendFragment extends Fragment {
         list.add((String) sa.getItem(sa.getCount() - 1));
         ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
         ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, list);
-        spinner.setAdapter(adapter);
-    }
-
-    public void radiusSpinnerAddItem(String item) {
-        Spinner spinner = (Spinner) view.findViewById(R.id.message_spinner);
-        SpinnerAdapter sa = spinner.getAdapter();
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < sa.getCount() - 1; i++) {
-            list.add((String) sa.getItem(i));
-        }
-        list.add(item);
-        list.add((String) sa.getItem(sa.getCount() - 1));
-        ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
-        ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
-                R.layout.custom_spinner, list);
+                R.layout.custom_spinner, list, false);
         spinner.setAdapter(adapter);
     }
 
@@ -341,7 +351,7 @@ public class SendFragment extends Fragment {
         if (requestCode == REQUEST_PARENT_PICTURE && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ((Global)getActivity().getApplication()).setParentPicture(imageBitmap);
+            ((Global)getActivity().getApplication()).setParentPicture(getRoundedCornerBitmapWithBorder(imageBitmap));
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, 32, 32, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -357,6 +367,7 @@ public class SendFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ImageButton button = ((ImageButton)(getView().findViewById(R.id.add_parent_button)));
             button.setBackground(new BitmapDrawable(getResources(), imageBitmap));
+            ((Global)getActivity().getApplication()).setBckgrdPicture(imageBitmap);
         } else if (requestCode == REQUEST_SPEECH_TO_TEXT && resultCode == getActivity().RESULT_OK) {
             Log.d(TAG, "speech2");
             ArrayList<String> result = data
@@ -373,30 +384,40 @@ public class SendFragment extends Fragment {
             intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
             intent.putExtra("source", "phone");
             getActivity().startService(intent);
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+
+    public static int getSquareCropDimensionForBitmap(Bitmap bitmap)
+    {
+        int dimension;
+        if (bitmap.getWidth() >= bitmap.getHeight())
+        {
+            dimension = bitmap.getHeight();
+        }
+        else
+        {
+            dimension = bitmap.getWidth();
+        }
+        return dimension;
+    }
+
     public static Bitmap getRoundedCornerBitmapWithBorder(Bitmap bitmap) {
 
-        Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        int dimension = getSquareCropDimensionForBitmap(bitmap);
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
 
-        BitmapShader shader = new BitmapShader(bitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        Paint paint = new Paint();
-        paint.setShader(shader);
-        paint.setAntiAlias(true);
-        Canvas c = new Canvas(circleBitmap);
-        c.drawCircle(bitmap.getWidth()/2, bitmap.getHeight()/2, 100, paint);
-
-        Bitmap output = Bitmap.createBitmap(circleBitmap.getWidth(), circleBitmap
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
                 .getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final int color = 0xff4242DB;
         final Paint paint2 = new Paint();
-        final Rect rect = new Rect(0, 0, circleBitmap.getWidth(), circleBitmap.getHeight());
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final RectF rectF = new RectF(rect);
-        final float roundPx = circleBitmap.getWidth()/2;
+        final float roundPx = bitmap.getWidth()/2;
 
         paint2.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
@@ -406,42 +427,8 @@ public class SendFragment extends Fragment {
         paint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint2);
 
+        output = Bitmap.createScaledBitmap(output, 250, 250, false);
 
-        // add border begins
-        final int borderSize = 10; // set border size here
-        Bitmap bitmapWithBorder= Bitmap.createBitmap(output.getWidth() + borderSize * 2, output.getHeight() + borderSize * 2, output.getConfig());
-        Canvas canvas3 = new Canvas(bitmapWithBorder);
-        canvas3.drawColor(Color.BLACK);
-        canvas3.drawBitmap(output, borderSize, borderSize, null);
-        bitmap = bitmapWithBorder;
-
-        // add border finishes
-        Bitmap circleBitmap2 = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
-        BitmapShader shader2 = new BitmapShader(bitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        Paint paint3 = new Paint();
-        paint3.setShader(shader2);
-        paint3.setAntiAlias(true);
-        Canvas c2 = new Canvas(circleBitmap2);
-        c2.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, 100, paint3);
-
-        Bitmap output2 = Bitmap.createBitmap(circleBitmap2.getWidth(), circleBitmap2
-                .getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas2 = new Canvas(output2);
-
-        final int color2 = 0xff4242DB;
-        final Paint paint4 = new Paint();
-        final Rect rect2 = new Rect(0, 0, circleBitmap2.getWidth(), circleBitmap2.getHeight());
-        final RectF rectF2 = new RectF(rect2);
-        final float roundPx2 = circleBitmap2.getWidth()/2;
-
-        paint4.setAntiAlias(true);
-        canvas2.drawARGB(0, 0, 0, 0);
-        paint4.setColor(color2);
-        canvas2.drawRoundRect(rectF2, roundPx2, roundPx2, paint4);
-
-        paint4.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas2.drawBitmap(bitmap, rect2, rect2, paint4);
-        return output2;
+        return output;
     }
 }

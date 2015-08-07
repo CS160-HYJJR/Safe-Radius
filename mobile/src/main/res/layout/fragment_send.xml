@@ -12,13 +12,13 @@
         android:minHeight="50dp"
         android:minWidth="200dp"
         android:spinnerMode="dropdown"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="55dp"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:backgroundTint="#329b32"
+        android:layout_marginLeft="35dp"
+        android:dropDownVerticalOffset="45dp"
         android:layout_below="@+id/add_parent_button"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        android:dropDownVerticalOffset="45dp"/>
+        android:layout_alignParentStart="true" />
 
     <ImageButton
         android:layout_width="100dp"
@@ -40,11 +40,12 @@
         android:spinnerMode="dropdown"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:backgroundTint="#329b32"
-        android:dropDownVerticalOffset="20dp"
+        android:dropDownVerticalOffset="45dp"
         android:minWidth="120dp"
-        android:layout_below="@id/message_spinner"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginTop="65dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/message_spinner"
+        android:layout_toEndOf="@+id/radius_text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,7 +66,7 @@
         android:id="@+id/imageView"
         android:layout_below="@+id/background_pic"
         android:layout_alignParentEnd="true"
-        android:background="#ff000000" />
+        android:background="#ffffff" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -92,23 +93,23 @@
         android:layout_height="40dp"
         android:id="@+id/on_off_button"
         android:clickable="true"
-        android:background="@android:color/transparent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:adjustViewBounds="false" />
 
     <ImageButton
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/add_parent_button"
         android:clickable="true"
-        android:src="@drawable/icon_add_new_ppl"
         android:cropToPadding="false"
         android:adjustViewBounds="true"
-        android:layout_marginTop="91dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/circle_button"
+        android:layout_marginTop="86dp"
+        android:scaleType="centerInside"
         android:layout_below="@+id/change_background"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_thumbnail_addyourpic" />
 
    <TextView
         android:id="@+id/radius_text"
@@ -118,10 +119,12 @@
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
         android:visibility="visible"
-        android:layout_alignTop="@id/radius_spinner"
-        android:layout_alignBottom="@id/radius_spinner"
-        android:layout_toLeftOf="@+id/radius_spinner"
-        android:gravity="center"/>
+       android:gravity="center"
+       android:paddingLeft="10dp"
+       android:layout_alignTop="@+id/radius_spinner"
+       android:layout_toEndOf="@+id/change_background"
+       android:layout_marginStart="18dp"
+       android:layout_alignBottom="@+id/radius_spinner" />
 
     <ImageButton
         android:id="@+id/speak_button"

@@ -18,14 +18,16 @@ import android.widget.Toast;
 public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     Context context;
     ArrayList<String> iName;
+    boolean isMessageSpinner;
 
     TextView spnItemName;
     TextView spnItemDel;
 
-    public CustomSpinnerAdapter(Context context, int textViewResourceId, ArrayList<String> iName){
+    public CustomSpinnerAdapter(Context context, int textViewResourceId, ArrayList<String> iName, boolean isMessageSpinner){
         super(context,textViewResourceId,iName);
         this.context = context;
         this.iName = iName;
+        this.isMessageSpinner = isMessageSpinner;
     }
 
     @Override
@@ -49,16 +51,24 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                 Toast toast = Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
                 toast.show();
-
-                //iName[position] = null;
-                if (iName.size() > 2) {
-                    if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position)))
-                    {
-                        ((Global) getContext().getApplicationContext()).setMessageSelected(0);
+                if (isMessageSpinner) {
+                    if (iName.size() > 2) {
+                        if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position))) {
+                            ((Global) getContext().getApplicationContext()).setMessageSelected(0);
+                        }
+                        iName.remove(position);
+                        ((Global) getContext().getApplicationContext()).setMessages(iName.toArray(new String[1]));
+                        notifyDataSetChanged();
                     }
-                    iName.remove(position);
-                    ((Global) getContext().getApplicationContext()).setMessages(iName.toArray(new String[1]));
-                    notifyDataSetChanged();
+                } else {
+                    if (iName.size() > 2) {
+                        if (((Global) getContext().getApplicationContext()).getRadii().equals(iName.get(position))) {
+                            ((Global) getContext().getApplicationContext()).setSafeRadiusSelected(0);
+                        }
+                        iName.remove(position);
+                        ((Global) getContext().getApplicationContext()).setRadii(iName.toArray(new String[1]));
+                        notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -79,25 +89,6 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         spnItemDel.setText("X");
         spnItemDel.setVisibility(View.GONE);
         spnItemDel.setEnabled(false);
-//        spnItemDel.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Toast toast = Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT);
-//                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
-//                toast.show();
-//                //iName[position] = null;
-//                if (iName.size() > 2) {
-//                    if (((Global) getContext().getApplicationContext()).getMessage().equals(iName.get(position)))
-//                    {
-//                        ((Global) getContext().getApplicationContext()).setMessageSelected(0);
-//                    }
-//                    iName.remove(position);
-//                    ((Global) getContext().getApplicationContext()).setMessages(iName.toArray(new String[1]));
-//                    notifyDataSetChanged();
-//                }
-//            }
-//        });
         return rowView;
     }
 

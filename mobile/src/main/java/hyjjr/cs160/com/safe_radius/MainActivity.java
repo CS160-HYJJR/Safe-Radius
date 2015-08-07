@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -55,7 +56,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab1_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec("Main").setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
                 SendFragment.class, null);
 
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map, getTheme())),
@@ -64,6 +65,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
         for (int i = 0; i < mTabHost.getTabWidget().getTabCount(); i++) {
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 200;
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab_drawable);
         }
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {

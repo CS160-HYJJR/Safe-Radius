@@ -18,6 +18,7 @@ public class Global extends Application {
     private int messageSelected;
     private double safeRadius;
     private Bitmap parentPicture;
+    private Bitmap bckgrdPicture;
     private boolean lostConnection;
     private boolean isForeground;
     private LatLng childLatLng;
@@ -31,8 +32,8 @@ public class Global extends Application {
         messages = getResources().getStringArray(R.array.message_choices);
         safeRadiusSelected = 1;
         messageSelected = 0;
-        parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
-        safeRadius = 60; // TODO
+        parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.ic_thumbnail_addyourpic);
+        bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
         lostConnection = false;
         radii = getResources().getStringArray(R.array.radius_choices);
     }
@@ -74,14 +75,6 @@ public class Global extends Application {
         this.messageSelected = messageSelected;
     }
 
-    public double getSafeRadius() {
-        return safeRadius;
-    }
-
-    public void setSafeRadius(double safeRadius) {
-        this.safeRadius = safeRadius;
-    }
-
     public double getSafeRadiusInMeter() {
         return safeRadius * 0.3048;
     }
@@ -96,6 +89,14 @@ public class Global extends Application {
 
     public void setParentPicture(Bitmap parentPicture) {
         this.parentPicture = parentPicture;
+    }
+
+    public void setBckgrdPicture(Bitmap bckgrdPicture) {
+        this.bckgrdPicture = bckgrdPicture;
+    }
+
+    public Bitmap getBckgrdPicture() {
+        return bckgrdPicture;
     }
 
     public void lostConnection() { lostConnection = true; }
@@ -135,4 +136,6 @@ public class Global extends Application {
     public void setRadii(String[] radii) {
         this.radii = radii;
     }
+
+    public String getRadius() { return radii[safeRadiusSelected]; }
 }
