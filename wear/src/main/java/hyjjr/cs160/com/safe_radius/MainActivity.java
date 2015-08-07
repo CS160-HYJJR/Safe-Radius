@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,6 +25,9 @@ import com.google.android.gms.location.LocationListener;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -49,12 +53,36 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     };
 
+    private View.OnTouchListener micButtonListener = new View.OnTouchListener() {
+        private boolean started;
+        private static final int DELAY = 1;
+        private static final ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch(event.getActionMasked()) {
+                case MotionEvent.ACTION_UP:
+                    if (started) {
+                        Runnable task = new Runnable() {
+                            public void run() {
+
+                            }
+                        };
+                        worker.schedule(task, DELAY, TimeUnit.SECONDS);
+                    }
+                    break;
+
+            }
+            return true;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
-
+        //findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
+        findViewById((R.id.mic_button)).setOnTouchListener(micButtonListener);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API
@@ -170,4 +198,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             MainActivity.this.finish();
         }
     };
+
+
 }
