@@ -113,9 +113,6 @@ public class MyGcmListenerService extends GcmListenerService {
             Log.d(TAG, "gcm receive from watch");
             if (messagePath.equals(MESSAGE_PATH)) {
                 ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
-                if (!((Global) getApplication()).isConnectedToWatch()) {
-                    return;
-                }
                 ((Global)getApplication()).setReceiveMessageTime(System.currentTimeMillis());
                 Log.d(TAG, "Message path received on mobile is: " + messagePath);
                 Log.d(TAG, "Message received on mobile is: " + messageBytes);
@@ -146,9 +143,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 ((Global)getApplication()).setChildAltitude(positions[2]);
             } else if (messagePath.equals(VOICE_PATH)) {
                 ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
-                if (!((Global) getApplication()).isConnectedToWatch()) {
-                    return;
-                }
                 Log.d(TAG, "voice received");
                 Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

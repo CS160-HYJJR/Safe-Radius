@@ -40,7 +40,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private double latChildVelocity = 0.000015; // in unit of degree per second
     private boolean hasAlerted; // Once alert once every time open the map.
     private RepeatAction routine;
-    private static final int ROUTINE_INTERVAL = 8000;
+    private static final int ROUTINE_INTERVAL = 10000;
     private static int UPDATE_INTERVAL_MS = 4000;
     private static int FASTEST_INTERVAL_MS = 2000;
     private static final int ZOOM_LEVEL = 19;
@@ -274,8 +274,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onLocationChanged(Location location) {
-        if (!((Global)getApplication()).isConnectedToWatch())
-            return;
 
         if (radar != null)
             radar.onLocationChanged(location);
