@@ -16,6 +16,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/send_button"
         android:clickable="true"
+        android:scaleType="centerInside"
         android:contentDescription="" />
     <!--
     android:layout_alignParentEnd="true"
@@ -26,9 +27,9 @@
         android:layout_weight="1"
         android:layout_height="fill_parent"
         android:id="@+id/mic_button"
-        android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
-        android:scaleType="fitXY"
-        android:background="@color/green"
+        android:src="@drawable/mic"
+        android:scaleType="center"
+        android:background="@color/white"
         android:backgroundTintMode="src_atop"
         android:layout_gravity="center_horizontal"
         android:layout_centerVertical="true"
