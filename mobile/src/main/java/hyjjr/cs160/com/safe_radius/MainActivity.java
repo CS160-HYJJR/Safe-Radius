@@ -1,13 +1,11 @@
 package hyjjr.cs160.com.safe_radius;
 
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +21,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.wearable.Wearable;
 
@@ -36,11 +33,11 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private GoogleApiClient mGoogleApiClient;
 
-    private double lonChildVelocity = 0.000015; // in unit of degree per second
-    private double latChildVelocity = 0.000015; // in unit of degree per second
     private boolean hasAlerted; // Once alert once every time open the map.
-    private RepeatAction routine;
-    private static final int ROUTINE_INTERVAL = 10000;
+    private RepeatAction routine_check_connection;
+    private RepeatAction routine_check_history;
+    private static final int CHECK_CONNECTION_INTERVAL = 12000;
+    private static final int CHECK_HISTORY_INTERVAL = 1000;
     private static int UPDATE_INTERVAL_MS = 4000;
     private static int FASTEST_INTERVAL_MS = 2000;
     private static final int ZOOM_LEVEL = 19;
@@ -88,13 +85,19 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         startService(intent);
 
 
-        routine = new RepeatAction(new Runnable() {
+        routine_check_connection = new RepeatAction(new Runnable() {
             @Override
             public void run() {
                 checkConnection();
+            }
+        }, CHECK_CONNECTION_INTERVAL);
+
+        routine_check_history = new RepeatAction(new Runnable() {
+            @Override
+            public void run() {
                 checkMessageHistory();
             }
-        }, ROUTINE_INTERVAL);
+        }, CHECK_HISTORY_INTERVAL);
     }
 
     public void checkMessageHistory() {
@@ -223,6 +226,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             return;
         else if (mGoogleApiClient.isConnected()) {
             startRequestLocation2();
+            routine_check_connection.startUpdates();
+            routine_check_history.startUpdates();
         }
         else
             mGoogleApiClient.connect();
@@ -252,10 +257,14 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     public void stopRequestLocation() {
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
         }
-        if (routine != null){
-            routine.stopUpdates();
+        if (routine_check_connection != null){
+            routine_check_connection.stopUpdates();
             routineRunned = false;
+        }
+        if (routine_check_history != null){
+            routine_check_history.stopUpdates();
         }
     }
 
@@ -263,7 +272,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     public void onConnected(Bundle bundle) {
         if (((Global)getApplication()).isTurnedOn()) {
             startRequestLocation2();
-            routine.startUpdates();
+            routine_check_connection.startUpdates();
+            routine_check_history.startUpdates();
         }
     }
 
