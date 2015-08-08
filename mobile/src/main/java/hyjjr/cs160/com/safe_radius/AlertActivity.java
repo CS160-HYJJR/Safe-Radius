@@ -8,28 +8,26 @@ package hyjjr.cs160.com.safe_radius;
         import android.media.AudioManager;
         import android.media.AudioTrack;
         import android.os.Bundle;
+        import android.view.MotionEvent;
+        import android.view.WindowManager;
 
 public class AlertActivity extends Activity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-
+    private AlertDialog alertDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_alert);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        this.setFinishOnTouchOutside(false);
         CharSequence title = getIntent().getExtras().getCharSequence("title");
         CharSequence text = new String((byte[])getIntent().getExtras().get("text"));
         final byte[] voiceBytes = (byte[])getIntent().getExtras().get("voice");
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
+        alertDialog.setCanceledOnTouchOutside(false);
         if (voiceBytes != null) {
             alertDialog.setButton(0, "PLAY",
                     new DialogInterface.OnClickListener() {
@@ -59,7 +57,18 @@ public class AlertActivity extends Activity {
                         }
                     });
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         alertDialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        alertDialog.dismiss();
+        super.onStop();
     }
 }
 

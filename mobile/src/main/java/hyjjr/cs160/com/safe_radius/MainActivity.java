@@ -114,7 +114,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     {
         super.onStart();
         ((Global)getApplication()).setForeground(true);
-        super.onStart();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API
@@ -127,10 +126,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     }
 
     @Override
-    public void onDestroy() {
+    public void onStop() {
         ((Global)getApplication()).setForeground(false);
-        super.onDestroy();
-
+        super.onStop();
     }
 
 

@@ -12,10 +12,10 @@
         android:minHeight="50dp"
         android:minWidth="200dp"
         android:spinnerMode="dropdown"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="45dp"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:backgroundTint="#329b32"
-        android:layout_marginLeft="35dp"
+        android:layout_marginLeft="15dp"
         android:dropDownVerticalOffset="45dp"
         android:layout_below="@+id/add_parent_button"
         android:layout_alignParentStart="true" />
@@ -24,7 +24,7 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:id="@+id/send_button"
-        android:src="@drawable/button_send_green_set"
+        android:src="@drawable/custom_send_button"
         android:clickable="true"
         android:scaleType="fitCenter"
         android:background="@android:color/transparent"
@@ -42,7 +42,7 @@
         android:backgroundTint="#329b32"
         android:dropDownVerticalOffset="45dp"
         android:minWidth="120dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="35dp"
         android:layout_marginLeft="5dp"
         android:layout_below="@+id/message_spinner"
         android:layout_toEndOf="@+id/radius_text" />
@@ -125,15 +125,5 @@
        android:layout_toEndOf="@+id/change_background"
        android:layout_marginStart="18dp"
        android:layout_alignBottom="@+id/radius_spinner" />
-
-    <ImageButton
-        android:id="@+id/speak_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/green"
-        android:src="@drawable/mr_ic_audio_vol"
-        android:layout_below="@id/radius_spinner"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"/>
 
 </RelativeLayout>

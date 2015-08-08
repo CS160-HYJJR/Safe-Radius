@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="holo_notitle" parent="android:Theme.Holo.DialogWhenLarge">
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-</resources>

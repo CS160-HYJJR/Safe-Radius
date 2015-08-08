@@ -115,7 +115,7 @@ public class SendFragment extends Fragment {
                 ((Global) getActivity().getApplication()).setMessageSelected(position);
             else { // last message selected
                 final EditText input = new EditText(getActivity());
-
+                input.setGravity(Gravity.CENTER);
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Please write the new message")
                         .setView(input)
@@ -150,7 +150,7 @@ public class SendFragment extends Fragment {
                 ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
             } else { // last message selected
                 final EditText input = new EditText(getActivity());
-
+                input.setGravity(Gravity.CENTER);
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Please write a new radius")
                         .setView(input)
@@ -247,7 +247,7 @@ public class SendFragment extends Fragment {
 
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
 
-        (getView().findViewById(R.id.speak_button)).setOnClickListener(speakButtonListener);
+        //(getView().findViewById(R.id.speak_button)).setOnClickListener(speakButtonListener);
         ((ImageView) getView().findViewById(R.id.background_pic)).setImageBitmap(((Global) getActivity().getApplication()).getBckgrdPicture());
         if (((Global) getActivity().getApplication()).getBckgrdPicture().sameAs((BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius)))) {
 
@@ -325,7 +325,7 @@ public class SendFragment extends Fragment {
         }
         list.add(item);
         list.add((String) sa.getItem(sa.getCount() - 1));
-        ((Global) getActivity().getApplication()).setRadii(list.toArray(new String[1]));
+        ((Global) getActivity().getApplication()).setMessages(list.toArray(new String[1]));
         ArrayAdapter<String> adapter = new CustomSpinnerAdapter(getActivity(),
                 R.layout.custom_spinner, list, true);
         spinner.setAdapter(adapter);
