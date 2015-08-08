@@ -24,8 +24,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class RadarFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
-    private static int UPDATE_INTERVAL_MS = 5000;
-    private static int FASTEST_INTERVAL_MS = 2500;
+    private static int UPDATE_INTERVAL_MS = 3000;
+    private static int FASTEST_INTERVAL_MS = 1500;
     private static final int ZOOM_LEVEL = 19;
 
     private static View view;
@@ -90,23 +90,29 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMapToolbarEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.getUiSettings().setCompassEnabled(true);
             float[] distance = new float[1];
             LatLng previousLocation = map.getCameraPosition().target;
             Location.distanceBetween(previousLocation.latitude, previousLocation.longitude,
                     currentLatLng.latitude, currentLatLng.longitude, distance);
             double safeRadius = ((Global) getActivity().getApplication()).getSafeRadiusInMeter();
+
             map.addCircle(new CircleOptions()
                     .center(currentLatLng)
                     .radius(safeRadius));
 
+
             // Fake child position
             if (childLatLng != null) {
-                Log.d(TAG, "child red dot");
+                // TODO Replace circle by marker?
+
                 map.addCircle(new CircleOptions()
                         .center(childLatLng)
                         .fillColor(Color.RED)
                         .strokeColor(Color.RED)
-                        .radius(23 / map.getCameraPosition().zoom));
+                        .radius(40 / map.getCameraPosition().zoom));
+                //map.addMarker(new MarkerOptions().position(childLatLng)
+                 //          .draggable(false).flat(true));
             }
             map.setIndoorEnabled(true);
             addArrowToChildren(childLatLng);
@@ -124,7 +130,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             LatLng northeast = bounds.northeast;
             LatLng southwest = bounds.southwest;
             double distanceCenterToEdgeLong = SphericalUtil.computeDistanceBetween(center, new LatLng(northeast.latitude, center.longitude))*1.05;
-            // TODO
+
             if(!bounds.contains(childPos)) {
                 // out of screen
                 final int TIMES = 20;
@@ -136,11 +142,11 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
 
-
                 double heading = SphericalUtil.computeHeading(center, childPos);
                 LatLng arrowPos = SphericalUtil.interpolate(center, arrowPosEstimate, 0.8);
                 map.addMarker(new MarkerOptions()
-                        .position(arrowPos))
+                        .position(arrowPos)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_sign_outofrange)))
                         .setRotation((float) heading);
             }
         }
@@ -160,11 +166,11 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
             Double altitudeDiff = (childAltitude - currentAltitude) / 0.308; // meter to feet
             if (getView() != null)
                 if (altitudeDiff < 0)
-                    ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
-                        -altitudeDiff.intValue() + "ft above child");
+                    ((TextView) (getView().findViewById(R.id.map_status))).setText(" " + dist.intValue() + " ft away " +
+                        -altitudeDiff.intValue() + " ft above child");
                 else
-                    ((TextView) (getView().findViewById(R.id.map_status))).setText("distance: " + dist.intValue() + "ft altitude: " +
-                            altitudeDiff.intValue() + "ft below child");
+                    ((TextView) (getView().findViewById(R.id.map_status))).setText(" " + dist.intValue() + " ft away " +
+                            altitudeDiff.intValue() + " ft below child");
             setupMap();
             mapFragment.getMapAsync(this);
         }
@@ -182,23 +188,5 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
         MainActivity.radar = null;
         super.onPause();
     }
-
-    private void drawMarker(Location location) {
-
-        LatLng currentPosition = new LatLng(location.getLatitude(),
-                location.getLongitude());
-        map.addMarker(new MarkerOptions()
-                .position(currentPosition)
-                .snippet(
-                        "Lat:" + location.getLatitude() + "Lng:"
-                                + location.getLongitude())
-                        // TODO change picture
-                .icon(BitmapDescriptorFactory.defaultMarker())
-                .rotation(location.getBearing())
-                .title("position"));
-
-    }
-
-
 
 }

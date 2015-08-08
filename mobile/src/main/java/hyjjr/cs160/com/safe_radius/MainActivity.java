@@ -140,29 +140,49 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         super.onPause();
     }
 
+
+    public void startRequestLocation() {
+        // Build a request for continual location updates
+        if (mGoogleApiClient == null)
+            return;
+        else if (mGoogleApiClient.isConnected()) {
+            startRequestLocation2();
+        }
+        else
+            mGoogleApiClient.connect();
+    }
+
+    private void startRequestLocation2() {
+        LocationRequest locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL_MS)
+                .setFastestInterval(FASTEST_INTERVAL_MS);
+
+        // Send request for location updates
+        LocationServices.FusedLocationApi
+                .requestLocationUpdates(mGoogleApiClient,
+                        locationRequest, this)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        if (status.getStatus().isSuccess()) {
+                            Log.d(TAG, "Location Successfully requested");
+                        } else {
+                            Log.e(TAG, status.getStatusMessage());
+                        }
+                    }
+                });
+    }
+    public void stopRequestLocation() {
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
         if (((Global)getApplication()).isTurnedOn()) {
-            // Build a request for continual location updates
-            LocationRequest locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(UPDATE_INTERVAL_MS)
-                    .setFastestInterval(FASTEST_INTERVAL_MS);
-
-            // Send request for location updates
-            LocationServices.FusedLocationApi
-                    .requestLocationUpdates(mGoogleApiClient,
-                            locationRequest, this)
-                    .setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                            if (status.getStatus().isSuccess()) {
-                                Log.d(TAG, "Location Successfully requested");
-                            } else {
-                                Log.e(TAG, status.getStatusMessage());
-                            }
-                        }
-                    });
+            startRequestLocation2();
         }
     }
 

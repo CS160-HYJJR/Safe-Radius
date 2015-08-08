@@ -266,10 +266,7 @@ public class SendFragment extends Fragment {
         (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_off));
         setTransparencyAll(TRANSPARENCY_WHEN_OFF);
         setEnabledAll(false);
-        if (mGoogleApiClient != null) {
-            //Wearable.NodeApi.removeListener(mGoogleApiClient, connectionListener);
-            mGoogleApiClient.disconnect();
-        }
+        ((MainActivity)getActivity()).stopRequestLocation();
     }
 
     private void turnOn() {
@@ -277,8 +274,7 @@ public class SendFragment extends Fragment {
         (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on));
         setTransparencyAll(255);
         setEnabledAll(true);
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity()).addApi(Wearable.API).build();
-        mGoogleApiClient.connect();
+        ((MainActivity)getActivity()).startRequestLocation();
     }
 
 
