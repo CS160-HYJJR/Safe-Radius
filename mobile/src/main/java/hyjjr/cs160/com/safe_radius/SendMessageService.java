@@ -65,27 +65,6 @@ public class SendMessageService extends IntentService {
             MessageApi.SendMessageResult result =
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
-            // not show "message sent" when sending parent picture to child.
-            if (!messagePath.equals(SEND_PARENT_PICTURE)) {
-                if (result.getStatus().isSuccess()) {
-
-
-                    isConnectionGood = true;
-                    Log.d(TAG, "send message success messagePath: " + messagePath
-                            + " message: " + new String(message, StandardCharsets.UTF_8)
-                            + " node: " + node.getDisplayName());
-                } else {
-                    Handler handler = new Handler(Looper.getMainLooper());
-
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Message Failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
         }
 
         /*

@@ -189,16 +189,27 @@ public class SendFragment extends Fragment {
             intent.putExtra("source", "phone");
             getActivity().startService(intent);
             Handler handler = new Handler(Looper.getMainLooper());
+            if (((Global) getActivity().getApplication()).isConnectedToWatch()) {
+                handler.post(new Runnable() {
 
-            handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                        toast.show();
+                    }
+                });
+            } else {
+                handler.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    Toast toast = Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
-                    toast.show();
-                }
-            });
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(getActivity(), "Message Failed", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                        toast.show();
+                    }
+                });
+            }
         }
     };
 
