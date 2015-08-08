@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -42,9 +43,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private static int FASTEST_INTERVAL_MS = 2000;
     private static final int ZOOM_LEVEL = 19;
 
-    private static boolean routineRunned;
-    // Actually, we should detect the movement once the app is opened, not only in the map fragment only.
-    // change later.
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +83,23 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
 
+        if (routine_check_connection == null) {
+            routine_check_connection = new RepeatAction(new Runnable() {
+                @Override
+                public void run() {
+                    checkConnection();
+                }
+            }, CHECK_CONNECTION_INTERVAL);
+        }
+        if (routine_check_history == null) {
+            routine_check_history = new RepeatAction(new Runnable() {
+                @Override
+                public void run() {
+                    checkMessageHistory();
+                }
+            }, CHECK_HISTORY_INTERVAL);
+        }
 
-        routine_check_connection = new RepeatAction(new Runnable() {
-            @Override
-            public void run() {
-                checkConnection();
-            }
-        }, CHECK_CONNECTION_INTERVAL);
-
-        routine_check_history = new RepeatAction(new Runnable() {
-            @Override
-            public void run() {
-                checkMessageHistory();
-            }
-        }, CHECK_HISTORY_INTERVAL);
     }
 
     public void checkMessageHistory() {
@@ -138,7 +140,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             output += " ago";
         }
         if (findViewById(R.id.message_history) != null) {
-            Log.d(TAG, "history" + output);
             ((Global)getApplication()).setMessageHistory(output);
             ((TextView)findViewById(R.id.message_history)).setText(output);
         }
@@ -148,10 +149,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
         boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
         boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
-        if (!routineRunned) {
-            routineRunned = true;
-            return; // Do nothing in first run.
-        }
         if (ReceiveMessageService.receivedSthFromWatch) {
             ((Global)getApplication()).connectToWatch();
             ((TextView)findViewById(R.id.connection_status)).setText("Connected");
@@ -222,12 +219,26 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     public void startRequestLocation() {
         // Build a request for continual location updates
+        if (!((Global)getApplication()).isTurnedOn()) {
+            return;
+        }
+        routine_check_connection.stopUpdates();
+        routine_check_history.stopUpdates();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                routine_check_connection.startUpdates();
+                handler.removeCallbacks(this);
+            }
+        }, CHECK_CONNECTION_INTERVAL);
+
+        routine_check_history.startUpdates();
+
         if (mGoogleApiClient == null)
             return;
         else if (mGoogleApiClient.isConnected()) {
             startRequestLocation2();
-            routine_check_connection.startUpdates();
-            routine_check_history.startUpdates();
         }
         else
             mGoogleApiClient.connect();
@@ -261,7 +272,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         if (routine_check_connection != null){
             routine_check_connection.stopUpdates();
-            routineRunned = false;
         }
         if (routine_check_history != null){
             routine_check_history.stopUpdates();
@@ -272,8 +282,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     public void onConnected(Bundle bundle) {
         if (((Global)getApplication()).isTurnedOn()) {
             startRequestLocation2();
-            routine_check_connection.startUpdates();
-            routine_check_history.startUpdates();
+
         }
     }
 

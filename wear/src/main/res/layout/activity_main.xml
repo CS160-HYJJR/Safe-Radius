@@ -26,7 +26,10 @@
         android:layout_weight="1"
         android:layout_height="fill_parent"
         android:id="@+id/mic_button"
-        android:background="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+        android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+        android:scaleType="fitXY"
+        android:background="@color/green"
+        android:backgroundTintMode="src_atop"
         android:layout_gravity="center_horizontal"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
