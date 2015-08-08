@@ -31,7 +31,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getDropDownView(final int position, View convertView, ViewGroup parent){
+    public View getDropDownView(final int position, final View convertView, ViewGroup parent){
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View rowView =  inflater.inflate(R.layout.custom_spinner, parent, false);
 

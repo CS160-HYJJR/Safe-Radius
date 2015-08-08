@@ -13,7 +13,7 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "app12345";
+    public static final String TOPIC = "appdf141241345";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;

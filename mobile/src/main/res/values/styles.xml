@@ -1,9 +1,9 @@
 <resources>
 
-    <style name="app_theme_notitle" parent="android:Theme.Material.Light.Dialog.Alert">
+    <style name="app_theme_notitle" parent="android:Theme.Material.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorPrimary">#4CAF50</item>
-        <item name="android:colorBackground">#222222</item>
+        <item name="android:colorBackground">#ff222222</item>
         <item name="android:colorPrimaryDark">#388E3C</item>
         <item name="android:popupBackground">#73a86a</item>
         <item name="android:colorAccent">#8BC34A</item>
@@ -11,7 +11,17 @@
         <item name="android:textColorSecondary">#727272</item>
         <item name="android:icon">@mipmap/ic_launcher</item>
         <item name="android:divider">#B6B6B6</item>
-        <item name="android:statusBarColor">#00796B</item>
+        <item name="android:statusBarColor">#000000</item>
+
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+
+        <item name="android:listPreferredItemPaddingLeft">0dip</item>
+        <item name="android:listPreferredItemPaddingRight">0dip</item>
+        <item name="android:listPreferredItemPaddingStart">0dip</item>
+        <item name="android:listPreferredItemPaddingEnd">0dip</item>
+
     </style>
 
     <style name="app_theme_nodisplay" parent="app_theme_notitle">
