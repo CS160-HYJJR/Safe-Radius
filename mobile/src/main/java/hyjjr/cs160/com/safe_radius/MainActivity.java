@@ -92,6 +92,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             @Override
             public void run() {
                 checkConnection();
+                checkMessageHistory();
             }
         }, ROUTINE_INTERVAL);
     }
@@ -107,32 +108,34 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (sentTime != null) {
             output += " sent ";
             long timeDiff = currentTime - sentTime;
-            if (timeDiff < 1000) {
+            if (timeDiff < 1000*60) {
                 output += timeDiff/1000 + "s";
-            } else if (timeDiff < 1000*60) {
-                output += timeDiff/(1000*60) + "min";
             } else if (timeDiff < 1000*60*60) {
-                output += timeDiff/(1000*60*60) + "h";
+                output += timeDiff/(1000*60) + "min";
             } else if (timeDiff < 1000*60*60*24) {
+                output += timeDiff/(1000*60*60) + "h";
+            } else {
                 output += timeDiff/(1000*60*60*24) + "days";
             }
-            output += " ago";
         }
         if (receiveTime != null) {
             output += " received ";
-            long timeDiff = currentTime - sentTime;
-            if (timeDiff < 1000) {
+            long timeDiff = currentTime - receiveTime;
+            if (timeDiff < 1000*60) {
                 output += timeDiff/1000 + "s";
-            } else if (timeDiff < 1000*60) {
-                output += timeDiff/(1000*60) + "min";
             } else if (timeDiff < 1000*60*60) {
-                output += timeDiff/(1000*60*60) + "h";
+                output += timeDiff/(1000*60) + "min";
             } else if (timeDiff < 1000*60*60*24) {
+                output += timeDiff/(1000*60*60) + "h";
+            } else {
                 output += timeDiff/(1000*60*60*24) + "days";
             }
+        }
+        if (sentTime != null || receiveTime != null) {
             output += " ago";
         }
         if (findViewById(R.id.message_history) != null) {
+            Log.d(TAG, "history" + output);
             ((TextView)findViewById(R.id.message_history)).setText(output);
         }
     }
