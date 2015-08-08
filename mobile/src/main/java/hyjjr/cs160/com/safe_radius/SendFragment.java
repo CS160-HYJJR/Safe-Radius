@@ -33,6 +33,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -211,7 +212,6 @@ public class SendFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_send, container, false);
     }
 
@@ -252,7 +252,7 @@ public class SendFragment extends Fragment {
         ((ImageView) getView().findViewById(R.id.add_parent_button)).setImageBitmap(((Global) getActivity().getApplication()).getParentPicture());
 
         (getView().findViewById(R.id.change_background)).setOnClickListener(backgroundImageListener);
-
+        ((TextView)getView().findViewById(R.id.message_history)).setText(((Global) getActivity().getApplication()).getMessageHistory());
         //(getView().findViewById(R.id.speak_button)).setOnClickListener(speakButtonListener);
         ((ImageView) getView().findViewById(R.id.background_pic)).setImageBitmap(((Global) getActivity().getApplication()).getBckgrdPicture());
         if (((Global) getActivity().getApplication()).getBckgrdPicture().sameAs((BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius)))) {
@@ -433,4 +433,5 @@ public class SendFragment extends Fragment {
 
         return output;
     }
+
 }

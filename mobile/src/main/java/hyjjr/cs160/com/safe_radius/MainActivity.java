@@ -136,6 +136,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         if (findViewById(R.id.message_history) != null) {
             Log.d(TAG, "history" + output);
+            ((Global)getApplication()).setMessageHistory(output);
             ((TextView)findViewById(R.id.message_history)).setText(output);
         }
     }

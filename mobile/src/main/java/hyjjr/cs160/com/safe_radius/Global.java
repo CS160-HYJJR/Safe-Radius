@@ -29,7 +29,7 @@ public class Global extends Application {
     private int connectionToWatchStatus;
     private Long sentMessageTime;
     private Long receiveMessageTime;
-
+    private String messageHistory = "";
 
     public void disconenctToWatch() {
         connectionToWatchStatus = -1;
@@ -190,5 +190,13 @@ public class Global extends Application {
 
     public void setReceiveMessageTime(Long receiveMessageTime) {
         this.receiveMessageTime = receiveMessageTime;
+    }
+
+    public String getMessageHistory() {
+        return messageHistory;
+    }
+
+    public void setMessageHistory(String messageHistory) {
+        this.messageHistory = messageHistory;
     }
 }
