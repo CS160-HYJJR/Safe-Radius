@@ -300,6 +300,7 @@ public class SendFragment extends Fragment {
             view.setAlpha(transparency / 255.0f);
         }
         (getActivity().findViewById(android.R.id.tabs)).setAlpha(transparency / 255.0f);
+        (getActivity().findViewById(R.id.connection_status)).setAlpha(transparency / 255.0f);
     }
 
     /*
