@@ -1,5 +1,6 @@
 package hyjjr.cs160.com.safe_radius;
 
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.wearable.Wearable;
 
@@ -42,6 +44,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private static int UPDATE_INTERVAL_MS = 5000;
     private static int FASTEST_INTERVAL_MS = 2500;
     private static final int ZOOM_LEVEL = 19;
+
+    private static boolean routineRunned;
     // Actually, we should detect the movement once the app is opened, not only in the map fragment only.
     // change later.
 
@@ -87,35 +91,84 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         routine = new RepeatAction(new Runnable() {
             @Override
             public void run() {
-
-                boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
-                boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
-                boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
-                if (isReceived && !isDisconnected && !isConnected) {
-                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-                }
-                else if (!isReceived && !isDisconnected) {
-                    String title = "Error";
-                    String text = "You lost connection and did not connect to your child's watch. Please go to their last " +
-                            "known location to reestablish connection.";
-                    Intent alertIntent = new Intent(MainActivity.this, AlertActivity.class);
-                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    alertIntent.putExtra("title", title);
-                    alertIntent.putExtra("text", text.getBytes());
-                    MainActivity.this.startActivity(alertIntent);
-                    ((Global)getApplication()).disconenctToWatch();
-                    ((TextView)findViewById(R.id.connection_status)).setText("Disconnected");
-                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-                } else if (isConnected){
-                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-                    ((Global)getApplication()).connectToWatch();
-                    ((TextView)findViewById(R.id.connection_status)).setText("Connected");
-                }
+                checkConnection();
             }
         }, ROUTINE_INTERVAL);
+    }
 
+    public void checkMessageHistory() {
+        String output = "";
+        Long sentTime = ((Global)getApplication()).getSentMessageTime();
+        Long receiveTime = ((Global)getApplication()).getReceiveMessageTime();
+        long currentTime = System.currentTimeMillis();
+        if (sentTime != null || receiveTime != null) {
+            output += "message";
+        }
+        if (sentTime != null) {
+            output += " sent ";
+            long timeDiff = currentTime - sentTime;
+            if (timeDiff < 1000) {
+                output += timeDiff/1000 + "s";
+            } else if (timeDiff < 1000*60) {
+                output += timeDiff/(1000*60) + "min";
+            } else if (timeDiff < 1000*60*60) {
+                output += timeDiff/(1000*60*60) + "h";
+            } else if (timeDiff < 1000*60*60*24) {
+                output += timeDiff/(1000*60*60*24) + "days";
+            }
+            output += " ago";
+        }
+        if (receiveTime != null) {
+            output += " received ";
+            long timeDiff = currentTime - sentTime;
+            if (timeDiff < 1000) {
+                output += timeDiff/1000 + "s";
+            } else if (timeDiff < 1000*60) {
+                output += timeDiff/(1000*60) + "min";
+            } else if (timeDiff < 1000*60*60) {
+                output += timeDiff/(1000*60*60) + "h";
+            } else if (timeDiff < 1000*60*60*24) {
+                output += timeDiff/(1000*60*60*24) + "days";
+            }
+            output += " ago";
+        }
+        if (findViewById(R.id.message_history) != null) {
+            ((TextView)findViewById(R.id.message_history)).setText(output);
+        }
+    }
+
+    public void checkConnection() {
+        boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
+        boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
+        boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
+        if (!routineRunned) {
+            routineRunned = true;
+            return; // Do nothing in first run.
+        }
+        if (ReceiveMessageService.receivedSthFromWatch) {
+            ((Global)getApplication()).connectToWatch();
+            ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+        } else if (isReceived){
+            ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
+            ((Global)getApplication()).connectToWatch();
+            ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+        } else if (!isDisconnected && !isReceived){
+            String title = "Error";
+            String text = "You lost connection and did not connect to your child's watch. Please go to their last " +
+                    "known location to reestablish connection.";
+            Intent alertIntent = new Intent(MainActivity.this, AlertActivity.class);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alertIntent.putExtra("title", title);
+            alertIntent.putExtra("text", text.getBytes());
+            ((Global) getApplication()).disconenctToWatch();
+            ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
+            ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
+            startActivity(alertIntent);
+        } else {
+            ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
+        }
     }
 
     @Override
@@ -198,6 +251,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         if (routine != null){
             routine.stopUpdates();
+            routineRunned = false;
         }
     }
 

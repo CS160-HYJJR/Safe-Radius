@@ -110,9 +110,10 @@ public class MyGcmListenerService extends GcmListenerService {
             startService(intent);
         }
         else if (ReceiveMessageService.receivedSthFromWatch == false){
-
+            Log.d(TAG, "gcm receive from watch");
             if (messagePath.equals(MESSAGE_PATH)) {
                 ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
+                ((Global)getApplication()).setReceiveMessageTime(System.currentTimeMillis());
                 Log.d(TAG, "Message path received on mobile is: " + messagePath);
                 Log.d(TAG, "Message received on mobile is: " + messageBytes);
 

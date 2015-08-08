@@ -27,6 +27,8 @@ public class Global extends Application {
     private TreeMap<String, MyGcmListenerService.ByteArray> pendingResults; // <id, message>
     private boolean receivedMessageFromWearInInterval;
     private int connectionToWatchStatus;
+    private Long sentMessageTime;
+    private Long receiveMessageTime;
 
 
     public void disconenctToWatch() {
@@ -174,4 +176,19 @@ public class Global extends Application {
         this.receivedMessageFromWearInInterval = receivedMessageFromWearInInterval;
     }
 
+    public Long getSentMessageTime() {
+        return sentMessageTime;
+    }
+
+    public void setSentMessageTime(Long sentMessageTime) {
+        this.sentMessageTime = sentMessageTime;
+    }
+
+    public Long getReceiveMessageTime() {
+        return receiveMessageTime;
+    }
+
+    public void setReceiveMessageTime(Long receiveMessageTime) {
+        this.receiveMessageTime = receiveMessageTime;
+    }
 }
