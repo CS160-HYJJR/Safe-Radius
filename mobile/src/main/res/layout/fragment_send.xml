@@ -59,6 +59,15 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:id="@+id/textView" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_sent_text"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/message_spinner"
+        android:layout_toStartOf="@id/message_spinner"/>
 
     <ImageView
         android:layout_width="match_parent"

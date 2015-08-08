@@ -18,15 +18,36 @@ public class Global extends Application {
     private String[] messages;
     private int safeRadiusSelected;
     private int messageSelected;
-    private double safeRadius;
     private Bitmap parentPicture;
     private Bitmap bckgrdPicture;
-    private boolean lostConnection;
     private boolean isForeground;
     private LatLng childLatLng;
     private Double childAltitude;
     private String[] radii;
     private TreeMap<String, MyGcmListenerService.ByteArray> pendingResults; // <id, message>
+    private boolean receivedMessageFromWearInInterval;
+    private int connectionToWatchStatus;
+
+
+    public void disconenctToWatch() {
+        connectionToWatchStatus = -1;
+    }
+
+    public void connectToWatch() {
+        connectionToWatchStatus = 1;
+    }
+
+    public boolean isDisconnectedToWatch() {
+        return connectionToWatchStatus == -1;
+    }
+
+    public boolean isConnectedToWatch() {
+        return connectionToWatchStatus == 1;
+    }
+
+    public boolean isConnectionUndefinedToWatch() {
+        return connectionToWatchStatus == 0;
+    }
 
     @Override
     public void onCreate() {
@@ -37,9 +58,10 @@ public class Global extends Application {
         messageSelected = 0;
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.ic_thumbnail_addyourpic);
         bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
-        lostConnection = false;
         radii = getResources().getStringArray(R.array.radius_choices);
         pendingResults = new TreeMap<>();
+        receivedMessageFromWearInInterval = true;
+        connectionToWatchStatus = 0; // undefined connection
     }
 
 
@@ -143,4 +165,13 @@ public class Global extends Application {
     public TreeMap<String, MyGcmListenerService.ByteArray> getPendingResults() {
         return pendingResults;
     }
+
+    public boolean isReceivedMessageFromWearInInterval() {
+        return receivedMessageFromWearInInterval;
+    }
+
+    public void setReceivedMessageFromWearInInterval(boolean receivedMessageFromWearInInterval) {
+        this.receivedMessageFromWearInInterval = receivedMessageFromWearInInterval;
+    }
+
 }

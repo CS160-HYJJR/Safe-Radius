@@ -23,6 +23,7 @@ public class AlertActivity extends Activity {
         this.setFinishOnTouchOutside(false);
         CharSequence title = getIntent().getExtras().getCharSequence("title");
         CharSequence text = new String((byte[])getIntent().getExtras().get("text"));
+
         final byte[] voiceBytes = (byte[])getIntent().getExtras().get("voice");
         alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
@@ -56,18 +57,23 @@ public class AlertActivity extends Activity {
                             AlertActivity.this.finish();
                         }
                     });
+
+            Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
+            startService(vibrateIntent);
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        alertDialog.show();
+        if (alertDialog != null)
+            alertDialog.show();
     }
 
     @Override
     public void onStop() {
-        alertDialog.dismiss();
+        if (alertDialog != null)
+            alertDialog.dismiss();
         super.onStop();
     }
 }

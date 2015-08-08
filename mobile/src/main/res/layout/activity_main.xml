@@ -15,6 +15,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/connection_status"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:textSize="20dp"
+            android:background="#73A86A"
+            />
+
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"

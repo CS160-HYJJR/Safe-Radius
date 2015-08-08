@@ -110,7 +110,9 @@ public class MyGcmListenerService extends GcmListenerService {
             startService(intent);
         }
         else if (ReceiveMessageService.receivedSthFromWatch == false){
+
             if (messagePath.equals(MESSAGE_PATH)) {
+                ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
                 Log.d(TAG, "Message path received on mobile is: " + messagePath);
                 Log.d(TAG, "Message received on mobile is: " + messageBytes);
 
@@ -124,10 +126,10 @@ public class MyGcmListenerService extends GcmListenerService {
                 startActivity(alertIntent);
 
                 // start Vibration
-                Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
-                startService(vibrateIntent);
+
 
             } else if (messagePath.equals(LOCATION_PATH)) {
+                ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
                 Log.d(TAG, "location reveiced ");
                 double[] positions = new double[3];
                 positions[0]= ByteBuffer.wrap(messageBytes).getDouble(0);
@@ -139,6 +141,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 ((Global)getApplication()).setChildLatLng(new LatLng(positions[0], positions[1]));
                 ((Global)getApplication()).setChildAltitude(positions[2]);
             } else if (messagePath.equals(VOICE_PATH)) {
+                ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
                 Log.d(TAG, "voice received");
                 Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

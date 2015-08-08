@@ -31,16 +31,6 @@ public class ReceiveMessageService extends WearableListenerService {
             final String message = new String(messageEvent.getData());
             Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
             Log.d(TAG, "Message received on mobile is: " + message);
-            /*
-
-            Intent alertIntent = new Intent(getApplicationContext(), AlertActivity.class);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            alertIntent.putExtra("title", "Message from your mom");
-            alertIntent.putExtra("text", message);
-            startActivity(alertIntent);
-            */
 
             // MainActivity to background
             Log.d(TAG, "start to finish MainActivity");

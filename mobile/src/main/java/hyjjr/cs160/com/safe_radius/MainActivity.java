@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,8 +22,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.wearable.Wearable;
 
@@ -40,8 +37,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private double lonChildVelocity = 0.000015; // in unit of degree per second
     private double latChildVelocity = 0.000015; // in unit of degree per second
     private boolean hasAlerted; // Once alert once every time open the map.
-    private RepeatAction checkConnection;
-    private static final int CHECK_CONNECTION_INTERVAL = 6000;
+    private RepeatAction routine;
+    private static final int ROUTINE_INTERVAL = 6000;
     private static int UPDATE_INTERVAL_MS = 5000;
     private static int FASTEST_INTERVAL_MS = 2500;
     private static final int ZOOM_LEVEL = 19;
@@ -56,10 +53,10 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_name1)).setIndicator("", getResources().getDrawable(R.drawable.ic_send, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_name1)).setIndicator("", getResources().getDrawable(R.drawable.ic_send)),
                 SendFragment.class, null);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map, getTheme())),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab2_name)).setIndicator("", getResources().getDrawable(R.drawable.ic_map)),
                 RadarFragment.class, null);
 
 
@@ -87,16 +84,38 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         startService(intent);
 
 
-        if (checkConnection != null) {
-            checkConnection.stopUpdates();
-        }
-        checkConnection = new RepeatAction(new Runnable() {
+        routine = new RepeatAction(new Runnable() {
             @Override
             public void run() {
 
+                boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
+                boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
+                boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
+                if (isReceived && !isDisconnected && !isConnected) {
+                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
+                }
+                else if (!isReceived && !isDisconnected) {
+                    String title = "Error";
+                    String text = "You lost connection and did not connect to your child's watch. Please go to their last " +
+                            "known location to reestablish connection.";
+                    Intent alertIntent = new Intent(MainActivity.this, AlertActivity.class);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    alertIntent.putExtra("title", title);
+                    alertIntent.putExtra("text", text.getBytes());
+                    MainActivity.this.startActivity(alertIntent);
+                    ((Global)getApplication()).disconenctToWatch();
+                    ((TextView)findViewById(R.id.connection_status)).setText("Disconnected");
+                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
+                } else if (isConnected){
+                    ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
+                    ((Global)getApplication()).connectToWatch();
+                    ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+                }
             }
-        }, CHECK_CONNECTION_INTERVAL);
-        checkConnection.startUpdates();
+        }, ROUTINE_INTERVAL);
+
     }
 
     @Override
@@ -177,12 +196,16 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        if (routine != null){
+            routine.stopUpdates();
+        }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         if (((Global)getApplication()).isTurnedOn()) {
             startRequestLocation2();
+            routine.startUpdates();
         }
     }
 
@@ -199,22 +222,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         Log.d(TAG, "on location changed");
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         double currentAltitude = location.getAltitude();
-        // Init child position
-        /*
-        if (currentLatLng == null || currentLatLng.equals(new LatLng(0, 0))) {
-            Log.d(TAG, "child");
-            childLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            if (childChangeLoc != null) {
-                childChangeLoc.stopUpdates();
-            }
-            childChangeLoc = new RepeatAction(new Runnable() {
-                @Override
-                public void run() {
-                    childLatLng = new LatLng(childLatLng.latitude- latChildVelocity, childLatLng.longitude-lonChildVelocity);
-                }
-            });
-            childChangeLoc.startUpdates();
-        }*/
         LatLng childLatLng = ((Global)getApplication()).getChildLatLng();
         Double childAltitude = ((Global)getApplication()).getChildAltitude();
         // Alert if child is too far
@@ -237,11 +244,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
                     alertIntent.putExtra("title", title);
                     alertIntent.putExtra("text", text.getBytes());
                     startActivity(alertIntent);
-
-
-                    // start Vibration
-                    Intent vibrateIntent = new Intent(this, VibrationService.class);
-                    startService(vibrateIntent);
                 }
             } else {
                 hasAlerted = false;
