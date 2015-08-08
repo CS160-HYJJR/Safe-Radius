@@ -24,8 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class RadarFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
-    private static int UPDATE_INTERVAL_MS = 3000;
-    private static int FASTEST_INTERVAL_MS = 1500;
     private static final int ZOOM_LEVEL = 19;
 
     private static View view;
