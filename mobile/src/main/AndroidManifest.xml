@@ -63,6 +63,12 @@
             android:label="@string/title_activity_alert"
             android:theme="@style/app_theme_nodisplay"/>
 
+        <activity
+            android:name=".AlertUniqueActivity"
+            android:label="@string/title_activity_alert"
+            android:launchMode= "singleInstance"
+            android:theme="@style/app_theme_nodisplay"/>
+
         <service android:name=".VibrationService" />
 
         <receiver

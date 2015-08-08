@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private boolean hasAlerted; // Once alert once every time open the map.
     private RepeatAction routine_check_connection;
     private RepeatAction routine_check_history;
-    private static final int CHECK_CONNECTION_INTERVAL = 12000;
+    private static final int CHECK_CONNECTION_INTERVAL = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
     private static int UPDATE_INTERVAL_MS = 4000;
     private static int FASTEST_INTERVAL_MS = 2000;
@@ -160,16 +160,16 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             String title = "Error";
             String text = "You lost connection and did not connect to your child's watch. Please go to their last " +
                     "known location to reestablish connection.";
-            Intent alertIntent = new Intent(MainActivity.this, AlertActivity.class);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            alertIntent.putExtra("title", title);
-            alertIntent.putExtra("text", text.getBytes());
+            Intent alertUniqueIntent = new Intent(MainActivity.this, AlertUniqueActivity.class);
+            alertUniqueIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            alertUniqueIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            alertUniqueIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alertUniqueIntent.putExtra("title", title);
+            alertUniqueIntent.putExtra("text", text.getBytes());
             ((Global) getApplication()).disconenctToWatch();
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
             ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-            startActivity(alertIntent);
+            startActivity(alertUniqueIntent);
         } else {
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
         }
