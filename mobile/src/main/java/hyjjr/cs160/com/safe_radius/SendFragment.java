@@ -178,11 +178,11 @@ public class SendFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), GcmSendMessage.class);
+            final Intent intent = new Intent(getActivity(), GcmSendMessage.class);
             intent.putExtra("message_path", MESSAGE_PATH);
             intent.putExtra("message", ((Global) getActivity().getApplication()).getMessage().getBytes());
             intent.putExtra("source", "phone");
-            getActivity().startService(intent);
+
             Handler handler = new Handler(Looper.getMainLooper());
             if (((Global) getActivity().getApplication()).isConnectedToWatch()) {
                 ((Global) getActivity().getApplication()).setSentMessageTime(System.currentTimeMillis());
@@ -193,6 +193,7 @@ public class SendFragment extends Fragment {
                         Toast toast = Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
                         toast.show();
+                        getActivity().startService(intent);
                     }
                 });
             } else {

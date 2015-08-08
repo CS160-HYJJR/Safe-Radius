@@ -274,6 +274,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onLocationChanged(Location location) {
+        if (!((Global)getApplication()).isConnectedToWatch())
+            return;
+
         if (radar != null)
             radar.onLocationChanged(location);
 
