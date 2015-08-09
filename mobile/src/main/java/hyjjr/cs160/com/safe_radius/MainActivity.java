@@ -172,7 +172,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             ((Global) getApplication()).disconenctToWatch();
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
             ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-            startActivity(alertUniqueIntent);
+            // TODO enable this alert after bug fixed
+            //startActivity(alertUniqueIntent);
         } else {
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
         }
