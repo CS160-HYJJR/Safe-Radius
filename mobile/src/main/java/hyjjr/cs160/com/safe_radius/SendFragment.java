@@ -373,7 +373,7 @@ public class SendFragment extends Fragment {
         } else if (requestCode == REQUEST_BACKGROUND && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageButton button = ((ImageButton)(getView().findViewById(R.id.add_parent_button)));
+            ImageView button = ((ImageView)(getView().findViewById(R.id.background_pic)));
             button.setBackground(new BitmapDrawable(getResources(), imageBitmap));
             ((Global)getActivity().getApplication()).setBckgrdPicture(imageBitmap);
         } else if (requestCode == REQUEST_SPEECH_TO_TEXT && resultCode == getActivity().RESULT_OK) {
