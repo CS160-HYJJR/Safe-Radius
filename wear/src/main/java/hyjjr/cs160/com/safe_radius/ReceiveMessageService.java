@@ -47,7 +47,7 @@ public class ReceiveMessageService extends WearableListenerService {
             Intent confirmIntent = new Intent(this, SendMessageService.class);
             confirmIntent.putExtra("message", MESSAGE.getBytes());
             confirmIntent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
-            confirmIntent.putExtra("confirmationEnabled", "true");
+//            confirmIntent.putExtra("confirmationEnabled", "true");
             PendingIntent confirmPendingIntent =
                     PendingIntent.getService(this, 0, confirmIntent, 0);
             Notification.Builder notificationBuilder =
@@ -58,7 +58,7 @@ public class ReceiveMessageService extends WearableListenerService {
                             .setContentIntent(confirmPendingIntent)
                             .setPriority(Notification.PRIORITY_MAX)
                             .setLargeIcon(((Global)getApplication()).getParentPicture())
-                            .addAction(R.drawable.ic_done, "Reply", confirmPendingIntent);
+                            .addAction(R.drawable.ic_done, "Got it!", confirmPendingIntent);
             Notification notification = notificationBuilder.build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
 

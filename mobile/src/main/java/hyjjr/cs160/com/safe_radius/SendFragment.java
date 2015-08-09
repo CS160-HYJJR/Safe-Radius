@@ -191,7 +191,7 @@ public class SendFragment extends Fragment {
                     @Override
                     public void run() {
                         Toast toast = Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 340);
                         toast.show();
                         getActivity().startService(intent);
                     }
@@ -202,7 +202,7 @@ public class SendFragment extends Fragment {
                     @Override
                     public void run() {
                         Toast toast = Toast.makeText(getActivity(), "Message Failed", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 240);
+                        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 340);
                         toast.show();
                     }
                 });
