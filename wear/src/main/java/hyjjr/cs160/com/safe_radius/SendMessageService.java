@@ -24,6 +24,7 @@ public class SendMessageService extends IntentService {
     private static final String TAG = SendMessageService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private boolean confirmationEnabled = false;
+    private boolean notification = false;
 
     public SendMessageService() {
         super(SendMessageService.class.getSimpleName());
@@ -35,6 +36,10 @@ public class SendMessageService extends IntentService {
 
             if (intent.getStringExtra("confirmationEnabled") != null) {
                 confirmationEnabled = true;
+            }
+
+            if (intent.getStringExtra("notification") != null) {
+                notification = true;
             }
 
             String messagePath = (String) intent.getExtras().get("message_path");
@@ -74,6 +79,11 @@ public class SendMessageService extends IntentService {
                             ConfirmationActivity.SUCCESS_ANIMATION);
                     startActivity(intent);
                     ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(1);
+                    if (notification) {
+                        Intent intent2 = new Intent(this, MainActivity.class);
+                        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent2);
+                    }
                 }
 
                 isConnectionGood = true;

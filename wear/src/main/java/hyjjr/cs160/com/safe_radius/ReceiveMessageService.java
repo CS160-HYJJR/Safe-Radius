@@ -46,6 +46,7 @@ public class ReceiveMessageService extends WearableListenerService {
 
             Intent confirmIntent = new Intent(this, SendMessageService.class);
             confirmIntent.putExtra("confirmationEnabled", "true");
+            confirmIntent.putExtra("notification", "true");
             confirmIntent.putExtra("message", MESSAGE.getBytes());
             confirmIntent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
             PendingIntent confirmPendingIntent =
