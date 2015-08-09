@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.location.LocationListener;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -53,7 +54,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(MainActivity.this, SendMessageService.class);
             intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
             intent.putExtra("message", MESSAGE.getBytes());
-//            intent.putExtra("confirmationEnabled", "true");
+            intent.putExtra("confirmationEnabled", "true");
             startService(intent);
         }
     };
@@ -73,8 +74,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra("android.speech.extra.GET_AUDIO_FORMAT", "audio/AMR");
-            intent.putExtra("android.speech.extra.GET_AUDIO", true);
+//            intent.putExtra("android.speech.extra.GET_AUDIO_FORMAT", "audio/AMR"); for audio
+//            intent.putExtra("android.speech.extra.GET_AUDIO", true);
             startActivityForResult(intent, SPEECH_REQUEST_CODE);
         }
     };
@@ -83,15 +84,20 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
-            List<String> results = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
+            List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            // Do something with spokenText
+            Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+            intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+            intent.putExtra("message", spokenText.getBytes());
+            intent.putExtra("confirmationEnabled", "true");
+            startService(intent);
 
-            Uri audioUri = data.getData();
-            ContentResolver contentResolver = getContentResolver();
-//            InputStream filestream = contentResolver.openInputStream(audioUri);
-            // TODO: read audio file from inputstream
+//            Uri audioUri = data.getData();
+//            ContentResolver contentResolver = getContentResolver();
+//            try {
+//                InputStream filestream = contentResolver.openInputStream(audioUri); //audioUri is null for some reason
+//                // TODO: SEND filestream to handheld and then read audio file from inputstream
+//            } catch (FileNotFoundException e) {}
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -111,18 +117,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.registerReceiver(mBroadcastReceiver, new IntentFilter(FINISH_BROADCAST));
-
-        /*
-        if (getIntent() != null) {
-            if (getIntent().getExtras() != null) {
-                ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_ID);
-                Log.d(TAG, "message reply");
-                Intent intent = new Intent(MainActivity.this, SendMessageService.class);
-                intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
-                intent.putExtra("message", MESSAGE2.getBytes());
-                startService(intent);
-            }
-        } */
     }
 
     @Override

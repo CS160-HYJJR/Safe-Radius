@@ -6,6 +6,7 @@
     tools:context=".MainActivity"
     tools:deviceIds="wear_round"
     android:background="@drawable/watch_interface_vertical">
+
     <!--android:background="@android:color/background_light"-->
 
     <ImageButton

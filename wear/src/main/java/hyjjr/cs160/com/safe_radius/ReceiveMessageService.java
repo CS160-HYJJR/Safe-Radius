@@ -45,9 +45,9 @@ public class ReceiveMessageService extends WearableListenerService {
             startService(vibrateIntent);
 
             Intent confirmIntent = new Intent(this, SendMessageService.class);
+            confirmIntent.putExtra("confirmationEnabled", "true");
             confirmIntent.putExtra("message", MESSAGE.getBytes());
             confirmIntent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
-//            confirmIntent.putExtra("confirmationEnabled", "true");
             PendingIntent confirmPendingIntent =
                     PendingIntent.getService(this, 0, confirmIntent, 0);
             Notification.Builder notificationBuilder =
