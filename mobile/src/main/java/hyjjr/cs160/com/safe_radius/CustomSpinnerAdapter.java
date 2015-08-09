@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         spnItemName = (TextView) rowView.findViewById(R.id.spnText);
         spnItemDel = (TextView) rowView.findViewById(R.id.spnDel);
+        Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/gotham.ttf");
+        spnItemName.setTypeface(custom_font);
+        spnItemDel.setTypeface(custom_font);
 
         spnItemName.setText(iName.get(position));
         spnItemDel.setText("X");
@@ -82,6 +86,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         spnItemName = (TextView) rowView.findViewById(R.id.spnText);
         spnItemDel = (TextView) rowView.findViewById(R.id.spnDel);
+        Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/gotham.ttf");
+        spnItemName.setTypeface(custom_font);
+        spnItemDel.setTypeface(custom_font);
 
         spnItemName.setText(iName.get(position));
         spnItemName.setBackgroundColor(context.getResources().getColor(R.color.white));

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,16 +40,18 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private RepeatAction routine_check_history;
     private static final int CHECK_CONNECTION_INTERVAL = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
-    private static int UPDATE_INTERVAL_MS = 4000;
-    private static int FASTEST_INTERVAL_MS = 2000;
+    private static int UPDATE_INTERVAL_MS = 2000;
+    private static int FASTEST_INTERVAL_MS = 1000;
     private static final int ZOOM_LEVEL = 19;
-
+    private Handler handler = new Handler();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/gotham.ttf");
+        ((TextView)findViewById(R.id.connection_status)).setTypeface(custom_font);
 
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
@@ -169,7 +172,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             ((Global) getApplication()).disconenctToWatch();
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
             ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-            startActivity(alertUniqueIntent);
+            // TODO enable this alert after bug fixed
+            //startActivity(alertUniqueIntent);
         } else {
             ((TextView) findViewById(R.id.connection_status)).setText("Disconnected");
         }
@@ -224,7 +228,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         routine_check_connection.stopUpdates();
         routine_check_history.stopUpdates();
-        final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

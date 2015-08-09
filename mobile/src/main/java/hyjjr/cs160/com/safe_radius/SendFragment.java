@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
@@ -220,6 +221,9 @@ public class SendFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/gotham.ttf");
+        ((TextView)getActivity().findViewById(R.id.radius_text)).setTypeface(custom_font);
+        ((TextView)getActivity().findViewById(R.id.radius_unit)).setTypeface(custom_font);
         view = getView();
         if (BuildConfig.DEBUG && view == null) {
             throw new AssertionError();
@@ -278,7 +282,7 @@ public class SendFragment extends Fragment {
 
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
-        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on));
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on_1));
         setTransparencyAll(255);
         setEnabledAll(true);
         ((MainActivity)getActivity()).startRequestLocation();
@@ -300,6 +304,7 @@ public class SendFragment extends Fragment {
             view.setAlpha(transparency / 255.0f);
         }
         (getActivity().findViewById(android.R.id.tabs)).setAlpha(transparency / 255.0f);
+        (getActivity().findViewById(R.id.connection_status)).setAlpha(transparency / 255.0f);
     }
 
     /*
