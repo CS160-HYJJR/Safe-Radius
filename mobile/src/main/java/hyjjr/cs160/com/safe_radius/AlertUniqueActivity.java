@@ -70,17 +70,18 @@ public class AlertUniqueActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        if (alertDialog != null)
+        if (alertDialog != null) {
             alertDialog.show();
-    }
+            TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
+            Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
+            textView.setTypeface(face);
+        }
+   }
 
     @Override
     public void onStop() {
         if (alertDialog != null) {
             alertDialog.dismiss();
-            TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
-            Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
-            textView.setTypeface(face);
         }
         super.onStop();
     }
