@@ -39,10 +39,10 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private RepeatAction routine_check_history;
     private static final int CHECK_CONNECTION_INTERVAL = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
-    private static int UPDATE_INTERVAL_MS = 4000;
-    private static int FASTEST_INTERVAL_MS = 2000;
+    private static int UPDATE_INTERVAL_MS = 2000;
+    private static int FASTEST_INTERVAL_MS = 1000;
     private static final int ZOOM_LEVEL = 19;
-
+    private Handler handler = new Handler();
 
 
     @Override
@@ -224,7 +224,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         routine_check_connection.stopUpdates();
         routine_check_history.stopUpdates();
-        final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
