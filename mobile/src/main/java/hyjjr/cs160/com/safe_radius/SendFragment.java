@@ -278,7 +278,7 @@ public class SendFragment extends Fragment {
 
     private void turnOn() {
         ((Global) getActivity().getApplication()).turnOn();
-        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on));
+        (view.findViewById(R.id.on_off_button)).setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_power_on_1));
         setTransparencyAll(255);
         setEnabledAll(true);
         ((MainActivity)getActivity()).startRequestLocation();
