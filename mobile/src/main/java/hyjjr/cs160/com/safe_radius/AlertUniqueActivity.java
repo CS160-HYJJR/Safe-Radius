@@ -11,6 +11,7 @@ import android.media.AudioTrack;
 import android.os.Bundle;
 import android.widget.TextView;
 
+// used for disconnection alert
 public class AlertUniqueActivity extends Activity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
@@ -75,6 +76,18 @@ public class AlertUniqueActivity extends Activity {
             TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
             Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
             textView.setTypeface(face);
+            int titleId = getResources().getIdentifier("alertTitle", "id", "android");
+            if (titleId > 0) {
+                TextView dialogTitle = (TextView) alertDialog.findViewById(titleId);
+                if (dialogTitle != null) {
+                    dialogTitle.setTypeface(face, Typeface.BOLD);
+                }
+            }
+            for (int i = -10; i < 10; i++) { // -10 ---- 10 , just a large range
+                if (alertDialog.getButton(i) != null) {
+                    alertDialog.getButton(i).setTypeface(face, Typeface.BOLD);
+                }
+            }
         }
    }
 
