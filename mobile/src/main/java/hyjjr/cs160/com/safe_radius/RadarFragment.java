@@ -1,6 +1,7 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -59,6 +60,9 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
         mapFragment = ((SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map));
         mapFragment.getMapAsync(this);
+
+        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/gotham.ttf");
+        ((TextView)getView().findViewById(R.id.map_status)).setTypeface(custom_font);
 
         try {
             if (map == null) {

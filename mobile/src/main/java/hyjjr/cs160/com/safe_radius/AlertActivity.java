@@ -4,12 +4,14 @@ package hyjjr.cs160.com.safe_radius;
         import android.app.AlertDialog;
         import android.content.DialogInterface;
         import android.content.Intent;
+        import android.graphics.Typeface;
         import android.media.AudioFormat;
         import android.media.AudioManager;
         import android.media.AudioTrack;
         import android.os.Bundle;
         import android.view.MotionEvent;
         import android.view.WindowManager;
+        import android.widget.TextView;
 
 public class AlertActivity extends Activity {
 
@@ -27,6 +29,9 @@ public class AlertActivity extends Activity {
 
         final byte[] voiceBytes = (byte[])getIntent().getExtras().get("voice");
         alertDialog = new AlertDialog.Builder(this).create();
+
+
+
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
         alertDialog.setCanceledOnTouchOutside(false);
@@ -67,8 +72,12 @@ public class AlertActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        if (alertDialog != null)
+        if (alertDialog != null) {
             alertDialog.show();
+            TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
+            Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
+            textView.setTypeface(face);
+        }
     }
 
     @Override

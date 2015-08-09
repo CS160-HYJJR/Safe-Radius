@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
@@ -220,6 +221,7 @@ public class SendFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/gotham.ttf");
         view = getView();
         if (BuildConfig.DEBUG && view == null) {
             throw new AssertionError();

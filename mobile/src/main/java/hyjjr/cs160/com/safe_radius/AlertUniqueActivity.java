@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class AlertUniqueActivity extends Activity {
 
@@ -26,7 +28,6 @@ public class AlertUniqueActivity extends Activity {
             alertDialog.dismiss();
 
         final byte[] voiceBytes = (byte[])getIntent().getExtras().get("voice");
-        alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
         alertDialog.setCanceledOnTouchOutside(false);
@@ -74,8 +75,12 @@ public class AlertUniqueActivity extends Activity {
 
     @Override
     public void onStop() {
-        if (alertDialog != null)
+        if (alertDialog != null) {
             alertDialog.dismiss();
+            TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
+            Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
+            textView.setTypeface(face);
+        }
         super.onStop();
     }
 }

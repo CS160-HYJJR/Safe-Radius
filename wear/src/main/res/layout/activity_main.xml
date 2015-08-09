@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context=".MainActivity"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:background="@drawable/watch_interface">
     <!--android:background="@android:color/background_light"-->
 
     <ImageButton

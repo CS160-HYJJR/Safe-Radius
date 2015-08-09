@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +50,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/gotham.ttf");
+        ((TextView)findViewById(R.id.connection_status)).setTypeface(custom_font);
 
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
