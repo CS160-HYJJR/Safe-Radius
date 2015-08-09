@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(MainActivity.this, SendMessageService.class);
             intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
             intent.putExtra("message", MESSAGE.getBytes());
-            intent.putExtra("confirmationEnabled", "true");
+//            intent.putExtra("confirmationEnabled", "true");
             startService(intent);
         }
     };

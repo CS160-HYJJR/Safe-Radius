@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/tabhost"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -22,8 +22,8 @@
             android:textColor="@android:color/white"
             android:gravity="center"
             android:layout_alignParentTop="true"
-            android:textSize="20dp"
-            android:background="#73A86A"
+            android:textSize="20sp"
+            android:background="#479152"
             />
 
         <TabWidget
