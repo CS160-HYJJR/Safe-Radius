@@ -28,6 +28,7 @@ public class AlertUniqueActivity extends Activity {
             alertDialog.dismiss();
 
         final byte[] voiceBytes = (byte[])getIntent().getExtras().get("voice");
+        alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(text);
         alertDialog.setCanceledOnTouchOutside(false);

@@ -222,6 +222,8 @@ public class SendFragment extends Fragment {
         super.onStart();
 
         Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/gotham.ttf");
+        ((TextView)getActivity().findViewById(R.id.radius_text)).setTypeface(custom_font);
+        ((TextView)getActivity().findViewById(R.id.radius_unit)).setTypeface(custom_font);
         view = getView();
         if (BuildConfig.DEBUG && view == null) {
             throw new AssertionError();
