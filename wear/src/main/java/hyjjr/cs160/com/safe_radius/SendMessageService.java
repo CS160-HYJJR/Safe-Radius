@@ -79,17 +79,19 @@ public class SendMessageService extends IntentService {
                             ConfirmationActivity.SUCCESS_ANIMATION);
                     startActivity(intent);
                     ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(1);
-                    if (notification) {
-                        Intent intent2 = new Intent(this, MainActivity.class);
-                        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent2);
-                    }
                 }
 
                 isConnectionGood = true;
                 Log.d(TAG, "send message success messagePath: " + messagePath
                         + " message: " + new String(message)
                         + " node: " + node.getDisplayName());
+
+                if (notification) {
+                    Intent intent2 = new Intent(this, MainActivity.class);
+                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent2);
+                }
+
             } else {
                 if (confirmationEnabled) {
                     Intent intent = new Intent(this, ConfirmationActivity.class);

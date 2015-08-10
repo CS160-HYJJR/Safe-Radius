@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
@@ -46,9 +47,9 @@ public class ReceiveMessageService extends WearableListenerService {
 
             Intent confirmIntent = new Intent(this, SendMessageService.class);
             confirmIntent.putExtra("confirmationEnabled", "true");
-            confirmIntent.putExtra("notification", "true");
             confirmIntent.putExtra("message", MESSAGE.getBytes());
             confirmIntent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+            confirmIntent.putExtra("notification", "true");
             PendingIntent confirmPendingIntent =
                     PendingIntent.getService(this, 0, confirmIntent, 0);
             Notification.Builder notificationBuilder =
@@ -56,9 +57,8 @@ public class ReceiveMessageService extends WearableListenerService {
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(message)
                             .setContentText("")
-                            .setContentIntent(confirmPendingIntent)
                             .setPriority(Notification.PRIORITY_MAX)
-                            .setLargeIcon(((Global)getApplication()).getParentPicture())
+                            .setLargeIcon(((Global) getApplication()).getParentPicture())
                             .addAction(R.drawable.ic_done, "Got it!", confirmPendingIntent);
             Notification notification = notificationBuilder.build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);

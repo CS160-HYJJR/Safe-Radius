@@ -10,7 +10,7 @@
         android:gravity="center"
         android:layout_alignParentTop="true"
         android:textSize="20dp"
-        android:background="#73A86A"
+        android:background="#4E9861"
         />
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/map"
