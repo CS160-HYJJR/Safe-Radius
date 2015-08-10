@@ -371,7 +371,7 @@ public class SendFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ((Global)getActivity().getApplication()).setParentPicture(getRoundedCornerBitmapWithBorder(imageBitmap));
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, 160, 160, false);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(((Global) getActivity().getApplication()).getParentPicture(), 300, 300, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] bitmapByte = stream.toByteArray();
@@ -384,7 +384,7 @@ public class SendFragment extends Fragment {
         } else if (requestCode == REQUEST_BACKGROUND && resultCode == getActivity().RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageButton button = ((ImageButton)(getView().findViewById(R.id.add_parent_button)));
+            ImageView button = ((ImageView)(getView().findViewById(R.id.background_pic)));
             button.setBackground(new BitmapDrawable(getResources(), imageBitmap));
             ((Global)getActivity().getApplication()).setBckgrdPicture(imageBitmap);
         } else if (requestCode == REQUEST_SPEECH_TO_TEXT && resultCode == getActivity().RESULT_OK) {

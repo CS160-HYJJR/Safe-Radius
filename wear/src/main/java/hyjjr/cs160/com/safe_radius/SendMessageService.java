@@ -1,6 +1,7 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.util.Log;
@@ -12,7 +13,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 public class SendMessageService extends IntentService {
@@ -23,7 +23,8 @@ public class SendMessageService extends IntentService {
 
     private static final String TAG = SendMessageService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-//    private boolean confirmationEnabled;
+    private boolean confirmationEnabled = false;
+    private boolean notification = false;
 
     public SendMessageService() {
         super(SendMessageService.class.getSimpleName());
@@ -32,9 +33,15 @@ public class SendMessageService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-//            if (intent.getExtras().get("confirmationEnabled") != null) {
-//                confirmationEnabled = true;
-//            }
+
+            if (intent.getStringExtra("confirmationEnabled") != null) {
+                confirmationEnabled = true;
+            }
+
+            if (intent.getStringExtra("notification") != null) {
+                notification = true;
+            }
+
             String messagePath = (String) intent.getExtras().get("message_path");
             byte[] message = (byte[]) intent.getExtras().get("message");
             if (mGoogleApiClient == null) {
@@ -64,24 +71,29 @@ public class SendMessageService extends IntentService {
             MessageApi.SendMessageResult result =
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
-            if (messagePath.equals(MESSAGE_PATH)) {
-                if (result.getStatus().isSuccess()) {
-//                    if (confirmationEnabled) {
-                        Intent intent = new Intent(this, ConfirmationActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                                ConfirmationActivity.SUCCESS_ANIMATION);
-                        startActivity(intent);
-//                    }
+            if (result.getStatus().isSuccess()) {
+                if (confirmationEnabled) {
+                    Intent intent = new Intent(this, ConfirmationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                            ConfirmationActivity.SUCCESS_ANIMATION);
+                    startActivity(intent);
+                    ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(1);
+                }
+
+                isConnectionGood = true;
+                Log.d(TAG, "send message success messagePath: " + messagePath
+                        + " message: " + new String(message)
+                        + " node: " + node.getDisplayName());
+
+                if (notification) {
                     Intent intent2 = new Intent(this, MainActivity.class);
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent2);
+                }
 
-                    isConnectionGood = true;
-                    Log.d(TAG, "send message success messagePath: " + messagePath
-                            + " message: " + new String(message)
-                            + " node: " + node.getDisplayName());
-                } else {
+            } else {
+                if (confirmationEnabled) {
                     Intent intent = new Intent(this, ConfirmationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,

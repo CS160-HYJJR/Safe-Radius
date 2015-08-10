@@ -3,12 +3,15 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,8 +28,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.location.LocationListener;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.util.List;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -38,6 +44,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
     private static final int NOTIFICATION_ID = 1;
+    private static final int SPEECH_REQUEST_CODE = 0;
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
 
@@ -47,12 +54,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(MainActivity.this, SendMessageService.class);
             intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
             intent.putExtra("message", MESSAGE.getBytes());
-//            intent.putExtra("confirmationEnabled", "true");
+            intent.putExtra("confirmationEnabled", "true");
             startService(intent);
         }
     };
 
-    private View.OnTouchListener micButtonListener = new View.OnTouchListener() {
+    private View.OnClickListener micButtonListener = new View.OnClickListener() {
         private Audio audio = new Audio();
         private boolean started;
         private static final int DELAY = 500;
@@ -63,68 +70,44 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (recording == null) {
-                recording = Toast.makeText(MainActivity.this, "Recording", Toast.LENGTH_SHORT);
-                recording.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
-            }
-            if (voiceSent == null) {
-                voiceSent = Toast.makeText(getApplication(), "Voice Sent", Toast.LENGTH_SHORT);
-                voiceSent.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 40);
-            }
-            Runnable startRecording = new Runnable() {
-                public void run() {
-                    started = true;
-                    fireRecodingToastIndefinite();
-                    recording.show();
-                    audio.startRecording();
-                }
-            };
-            switch(event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (!started) {
-                        voiceSent.cancel();
-                        myHandler.postDelayed(startRecording, DELAY);//Message will be delivered in 1 second.
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    started = false;
-                    recording.cancel();
-                    voiceSent.show();
-                    byte[] bytes = audio.stopRecording();
-                    Intent intent = new Intent(MainActivity.this, SendMessageService.class);
-                    intent.putExtra("message_path", SendMessageService.VOICE_PATH);
-                    intent.putExtra("message", bytes);
-                    intent.putExtra("confirmationEnabled", "true");
-                    startService(intent);
-                    break;
-            }
-            return false;
-        }
-
-        private void fireRecodingToastIndefinite() {
-            Thread t = new Thread() {
-                public void run() {
-                    try {
-                        while (started) {
-                            recording.show();
-                            if (started) sleep(250);
-                        }
-                    } catch (Exception e) {
-                        Log.e("LongToast", "", e);
-                    }
-                }
-            };
-            t.start();
+        public void onClick(View v) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//            intent.putExtra("android.speech.extra.GET_AUDIO_FORMAT", "audio/AMR"); for audio
+//            intent.putExtra("android.speech.extra.GET_AUDIO", true);
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            Intent intent = new Intent(MainActivity.this, SendMessageService.class);
+            intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
+            intent.putExtra("message", spokenText.getBytes());
+            intent.putExtra("confirmationEnabled", "true");
+            startService(intent);
+
+//            Uri audioUri = data.getData();
+//            ContentResolver contentResolver = getContentResolver();
+//            try {
+//                InputStream filestream = contentResolver.openInputStream(audioUri); //audioUri is null for some reason
+//                // TODO: SEND filestream to handheld and then read audio file from inputstream
+//            } catch (FileNotFoundException e) {}
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.send_button).setOnClickListener(sendButtonListener);
-        findViewById((R.id.mic_button)).setOnTouchListener(micButtonListener);
+        findViewById((R.id.mic_button)).setOnClickListener(micButtonListener);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API
@@ -134,18 +117,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.registerReceiver(mBroadcastReceiver, new IntentFilter(FINISH_BROADCAST));
-
-        /*
-        if (getIntent() != null) {
-            if (getIntent().getExtras() != null) {
-                ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_ID);
-                Log.d(TAG, "message reply");
-                Intent intent = new Intent(MainActivity.this, SendMessageService.class);
-                intent.putExtra("message_path", SendMessageService.MESSAGE_PATH);
-                intent.putExtra("message", MESSAGE2.getBytes());
-                startService(intent);
-            }
-        } */
     }
 
     @Override
