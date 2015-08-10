@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="message_choices">
+        <item>Set Message</item>
         <item>Come back</item>
         <item>Stop</item>
         <item>Add New Message</item>

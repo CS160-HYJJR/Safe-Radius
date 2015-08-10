@@ -43,8 +43,13 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         spnItemDel.setTypeface(custom_font);
 
         spnItemName.setText(iName.get(position));
+        if (position == 0) {
+            spnItemName.setVisibility(View.GONE);
+            spnItemDel.setVisibility(View.GONE);
+        }
+
         spnItemDel.setText("X");
-        if (position == iName.size() -1) {
+        if (position == iName.size() -1 || position < 0) {
             spnItemDel.setVisibility(View.GONE);
             spnItemDel.setEnabled(false);
         }
@@ -80,9 +85,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View rowView =  inflater.inflate(R.layout.custom_spinner, parent, false);
+        View rowView = inflater.inflate(R.layout.custom_spinner, parent, false);
 
         spnItemName = (TextView) rowView.findViewById(R.id.spnText);
         spnItemDel = (TextView) rowView.findViewById(R.id.spnDel);
@@ -96,6 +101,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         spnItemDel.setText("X");
         spnItemDel.setVisibility(View.GONE);
         spnItemDel.setEnabled(false);
+
         return rowView;
     }
 

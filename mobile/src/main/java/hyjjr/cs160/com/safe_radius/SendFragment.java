@@ -107,6 +107,9 @@ public class SendFragment extends Fragment {
     private AdapterView.OnItemSelectedListener messageSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+            if (position != 0 && position != parent.getCount() -1){
+                getActivity().findViewById(R.id.send_button).setEnabled(true);
+            }
             if (position != parent.getCount() - 1)
                 ((Global) getActivity().getApplication()).setMessageSelected(position);
             else { // last message selected
@@ -142,6 +145,10 @@ public class SendFragment extends Fragment {
     private AdapterView.OnItemSelectedListener radiusSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+            if (position != 0 && position != parent.getCount() -1){
+                getActivity().findViewById(R.id.send_button).setEnabled(true);
+            }
+
             if (position != parent.getCount() - 1) {
                 ((Global) getActivity().getApplication()).setSafeRadiusSelected(position);
             } else { // last message selected
@@ -270,6 +277,10 @@ public class SendFragment extends Fragment {
             turnOn();
         else
             turnOff();
+
+        if (((Global) getActivity().getApplication()).getMessageSelected() == 0) {
+            getActivity().findViewById(R.id.send_button).setEnabled(false);
+        }
     }
 
     private void turnOff() {

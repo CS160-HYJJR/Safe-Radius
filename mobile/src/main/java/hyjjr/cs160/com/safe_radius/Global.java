@@ -199,4 +199,5 @@ public class Global extends Application {
     public void setMessageHistory(String messageHistory) {
         this.messageHistory = messageHistory;
     }
+
 }
