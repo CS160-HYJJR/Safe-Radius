@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="app_theme_notitle" parent="android:Theme.Material.Light.Dialog">
+    <style name="app_theme_notitle" parent="android:Theme.Material.Light">
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorPrimary">#ffffff</item>
         <item name="android:colorBackground">#ff222222</item>
