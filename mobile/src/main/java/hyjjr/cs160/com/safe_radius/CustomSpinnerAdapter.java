@@ -46,6 +46,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         if (position == 0) {
             spnItemName.setVisibility(View.GONE);
             spnItemDel.setVisibility(View.GONE);
+            rowView.setVisibility(View.GONE);
         }
 
         spnItemDel.setText("X");

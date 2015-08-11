@@ -368,7 +368,7 @@ public class SendFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ((Global)getActivity().getApplication()).setParentPicture(getRoundedCornerBitmapWithBorder(imageBitmap));
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(((Global) getActivity().getApplication()).getParentPicture(), 300, 300, false);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(((Global) getActivity().getApplication()).getParentPicture(), 100, 100, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] bitmapByte = stream.toByteArray();

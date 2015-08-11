@@ -56,7 +56,7 @@ public class Global extends Application {
         super.onCreate();
         power = true;
         messages = getResources().getStringArray(R.array.message_choices);
-        safeRadiusSelected = 1;
+        safeRadiusSelected = 3;
         messageSelected = 0;
         parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.ic_thumbnail_addyourpic);
         bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
