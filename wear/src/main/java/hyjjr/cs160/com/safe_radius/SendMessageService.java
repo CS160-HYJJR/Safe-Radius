@@ -73,6 +73,7 @@ public class SendMessageService extends IntentService {
                             message).await();
             if (result.getStatus().isSuccess()) {
                 if (confirmationEnabled) {
+                    Log.d(TAG, "confirmationEnabled:" + confirmationEnabled);
                     Intent intent = new Intent(this, ConfirmationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
@@ -91,14 +92,6 @@ public class SendMessageService extends IntentService {
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent2);
                 }
-                if (confirmationEnabled) {
-                    Intent intent = new Intent(this, ConfirmationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.SUCCESS_ANIMATION);
-                    startActivity(intent);
-                }
-
 
             } else {
                 if (confirmationEnabled) {
