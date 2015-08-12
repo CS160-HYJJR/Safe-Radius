@@ -58,6 +58,7 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        Log.d(TAG, "gcm received sth." + " size " + data.getString("message").length());
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
@@ -103,7 +104,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
         Log.d(TAG, "gcm message size: " + messageBytes.length);
         if (source.equals("phone")) {
-            Log.d(TAG, "Gcm received message from phone. Message_path " + data.getString("message_path")+ " message " + data.getString("message"));
+            Log.d(TAG, "Gcm received message from phone. Message_path: " + data.getString("message_path")+
+                    "  ,message:\n" + data.getString("message"));
             Intent intent = new Intent(this, SendMessageService.class);
             intent.putExtra("message_path", messagePath);
             intent.putExtra("message", messageBytes);

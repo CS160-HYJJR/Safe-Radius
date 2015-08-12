@@ -300,7 +300,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (radar != null)
             radar.onLocationChanged(location);
 
-        Log.d(TAG, "on location changed");
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         double currentAltitude = location.getAltitude();
         LatLng childLatLng = ((Global)getApplication()).getChildLatLng();
@@ -331,10 +330,10 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             }
         }
 
-        Log.d(TAG, "parent lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+        //Log.d(TAG, "parent lat: " + location.getLatitude() + " lon: " + location.getLongitude());
         currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         if (childLatLng != null) {
-            Log.d(TAG, "child lat: " + childLatLng.latitude + " lon: " + childLatLng.longitude);
+          //  Log.d(TAG, "child lat: " + childLatLng.latitude + " lon: " + childLatLng.longitude);
         }
     }
 

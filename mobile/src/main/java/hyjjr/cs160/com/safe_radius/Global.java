@@ -13,7 +13,7 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "fdjlfsjlkf";
+    public static final String TOPIC = "f13kl1j31lk";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;
@@ -62,7 +62,7 @@ public class Global extends Application {
         bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
         radii = getResources().getStringArray(R.array.radius_choices);
         pendingResults = new TreeMap<>();
-        receivedMessageFromWearInInterval = true;
+        receivedMessageFromWearInInterval = false;
         connectionToWatchStatus = 0; // undefined connection
     }
 

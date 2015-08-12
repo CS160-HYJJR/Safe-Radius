@@ -31,6 +31,7 @@ public class GcmSendMessage extends IntentService {
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
+        Log.d(TAG, "gcm started");
         if (intent != null) {
             try {
                 // Prepare JSON containing the GCM message content. What to send and where to send.
@@ -42,6 +43,7 @@ public class GcmSendMessage extends IntentService {
                 byte[] messageTotal = (byte[]) intent.getExtras().get("message");
                 final int MAX_SIZE = 1750;
                 int id = (int)Math.random()*10000;
+                int no = 0;
 
                 while (messageStartPos < messageTotal.length) {
                     byte[] message;
@@ -80,8 +82,7 @@ public class GcmSendMessage extends IntentService {
                     InputStream inputStream = conn.getInputStream();
                     String resp = IOUtils.toString(inputStream);
                     System.out.println(resp);
-                    System.out.println("Check your device/emulator for notification or logcat for " +
-                            "confirmation of the receipt of the GCM message.");
+                    System.out.println("gcm successs id: " + id + " No. " + (no++) + " size: " + message.length);
                 }
             } catch (IOException e) {
                 System.out.println("Unable to send GCM message.");
