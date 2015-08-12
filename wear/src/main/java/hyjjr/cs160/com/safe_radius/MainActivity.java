@@ -43,7 +43,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private GoogleApiClient mGoogleApiClient;
     public static final String FINISH_BROADCAST = "FINISH";
     private static final String MESSAGE = "Come find me";
-    private static final int NOTIFICATION_ID = 1;
     private static final int SPEECH_REQUEST_CODE = 0;
 
     private View.OnClickListener sendButtonListener = new View.OnClickListener() {
@@ -60,13 +59,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     };
 
     private View.OnClickListener micButtonListener = new View.OnClickListener() {
-        private Audio audio = new Audio();
-        private boolean started;
-        private static final int DELAY = 500;
-        private Handler myHandler = new Handler();
-        private Toast recording; // for indefinite long Toast
-        private Toast voiceSent;
-        private static final int MAX_TIME = 5000;
+//        private Audio audio = new Audio();
+//        private boolean started;
+//        private static final int DELAY = 500;
+//        private Handler myHandler = new Handler();
+//        private Toast recording; // for indefinite long Toast
+//        private Toast voiceSent;
+//        private static final int MAX_TIME = 5000;
 
 
         @Override
@@ -74,8 +73,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//            intent.putExtra("android.speech.extra.GET_AUDIO_FORMAT", "audio/AMR"); for audio
-//            intent.putExtra("android.speech.extra.GET_AUDIO", true);
             startActivityForResult(intent, SPEECH_REQUEST_CODE);
         }
     };
@@ -91,13 +88,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             intent.putExtra("message", spokenText.getBytes());
             intent.putExtra("confirmationEnabled", "true");
             startService(intent);
-
-//            Uri audioUri = data.getData();
-//            ContentResolver contentResolver = getContentResolver();
-//            try {
-//                InputStream filestream = contentResolver.openInputStream(audioUri); //audioUri is null for some reason
-//                // TODO: SEND filestream to handheld and then read audio file from inputstream
-//            } catch (FileNotFoundException e) {}
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
