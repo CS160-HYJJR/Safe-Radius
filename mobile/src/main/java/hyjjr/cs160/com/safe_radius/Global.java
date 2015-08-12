@@ -3,6 +3,7 @@ package hyjjr.cs160.com.safe_radius;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -13,7 +14,7 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "f13kl1j31lk";
+    public static final String TOPIC = "fdjlfsjlkf";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;

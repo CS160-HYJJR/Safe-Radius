@@ -2,6 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+
+    <item
+        android:state_enabled="false"
+        android:drawable="@drawable/button_send_disabled">
+    </item>
+
     <item
         android:state_pressed="true"
         android:drawable="@drawable/button_send_green_set">

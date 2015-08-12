@@ -155,7 +155,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "on location changed");
         currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         currentAltitude = location.getAltitude();
         childLatLng = ((Global)getActivity().getApplication()).getChildLatLng();

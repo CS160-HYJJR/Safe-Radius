@@ -91,6 +91,14 @@ public class SendMessageService extends IntentService {
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent2);
                 }
+                if (confirmationEnabled) {
+                    Intent intent = new Intent(this, ConfirmationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                            ConfirmationActivity.SUCCESS_ANIMATION);
+                    startActivity(intent);
+                }
+
 
             } else {
                 if (confirmationEnabled) {

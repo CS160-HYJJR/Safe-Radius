@@ -31,7 +31,6 @@ public class GcmSendMessage extends IntentService {
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
-        Log.d(TAG, "gcm started");
         if (intent != null) {
             try {
                 // Prepare JSON containing the GCM message content. What to send and where to send.
@@ -62,7 +61,8 @@ public class GcmSendMessage extends IntentService {
                     jData.put("message_start_pos", messageStartPos-MAX_SIZE);
                     jData.put("total_bytes", messageTotal.length);
                     // Where to send GCM message.
-                    jGcmData.put("to", "/topics/" + ((Global) getApplication()).TOPIC);
+                    jGcmData.put("to", "/topics/" + Global.TOPIC);
+                    jGcmData.put("time_to_live", 45);
                     // What to send in GCM message.
 
                     jGcmData.put("data", jData);

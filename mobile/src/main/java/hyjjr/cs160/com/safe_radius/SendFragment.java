@@ -109,6 +109,7 @@ public class SendFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
             if (position != 0 && position != parent.getCount() -1){
                 getActivity().findViewById(R.id.send_button).setClickable(true);
+                getActivity().findViewById(R.id.send_button).setEnabled(true);
             }
             if (position != parent.getCount() - 1)
                 ((Global) getActivity().getApplication()).setMessageSelected(position);
@@ -277,6 +278,7 @@ public class SendFragment extends Fragment {
 
         if (((Global) getActivity().getApplication()).getMessageSelected() == 0) {
             getActivity().findViewById(R.id.send_button).setClickable(false);
+            getActivity().findViewById(R.id.send_button).setEnabled(false);
         }
     }
 
@@ -371,7 +373,7 @@ public class SendFragment extends Fragment {
             ((Global)getActivity().getApplication()).setParentPicture(getRoundedCornerBitmapWithBorder(imageBitmap));
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(((Global) getActivity().getApplication()).getParentPicture(), 300, 300, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] bitmapByte = stream.toByteArray();
             Log.d(TAG, "image size: " + bitmapByte.length);
             Intent intent = new Intent(getActivity(), GcmSendMessage.class);

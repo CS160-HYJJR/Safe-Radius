@@ -30,6 +30,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static MainActivity mainActivity;
     public static RadarFragment radar;
     private FragmentTabHost mTabHost;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -40,7 +41,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private RepeatAction routine_check_history;
     private static final int CHECK_CONNECTION_INTERVAL = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
-    private static int UPDATE_INTERVAL_MS = 2000;
+    private static int UPDATE_INTERVAL_MS = 2500;
     private static int FASTEST_INTERVAL_MS = 1000;
     private static final int ZOOM_LEVEL = 19;
     private Handler handler = new Handler();
@@ -99,6 +100,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
                 @Override
                 public void run() {
                     checkMessageHistory();
+                    boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
+                    if (isReceived)
+                        makeConnected();
                 }
             }, CHECK_HISTORY_INTERVAL);
         }
@@ -148,17 +152,20 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
     }
 
+    public void makeConnected() {
+        ((Global)getApplication()).connectToWatch();
+        ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+    }
+
     public void checkConnection() {
         boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
         boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
         boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
         if (ReceiveMessageService.receivedSthFromWatch) {
-            ((Global)getApplication()).connectToWatch();
-            ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+            makeConnected();
         } else if (isReceived){
-            ((Global) getApplication()).setReceivedMessageFromWearInInterval(false);
-            ((Global)getApplication()).connectToWatch();
-            ((TextView)findViewById(R.id.connection_status)).setText("Connected");
+            ((Global)getApplication()).setReceivedMessageFromWearInInterval(false);
+            makeConnected();
         } else if (!isDisconnected && !isReceived){
             String title = "Error";
             String text = "You lost connection and did not connect to your child's watch. Please go to their last " +

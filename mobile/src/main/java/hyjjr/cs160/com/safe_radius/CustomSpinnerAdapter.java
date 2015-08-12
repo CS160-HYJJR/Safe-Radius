@@ -103,6 +103,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         spnItemDel.setVisibility(View.GONE);
         spnItemDel.setEnabled(false);
 
+        if (iName.get(position).equals("Set Message")) {
+            spnItemName.setTextColor(0xffcbcbcb);
+        }
         return rowView;
     }
 

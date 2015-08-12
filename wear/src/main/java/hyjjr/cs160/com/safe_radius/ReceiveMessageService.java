@@ -52,6 +52,8 @@ public class ReceiveMessageService extends WearableListenerService {
             confirmIntent.putExtra("notification", "true");
             PendingIntent confirmPendingIntent =
                     PendingIntent.getService(this, 0, confirmIntent, 0);
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingMainIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
             Notification.Builder notificationBuilder =
                     new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -59,18 +61,21 @@ public class ReceiveMessageService extends WearableListenerService {
                             .setContentText("")
                             .setPriority(Notification.PRIORITY_MAX)
                             .setLargeIcon(((Global) getApplication()).getParentPicture())
-                            .addAction(R.drawable.ic_done, "Got it!", confirmPendingIntent);
+                            .addAction(R.drawable.ic_done, "Got it!", confirmPendingIntent)
+                            .addAction(R.drawable.ic_open_in_browser_black_48dp, "Go to app", pendingMainIntent);
             Notification notification = notificationBuilder.build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
 
         } else if (messageEvent.getPath().equals(RECEIVE_PARENT_PICTURE_PATH)) {
             byte[] bytes = messageEvent.getData();
+            Log.d(TAG, "receive picture size: " + bytes.length);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             if (bitmap == null) {
-                Log.d(TAG, "image nulll" + " " + bytes.length);
+                Log.d(TAG, "image null" + " " + bytes.length);
+            } else {
+                ((Global) getApplication()).setParentPicture(bitmap);
+                Log.d(TAG, "image seted");
             }
-            ((Global)getApplication()).setParentPicture(bitmap);
-            Log.d(TAG, "image seted");
         }
         else {
             super.onMessageReceived(messageEvent);

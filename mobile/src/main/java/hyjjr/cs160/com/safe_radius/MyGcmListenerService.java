@@ -58,13 +58,14 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        Log.d(TAG, "gcm received sth." + " size " + data.getString("message").length());
         if (!((Global)getApplication()).isTurnedOn()) {
             return;
         }
-        if (!from.equals("/topics/"+((Global)getApplication()).TOPIC))
+        if (!from.equals("/topics/"+Global.TOPIC))
             return;
 
+        Log.d(TAG, "gcm received sth." + " size " + data.getString("message").length());
+        Log.d(TAG, ((Boolean)ReceiveMessageService.receivedSthFromWatch).toString());
         String source = data.getString("source");
         String messagePath = data.getString("message_path");
         String message = data.getString("message");
