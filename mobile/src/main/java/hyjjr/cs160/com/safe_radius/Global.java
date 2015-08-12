@@ -14,7 +14,7 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "fdjlfsjlkf";
+    public static final String TOPIC = "final_12345";
     private boolean power;
     private String[] messages;
     private int safeRadiusSelected;

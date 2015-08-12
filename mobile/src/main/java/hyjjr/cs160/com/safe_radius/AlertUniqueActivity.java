@@ -89,6 +89,10 @@ public class AlertUniqueActivity extends Activity {
                 }
             }
         }
+
+        // start vibration and sound
+        Intent vibrateIntent = new Intent(this, VibrationService.class);
+        startService(vibrateIntent);
    }
 
     @Override

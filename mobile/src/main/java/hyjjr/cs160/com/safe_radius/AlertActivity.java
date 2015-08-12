@@ -67,6 +67,10 @@ public class AlertActivity extends Activity {
             Intent vibrateIntent = new Intent(getApplicationContext(), VibrationService.class);
             startService(vibrateIntent);
         }
+
+        // start vibration and sound
+        Intent vibrateIntent = new Intent(this, VibrationService.class);
+        startService(vibrateIntent);
     }
 
     @Override
