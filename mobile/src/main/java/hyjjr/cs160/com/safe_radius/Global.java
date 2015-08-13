@@ -14,7 +14,6 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "final_12345";
     public static final String TOPIC = "DemoDay";
 
     private boolean power;

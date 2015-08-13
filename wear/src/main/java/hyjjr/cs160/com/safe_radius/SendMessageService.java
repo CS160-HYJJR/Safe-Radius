@@ -72,8 +72,7 @@ public class SendMessageService extends IntentService {
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
             if (result.getStatus().isSuccess()) {
-<<<<<<< HEAD
-=======
+
                 if (confirmationEnabled) {
                     Log.d(TAG, "confirmationEnabled:" + confirmationEnabled);
                     Intent intent = new Intent(this, ConfirmationActivity.class);
@@ -84,7 +83,6 @@ public class SendMessageService extends IntentService {
                     ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(1);
                 }
 
->>>>>>> 5eac77f789de62ea95d88339b6eb4267a73ad9ca
                 isConnectionGood = true;
                 Log.d(TAG, "send message success messagePath: " + messagePath
                         + " message: " + new String(message)
