@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
 
 // used for disconnection alert
@@ -21,6 +23,7 @@ public class AlertUniqueActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.setFinishOnTouchOutside(false);
         CharSequence title = getIntent().getExtras().getCharSequence("title");
         CharSequence text = new String((byte[])getIntent().getExtras().get("text"));
@@ -52,7 +55,7 @@ public class AlertUniqueActivity extends Activity {
                         AlertUniqueActivity.this.finish();
                     }
                 });
-        if (!((Global)getApplication()).isForeground()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_FOREGROUND_BOOLEAN, false)) {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

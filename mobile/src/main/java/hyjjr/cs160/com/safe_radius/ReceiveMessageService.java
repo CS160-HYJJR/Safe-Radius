@@ -1,6 +1,7 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -18,15 +19,13 @@ public class ReceiveMessageService extends WearableListenerService {
     private static final String LOCATION_PATH = "/location_wear_to_mobile";
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 0;
-    public static boolean receivedSthFromWatch;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        if (!((Global)getApplication()).isTurnedOn()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_POWER_BOOLEAN, false)) {
             return;
         }
         Log.d(TAG, "message received: " + new String(messageEvent.getData()));
-        receivedSthFromWatch = true;
         Intent intent = new Intent(this, GcmSendMessage.class);
         intent.putExtra("message_path", messageEvent.getPath());
         intent.putExtra("message", messageEvent.getData());

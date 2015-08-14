@@ -1,8 +1,10 @@
 package hyjjr.cs160.com.safe_radius;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,25 +16,34 @@ import java.util.TreeMap;
  */
 public class Global extends Application {
 
-    public static final String TOPIC = "final_12345";
-    public static final String TOPIC = "DemoDay";
+    public boolean connectedDirectlyToWatch;
+    public static final String KEY_MESSAGE_STRING = "0";
+    public static final String KEY_MESSAGE_POSITION_INT = "1";
+    public static final String KEY_MESSAGE_COUNT = "2";
+    public static final String KEY_MESSAGES_ = "messages";
+    public static final String KEY_RADIUS_STRING = "3";
+    public static final String KEY_RADIUS_POSITION_INT = "4";
+    public static final String KEY_RADIUS_COUNT = "5";
+    public static final String KEY_RADIUSES_ = "radiuses";
+    public static final String KEY_BACKGROUND_STRING = "6";
+    public static final String KEY_ADD_PARENT_STRING = "7";
+    public static final String KEY_POWER_BOOLEAN = "8";
+    public static final String KEY_FOREGROUND_BOOLEAN = "9";
 
-    private boolean power;
-    private String[] messages;
-    private int safeRadiusSelected;
-    private int messageSelected;
-    private Bitmap parentPicture;
-    private Bitmap bckgrdPicture;
-    private boolean isForeground;
-    private LatLng childLatLng;
-    private Double childAltitude;
-    private String[] radii;
-    private TreeMap<String, MyGcmListenerService.ByteArray> pendingResults; // <id, message>
-    private boolean receivedMessageFromWearInInterval;
+
+
+    public static final String TOPIC = "final_submission";
+
+    public LatLng childLatLng;
+    public Double childAltitude;
+    public TreeMap<String, MyGcmListenerService.ByteArray> pendingResults; // <id, message>
+    public boolean receivedMessageFromWearInInterval;
     private int connectionToWatchStatus;
     private Long sentMessageTime;
     private Long receiveMessageTime;
     private String messageHistory = "";
+
+    public SharedPreferences prefs;
 
     public void disconenctToWatch() {
         connectionToWatchStatus = -1;
@@ -50,93 +61,18 @@ public class Global extends Application {
         return connectionToWatchStatus == 1;
     }
 
-    public boolean isConnectionUndefinedToWatch() {
-        return connectionToWatchStatus == 0;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
-        power = true;
-        messages = getResources().getStringArray(R.array.message_choices);
-        safeRadiusSelected = 3;
-        messageSelected = 0;
-        parentPicture = BitmapFactory.decodeResource(getResources(), R.drawable.ic_thumbnail_addyourpic);
-        bckgrdPicture = BitmapFactory.decodeResource(getResources(), R.drawable.title_safe_radius);
-        radii = getResources().getStringArray(R.array.radius_choices);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         pendingResults = new TreeMap<>();
         receivedMessageFromWearInInterval = false;
         connectionToWatchStatus = 0; // undefined connection
     }
 
-
-    public boolean isTurnedOn() {
-        return power;
-    }
-
-    public void turnOn() {
-        power = true;
-    }
-
-    public void turnOff() {
-        power = false;
-    }
-
-    public String[] getMessages() {
-        return messages;
-    }
-
-    public void setMessages(String[] messages) {
-        this.messages = messages;
-    }
-
-    public int getSafeRadiusSelected() {
-        return safeRadiusSelected;
-    }
-
-    public void setSafeRadiusSelected(int safeRadiusSelected) {
-        this.safeRadiusSelected = safeRadiusSelected;
-    }
-
-    public int getMessageSelected() {
-        return messageSelected;
-    }
-
-    public void setMessageSelected(int messageSelected) {
-        this.messageSelected = messageSelected;
-    }
-
     public double getSafeRadiusInMeter() {
-        return Double.valueOf(radii[getSafeRadiusSelected()].
+        return Double.valueOf(prefs.getString(KEY_RADIUS_STRING, "100").
                 replaceAll("[^\\d.]", "")) * 0.3048;
-    }
-
-    public String getMessage() {
-        return messages[getMessageSelected()];
-    }
-
-    public Bitmap getParentPicture() {
-        return parentPicture;
-    }
-
-    public void setParentPicture(Bitmap parentPicture) {
-        this.parentPicture = parentPicture;
-    }
-
-    public void setBckgrdPicture(Bitmap bckgrdPicture) {
-        this.bckgrdPicture = bckgrdPicture;
-    }
-
-    public Bitmap getBckgrdPicture() {
-        return bckgrdPicture;
-    }
-
-    public boolean isForeground() {
-        return isForeground;
-    }
-
-    public void setForeground(boolean foreground) {
-        this.isForeground = foreground;
     }
 
     public LatLng getChildLatLng() {
@@ -153,18 +89,6 @@ public class Global extends Application {
 
     public void setChildAltitude(double childAltitude) {
         this.childAltitude = childAltitude;
-    }
-
-    public String[] getRadii() {
-        return radii;
-    }
-
-    public void setRadii(String[] radii) {
-        this.radii = radii;
-    }
-
-    public String getRadius() {
-        return radii[safeRadiusSelected];
     }
 
     public TreeMap<String, MyGcmListenerService.ByteArray> getPendingResults() {

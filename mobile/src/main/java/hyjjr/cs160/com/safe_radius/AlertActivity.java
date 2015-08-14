@@ -4,11 +4,13 @@ package hyjjr.cs160.com.safe_radius;
         import android.app.AlertDialog;
         import android.content.DialogInterface;
         import android.content.Intent;
+        import android.content.SharedPreferences;
         import android.graphics.Typeface;
         import android.media.AudioFormat;
         import android.media.AudioManager;
         import android.media.AudioTrack;
         import android.os.Bundle;
+        import android.preference.PreferenceManager;
         import android.util.Log;
         import android.view.MotionEvent;
         import android.view.View;
@@ -18,6 +20,7 @@ package hyjjr.cs160.com.safe_radius;
 
 public class AlertActivity extends Activity {
 
+    public static final String FONTS_GOTHAM_TTF = "fonts/gotham.ttf";
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
@@ -54,7 +57,7 @@ public class AlertActivity extends Activity {
                         AlertActivity.this.finish();
                     }
                 });
-        if (!((Global)getApplication()).isForeground()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_FOREGROUND_BOOLEAN, false)) {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "GO TO APP",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -79,7 +82,7 @@ public class AlertActivity extends Activity {
         if (alertDialog != null) {
             alertDialog.show();
             TextView textView= (TextView) alertDialog.findViewById(android.R.id.message);
-            Typeface face=Typeface.createFromAsset(getAssets(),"fonts/gotham.ttf");
+            Typeface face=Typeface.createFromAsset(getAssets(), FONTS_GOTHAM_TTF);
             textView.setTypeface(face);
             int titleId = getResources().getIdentifier("alertTitle", "id", "android");
             if (titleId > 0) {

@@ -20,7 +20,6 @@ public class VibrationService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
             v.vibrate(500);
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             r = RingtoneManager.getRingtone(getApplicationContext(), notification);

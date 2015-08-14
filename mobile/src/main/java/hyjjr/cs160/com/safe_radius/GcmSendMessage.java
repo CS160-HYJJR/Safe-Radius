@@ -2,8 +2,8 @@ package hyjjr.cs160.com.safe_radius;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.Context;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -21,14 +21,14 @@ public class GcmSendMessage extends IntentService {
 
     private static final String API_KEY = "AIzaSyDKG3SmtawUFzy4ZezCqLqIL0CwVLHNvKs";
     private static final String TAG = GcmSendMessage.class.getSimpleName();
-    public static final String SEND_PARENT_PICTURE = "mobile_to_wear_parent_picture";
     public GcmSendMessage() {
         super("GcmSendMessage");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (!((Global)getApplication()).isTurnedOn()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).
+                getBoolean(Global.KEY_FOREGROUND_BOOLEAN, false)) {
             return;
         }
         if (intent != null) {

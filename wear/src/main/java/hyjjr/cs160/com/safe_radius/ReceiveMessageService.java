@@ -4,14 +4,19 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Wearable listener service for data layer messages
@@ -25,9 +30,13 @@ public class ReceiveMessageService extends WearableListenerService {
     private static final String TAG = ReceiveMessageService.class.getSimpleName();
     public static final int NOTIFICATION_ID = 1;
     private static final String MESSAGE = "I saw your message";
+    private SharedPreferences prefs;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         if (messageEvent.getPath().equals(MESSAGE_PATH)) {
             final String message = new String(messageEvent.getData());
             Log.d(TAG, "Message path received on mobile is: " + messageEvent.getPath());
@@ -54,13 +63,22 @@ public class ReceiveMessageService extends WearableListenerService {
                     PendingIntent.getService(this, 0, confirmIntent, 0);
             Intent mainIntent = new Intent(this, MainActivity.class);
             PendingIntent pendingMainIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+            String portraitString = prefs.getString(Global.PARENT_PORTRAIT, null);
+            Bitmap portrait;
+            if (portraitString == null) {
+                portrait = BitmapFactory.decodeResource(getResources(), R.drawable.icon_add_new_ppl);
+            } else {
+                portrait = string2Bitmap(portraitString);
+            }
+
             Notification.Builder notificationBuilder =
                     new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(message)
                             .setContentText("")
                             .setPriority(Notification.PRIORITY_MAX)
-                            .setLargeIcon(((Global) getApplication()).getParentPicture())
+                            .setLargeIcon(portrait)
                             .addAction(R.drawable.ic_done, "Got it!", confirmPendingIntent)
                             .addAction(R.drawable.ic_open_in_browser_black_48dp, "Go to app", pendingMainIntent);
             Notification notification = notificationBuilder.build();
@@ -73,12 +91,26 @@ public class ReceiveMessageService extends WearableListenerService {
             if (bitmap == null) {
                 Log.d(TAG, "image null" + " " + bytes.length);
             } else {
-                ((Global) getApplication()).setParentPicture(bitmap);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(Global.PARENT_PORTRAIT, bitmap2String(bitmap));
+                editor.commit();
                 Log.d(TAG, "image seted");
             }
         }
         else {
             super.onMessageReceived(messageEvent);
         }
+    }
+
+    public static String bitmap2String(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static Bitmap string2Bitmap(String imageString) {
+        byte[] b = Base64.decode(imageString, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
     }
 }

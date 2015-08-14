@@ -24,13 +24,13 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 public class MainActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static MainActivity mainActivity;
     public static RadarFragment radar;
     private FragmentTabHost mTabHost;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -38,18 +38,23 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private boolean hasAlerted; // Once alert once every time open the map.
     private RepeatAction routine_check_connection;
+    private RepeatAction routine_check_connection_directly_to_watch;
     private RepeatAction routine_check_history;
-    private static final int CHECK_CONNECTION_INTERVAL = 5000;
+    private static final int CHECK_CONNECTION_INTERVAL = 8000;
+    private static final int CHECK_CONNECTION_DIRECTLY_TO_WATCH = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
     private static int UPDATE_INTERVAL_MS = 2500;
     private static int FASTEST_INTERVAL_MS = 1000;
     private static final int ZOOM_LEVEL = 19;
     private Handler handler = new Handler();
+    public SharedPreferences prefs;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         setContentView(R.layout.activity_main);
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/gotham.ttf");
         ((TextView)findViewById(R.id.connection_status)).setTypeface(custom_font);
@@ -94,6 +99,15 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
                     checkConnection();
                 }
             }, CHECK_CONNECTION_INTERVAL);
+        }
+        if (routine_check_connection_directly_to_watch == null) {
+            routine_check_connection_directly_to_watch = new RepeatAction(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            checkConnectionDirectlyToWatch();
+                        }
+                    }, CHECK_CONNECTION_DIRECTLY_TO_WATCH);
         }
         if (routine_check_history == null) {
             routine_check_history = new RepeatAction(new Runnable() {
@@ -147,7 +161,6 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             output += " ago";
         }
         if (findViewById(R.id.message_history) != null) {
-            ((Global)getApplication()).setMessageHistory(output);
             ((TextView)findViewById(R.id.message_history)).setText(output);
         }
     }
@@ -157,11 +170,29 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         ((TextView)findViewById(R.id.connection_status)).setText("Connected");
     }
 
+    public void checkConnectionDirectlyToWatch() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
+                        getConnectedNodes(mGoogleApiClient).await();
+                if(nodes.getNodes()!=null&&!nodes.getNodes().isEmpty())
+                {
+                    ((Global) getApplication()).connectedDirectlyToWatch = true;
+                }
+                else
+                {
+                    ((Global) getApplication()).connectedDirectlyToWatch = false;
+                }
+            }
+        }).start();
+    }
+
     public void checkConnection() {
         boolean isReceived = ((Global)getApplication()).isReceivedMessageFromWearInInterval();
         boolean isDisconnected = ((Global)getApplication()).isDisconnectedToWatch();
         boolean isConnected = ((Global)getApplication()).isConnectedToWatch();
-        if (ReceiveMessageService.receivedSthFromWatch) {
+        if (((Global)getApplication()).connectedDirectlyToWatch) {
             makeConnected();
         } else if (isReceived){
             ((Global)getApplication()).setReceivedMessageFromWearInInterval(false);
@@ -200,7 +231,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     public void onStart()
     {
         super.onStart();
-        ((Global)getApplication()).setForeground(true);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Global.KEY_FOREGROUND_BOOLEAN, true);
+        editor.apply();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API
@@ -214,7 +247,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onStop() {
-        ((Global)getApplication()).setForeground(false);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Global.KEY_FOREGROUND_BOOLEAN, false);
+        editor.apply();
         super.onStop();
     }
 
@@ -230,11 +265,12 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     public void startRequestLocation() {
         // Build a request for continual location updates
-        if (!((Global)getApplication()).isTurnedOn()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_POWER_BOOLEAN, false)) {
             return;
         }
         routine_check_connection.stopUpdates();
         routine_check_history.stopUpdates();
+        routine_check_connection_directly_to_watch.stopUpdates();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -243,8 +279,9 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             }
         }, CHECK_CONNECTION_INTERVAL);
 
-        routine_check_history.startUpdates();
 
+        routine_check_history.startUpdates();
+        routine_check_connection_directly_to_watch.startUpdates();
         if (mGoogleApiClient == null)
             return;
         else if (mGoogleApiClient.isConnected()) {
@@ -277,6 +314,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     }
     public void stopRequestLocation() {
         if (mGoogleApiClient != null) {
+            if (mGoogleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
@@ -290,9 +328,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (((Global)getApplication()).isTurnedOn()) {
+        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_POWER_BOOLEAN, false)) {
             startRequestLocation2();
-
         }
     }
 

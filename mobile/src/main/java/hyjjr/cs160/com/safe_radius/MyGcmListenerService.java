@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -39,6 +40,12 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String MESSAGE_PATH = "/message_wear_to_mobile";
     private static final String LOCATION_PATH = "/location_wear_to_mobile";
     private static final String VOICE_PATH = "/voice_wear_to_mobile";
+    private Thread doStuffThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    });
     public class ByteArray {
         private byte[] bytes;
         private int receivedBytes;
@@ -58,14 +65,30 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        if (!((Global)getApplication()).isTurnedOn()) {
+        doStuff(from, data);
+
+        /**
+         * Production applications would usually process the message here.
+         * Eg: - Syncing with server.
+         *     - Store message in local database.
+         *     - Update UI.
+         */
+
+        /**
+         * In some cases it may be useful to show a notification indicating to the user
+         * that a message was received.
+         */
+        //sendNotification(message);
+    }
+
+    private void doStuff(String from, Bundle data) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_POWER_BOOLEAN, false)) {
             return;
         }
         if (!from.equals("/topics/"+Global.TOPIC))
             return;
 
         Log.d(TAG, "gcm received sth." + " size " + data.getString("message").length());
-        Log.d(TAG, ((Boolean)ReceiveMessageService.receivedSthFromWatch).toString());
         String source = data.getString("source");
         String messagePath = data.getString("message_path");
         String message = data.getString("message");
@@ -112,7 +135,7 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.putExtra("message", messageBytes);
             startService(intent);
         }
-        else if (ReceiveMessageService.receivedSthFromWatch == false){
+        else if (!((Global)getApplication()).connectedDirectlyToWatch){
             Log.d(TAG, "gcm receive from watch");
             if (messagePath.equals(MESSAGE_PATH)) {
                 ((Global)getApplication()).setReceivedMessageFromWearInInterval(true);
@@ -124,7 +147,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 alertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    //            alertIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 alertIntent.putExtra("title", "Message from your child");
                 alertIntent.putExtra("text", messageBytes);
                 startActivity(alertIntent);
@@ -139,7 +161,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 positions[0]= ByteBuffer.wrap(messageBytes).getDouble(0);
                 positions[1]= ByteBuffer.wrap(messageBytes).getDouble(8);
                 positions[2]= ByteBuffer.wrap(messageBytes).getDouble(16);
-                //double[] positions = new double[doubleBuf.remaining()];
                 Log.d(TAG, "Location path received on mobile is: " + messagePath);
                 Log.d(TAG, "Location received lat: " + positions[0] + " lon: " + positions[1] + " alt " + positions[2]);
                 ((Global)getApplication()).setChildLatLng(new LatLng(positions[0], positions[1]));
@@ -158,18 +179,6 @@ public class MyGcmListenerService extends GcmListenerService {
             }
 
         }
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        //sendNotification(message);
     }
     // [END receive_message]
 

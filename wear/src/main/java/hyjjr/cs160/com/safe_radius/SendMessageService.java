@@ -66,55 +66,48 @@ public class SendMessageService extends IntentService {
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
                 getConnectedNodes(mGoogleApiClient).await();
 
-        boolean isConnectionGood = false;
-        for (Node node : nodes.getNodes()) {
-            MessageApi.SendMessageResult result =
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
-                            message).await();
-            if (result.getStatus().isSuccess()) {
-<<<<<<< HEAD
-=======
-                if (confirmationEnabled) {
-                    Log.d(TAG, "confirmationEnabled:" + confirmationEnabled);
-                    Intent intent = new Intent(this, ConfirmationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.SUCCESS_ANIMATION);
-                    startActivity(intent);
-                    ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(1);
-                }
+        if (nodes.getNodes().isEmpty()) {
+            if (confirmationEnabled) {
+                Intent intent = new Intent(this, ConfirmationActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                        ConfirmationActivity.FAILURE_ANIMATION);
+                startActivity(intent);
+            }
+        } else {
+            for (Node node : nodes.getNodes()) {
+                MessageApi.SendMessageResult result =
+                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
+                                message).await();
+                if (result.getStatus().isSuccess()) {
+                    Log.d(TAG, "send message success messagePath: " + messagePath
+                            + " message: " + new String(message)
+                            + " node: " + node.getDisplayName());
 
->>>>>>> 5eac77f789de62ea95d88339b6eb4267a73ad9ca
-                isConnectionGood = true;
-                Log.d(TAG, "send message success messagePath: " + messagePath
-                        + " message: " + new String(message)
-                        + " node: " + node.getDisplayName());
+                    if (notification) {
+                        Intent intent2 = new Intent(this, MainActivity.class);
+                        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent2);
+                    }
 
-                if (notification) {
-                    Intent intent2 = new Intent(this, MainActivity.class);
-                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent2);
-                }
+                    if (confirmationEnabled) {
+                        Intent intent2 = new Intent(this, ConfirmationActivity.class);
+                        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent2.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                                ConfirmationActivity.SUCCESS_ANIMATION);
+                        startActivity(intent2);
+                    }
 
-                if (confirmationEnabled) {
-                    Intent intent2 = new Intent(this, ConfirmationActivity.class);
-                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent2.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.SUCCESS_ANIMATION);
-                    startActivity(intent2);
-                }
-
-            } else {
-                if (confirmationEnabled) {
-                    Intent intent = new Intent(this, ConfirmationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.FAILURE_ANIMATION);
-                    startActivity(intent);
+                } else {
+                    if (confirmationEnabled) {
+                        Intent intent = new Intent(this, ConfirmationActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                                ConfirmationActivity.FAILURE_ANIMATION);
+                        startActivity(intent);
+                    }
                 }
             }
         }
-
-
     }
 }

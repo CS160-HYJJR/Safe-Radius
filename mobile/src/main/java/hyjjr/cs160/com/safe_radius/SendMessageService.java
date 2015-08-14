@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class SendMessageService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (!((Global)getApplication()).isTurnedOn()) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Global.KEY_FOREGROUND_BOOLEAN, false)) {
             return;
         }
 
@@ -55,24 +56,12 @@ public class SendMessageService extends IntentService {
     }
 
     void sendMessage(String messagePath, byte[] message) {
-
-
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.
                 getConnectedNodes(mGoogleApiClient).await();
-
-        boolean isConnectionGood = false;
         for (Node node : nodes.getNodes()) {
             MessageApi.SendMessageResult result =
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), messagePath,
                             message).await();
         }
-
-        /*
-        if (!isConnectionGood) {
-            Log.e(TAG, "send message failed");
-            //Intent intent = new Intent(BROADCAST);
-            //LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-            //bm.sendBroadcast(intent);
-        }*/
     }
 }
