@@ -22,11 +22,13 @@ In conclusion, in order to run this app, we need one Android Watch and Two phone
 #IV. Installation Guide
 1. Unhidden phone: Enable GPS and disable firewall. Make sure the phone is connected to the internet and the network speed is good. Check Google Map to make sure there is  good GPS signal. You can check the measurement accuracy by the blue circle in Google Map. If its radius size is larger than 30feet, the app will run very inaccurately. Install the app by [Download](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
 
-2. hidden phone: Do the same thing as unhidden phone. Make sure the phone is connected to the internet and the network speed is good. Then pair it with the watch. Install the app on the hidden phone and watch by [Download](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
+2. hidden phone: Do the same thing as unhidden phone. Make sure the phone is connected to the internet and the network speed is good. Then pair it with the watch. Install the app on the hidden phone and watch by [app.apk](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
 
 3. watch: make sure the watch has paired to the hidden phone.
 
 Open the app in all three devices. Let the hidden phone and watch stay with the child and let the unhidden phone stay with the parent. Although the hidden phone does not involve in the interaction between unhidden phone and watch, make sure the app keeps running in the hidden phone. Don’t run any other instances of app in other devices.
+
+If app.apk does not work, you can also try 
 
 #V. Functionalities
 1. Hidden phone: No function. It just exists to give watch GPS capabilities.
