@@ -1,8 +1,8 @@
-## CS160_HYJJR
-Final Project of Group HYJJR (Group I) in CS160 Summer 2015. UC Berkeley
-Course website: [Link](http://cs160.valkyriesavage.com/schedule.html)
-Author: Harry He, Riva Madan, Yue Cao, Judy Lai, Donghao Su
-Please read this before running the program.
+## Safe Radius
+Final Project of Group HYJJR (Group I) in CS160 Summer 2015 UC Berkeley     
+Course website: [Link](http://cs160.valkyriesavage.com/schedule.html)      
+Author: Harry He, Riva Madan, Yue Cao, Judy Lai, Donghao Su      
+Please read this before running the program.    
 
 # *I. Introduction*
 Safe Radius aims to help people alleviate stress when traveling with young children. 
@@ -65,12 +65,12 @@ Open the app in all three devices. Let the hidden phone and watch stay with the 
 4. We need to make more research on child behavior to make it easier to use for the child.
 
 # *VIII. Acknowledgements*
-1. Google GCM Sample code by Google Inc.
-2. RepeatAction class by Carlos Simões.
-3. Spherical Math class by Google Inc.
-4. We appreciate the people who give us a lot of help on StackOverflow.
-5. We appreciate our friend to support us.
-6. We appreciate our instructor, Valkyrie Savage, Teaching Assistances, Andrew Head and Michelle Nguyen and the reader Diana Wang to give us the great semester. [Link](http://cs160.valkyriesavage.com/people.html)
+1. Google GCM Sample code by Google Inc.     
+2. RepeatAction class by Carlos Simões.       
+3. Spherical Math class by Google Inc.      
+4. We appreciate the people who give us a lot of help on StackOverflow.      
+5. We appreciate our friend to support us.      
+6. We appreciate our instructor, Valkyrie Savage, Teaching Assistances, Andrew Head and Michelle Nguyen and the reader Diana Wang to give us the great semester. [Link](http://cs160.valkyriesavage.com/people.html)           
 
   
 
