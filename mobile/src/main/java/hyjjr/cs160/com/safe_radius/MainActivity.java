@@ -43,8 +43,8 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private static final int CHECK_CONNECTION_INTERVAL = 8000;
     private static final int CHECK_CONNECTION_DIRECTLY_TO_WATCH = 5000;
     private static final int CHECK_HISTORY_INTERVAL = 1000;
-    private static int UPDATE_INTERVAL_MS = 1250;
-    private static int FASTEST_INTERVAL_MS = 7500;
+    private static int UPDATE_INTERVAL_MS = 2500;
+    private static int FASTEST_INTERVAL_MS = 1000;
     private static final int ZOOM_LEVEL = 19;
     private Handler handler = new Handler();
     public SharedPreferences prefs;

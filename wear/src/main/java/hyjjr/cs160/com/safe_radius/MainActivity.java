@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName() + "001";
-    private static int UPDATE_INTERVAL_MS = 1250;
+    private static int UPDATE_INTERVAL_MS = 2000;
     private static int FASTEST_INTERVAL_MS = 1000;
     private GoogleApiClient mGoogleApiClient;
     public static final String FINISH_BROADCAST = "FINISH";
