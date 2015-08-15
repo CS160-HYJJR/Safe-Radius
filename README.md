@@ -4,22 +4,22 @@ Course website: [Link](http://cs160.valkyriesavage.com/schedule.html)
 Author: Harry He, Riva Madan, Yue Cao, Judy Lai, Donghao Su      
 Please read this before running the program.    
 
-*I. Introduction*
+#I. Introduction  
 Safe Radius aims to help people alleviate stress when traveling with young children. 
 After placing your smartwatch on your child's wrist, you can be notified when they leave a preset safe radius, communicate with them through messages, and find their location on a map. You can also customize the homepage of the app by adding a picture of yourself that will show up on the child's watch notification when they receive a message or set a background photo for personalization purposes. 
 
-*II. Implementation Note*
+#II. Implementation Note
 Safe Radius intends to work on a watch with builtin GPS hardware. However, because the Moto360, which is used in CS160, does not have GPS capabilities, we give the watch the GPS capabilities by pairing it with a hidden phone. We assume the hidden phone always stay with the watch and the watch and phone stay with the child. We need another unhidden phone for the parent to do the actual interaction. Hidden phone and watch should be paired by bluetooth. Hidden phone acts as a bridge between unhidden phone and watch. All information exchanged between unhidden phone and watch comes through hidden phone. Two phones are not paired in any way. They simply broadcast to all devices running with same code. As a result, if you run the program in many devices, they will interfere with each other. Therefore, don’t  run the app on multiple devices except the hidden and unhidden phones you choose.
 In conclusion, in order to run this app, we need one Android Watch and Two phones: one hidden and one unhidden.
 
-*III. System Requirement*
+#III. System Requirement
 1. Unhidden phone: Requires API 21 (Android 5.0). The interface may be rendered incorrectly in lower version. The app cannot be installed on phone with system version lower than API 18 (Android 4.3). The phone must have builtin GPS hardware in the unhidden phone, newest Google Play Service installed and have good connection to internet.
 
 2. Hidden phone: Requires API 18 (Android 4.3). The interface may be rendered incorrectly in the hidden phone, but it should not matter. The hidden phone should have GPS hardware, have newest Google Play Service installed and have good connection to internet. The hidden phone must also have bluetooth in order to connect to the watch.
 
 3. Watch: Requires API 22 (Android 5.1). Tested on Moto360. The watch must have bluetooth in order to connect to hidden phone. Microphone is required in order to use voice message.  Speaker is not required.
 
-*IV. Installation Guide*
+#IV. Installation Guide
 1. Unhidden phone: Enable GPS and disable firewall. Make sure the phone is connected to the internet and the network speed is good. Check Google Map to make sure there is  good GPS signal. You can check the measurement accuracy by the blue circle in Google Map. If its radius size is larger than 30feet, the app will run very inaccurately. Install the app by [Download](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
 
 2. hidden phone: Do the same thing as unhidden phone. Make sure the phone is connected to the internet and the network speed is good. Then pair it with the watch. Install the app on the hidden phone and watch by [Download](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
@@ -28,7 +28,7 @@ In conclusion, in order to run this app, we need one Android Watch and Two phone
 
 Open the app in all three devices. Let the hidden phone and watch stay with the child and let the unhidden phone stay with the parent. Although the hidden phone does not involve in the interaction between unhidden phone and watch, make sure the app keeps running in the hidden phone. Don’t run any other instances of app in other devices.
 
-*V. Functionalities*
+#V. Functionalities
 1. Hidden phone: No function. It just exists to give watch GPS capabilities.
 2. Unhidden phone:
   1. The status bar at the bottom shows if the phone has connected to the watch by detecting whether it receives any message from watch in recent 6s.
@@ -46,7 +46,7 @@ Open the app in all three devices. Let the hidden phone and watch stay with the 
   2. In the main screen, the child can press the envelope button to quick send message “Come and find Me” to his parent.
   3. The child can press the microphone button to send voice message to parent. The voice is converted to text automatically and then sent to parent.
 
-*VI. Known Issues.*
+#VI. Known Issues.
 1. We have made a lot of efforts in order to make the app work on the watch without GPS hardware. The complex connection between 3 devices cause some problem. In order to send a message from watch to unhidden phone, the watch needs to send it to hidden phone first and then hidden phone sends to to a cloud server and then the cloud server broadcasts it into the unhidden phone. It requires good internet connection to work and all data transfers have some delay. This is much slower compared to transferring data between a paired phone and watch directly.
 
 2. The app can only be run in one pair of hidden and unhidden phones at the same time. Technically, two phones are not paired in any way. The data is broadcasted to all phones running the app. We have two potential ways to fix it. One is using Wifi Peer-to-Peer API to connect two phones Peer-to-Peer without connect to internet and the other is making a registration tab to register two phones. However, we don’t have two phones with Wifi Peer-to-Peer functionalities. Meanwhile, registration tabs does not make sense in our app because we are doing this to simulate interaction between a paired watch and phone. Registration should not required for a paired watch and phone.
@@ -55,7 +55,7 @@ Open the app in all three devices. Let the hidden phone and watch stay with the 
 
 4. The power consumption is high because the GPS keeps running even if the program is in background. The GPS refresh rate is high to keep track of children in real time. However, you may not see the high refresh rate because of the network delay.
 
-*VII. Future Improvements*
+#VII. Future Improvements
 1. If we have a watch with builtin GPS hardware, then a lot of problem will be resolved. Then we can connect phone and watch directly without a hidden phone because we no longer need hidden phone to provide a GPS location. This will make coding much easier and organize because there is no loner interaction in hidden phone and online cloud server. Currently, hidden phones and unhidden phones share the same code although have different responsibilities make it very hard to code. Code directly for a watch with GPS will also resolve the lagging issue because there is no longer so many devices.
 
 2. We need to find a way to make the location measurement more precise. Besides of GPS, we  may need to use WIFI, phone signal, accelerometer， compass, pedometer, compass, etc, all sensors which we can take advantage of to improve the location precision.
@@ -64,7 +64,7 @@ Open the app in all three devices. Let the hidden phone and watch stay with the 
 
 4. We need to make more research on child behavior to make it easier to use for the child.
 
-*VIII. Acknowledgements*
+#VIII. Acknowledgements
 1. Google GCM Sample code by Google Inc.     
 2. RepeatAction class by Carlos Simões.       
 3. Spherical Math class by Google Inc.      
