@@ -28,7 +28,7 @@ In conclusion, in order to run this app, we need one Android Watch and Two phone
 
 Open the app in all three devices. Let the hidden phone and watch stay with the child and let the unhidden phone stay with the parent. Although the hidden phone does not involve in the interaction between unhidden phone and watch, make sure the app keeps running in the hidden phone. Don’t run any other instances of app in other devices.
 
-If app.apk does not work, you can also try 
+If app.apk does not work, you can also try [mobile-debug.apk](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/mobile-debug.apk) and [wear-debug.apk](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/wear-debug.apk)
 
 #V. Functionalities
 1. Hidden phone: No function. It just exists to give watch GPS capabilities.
