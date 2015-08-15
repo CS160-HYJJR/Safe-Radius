@@ -20,7 +20,7 @@ In conclusion, in order to run this app, we need one Android Watch and Two phone
 3. Watch: Requires API 22 (Android 5.1). Tested on Moto360. The watch must have bluetooth in order to connect to hidden phone. Microphone is required in order to use voice message.  Speaker is not required.
 
 #IV. Installation Guide
-1. Unhidden phone: Enable GPS and disable firewall. Make sure the phone is connected to the internet and the network speed is good. Check Google Map to make sure there is  good GPS signal. You can check the measurement accuracy by the blue circle in Google Map. If its radius size is larger than 30feet, the app will run very inaccurately. Install the app by [Download](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
+1. Unhidden phone: Enable GPS and disable firewall. Make sure the phone is connected to the internet and the network speed is good. Check Google Map to make sure there is  good GPS signal. You can check the measurement accuracy by the blue circle in Google Map. If its radius size is larger than 30feet, the app will run very inaccurately. Install the app by [app.apk](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
 
 2. hidden phone: Do the same thing as unhidden phone. Make sure the phone is connected to the internet and the network speed is good. Then pair it with the watch. Install the app on the hidden phone and watch by [app.apk](https://github.com/CS160-HYJJR/Safe-Radius/raw/master/app.apk)
 
